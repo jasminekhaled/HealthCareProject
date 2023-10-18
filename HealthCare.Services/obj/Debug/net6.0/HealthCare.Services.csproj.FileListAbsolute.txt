@@ -1,0 +1,15 @@
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Services\bin\Debug\net6.0\HealthCare.Services.deps.json
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Services\bin\Debug\net6.0\HealthCare.Services.dll
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Services\bin\Debug\net6.0\HealthCare.Services.pdb
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Services\obj\Debug\net6.0\HealthCare.Services.csproj.AssemblyReference.cache
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Services\obj\Debug\net6.0\HealthCare.Services.GeneratedMSBuildEditorConfig.editorconfig
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Services\obj\Debug\net6.0\HealthCare.Services.AssemblyInfoInputs.cache
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Services\obj\Debug\net6.0\HealthCare.Services.AssemblyInfo.cs
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Services\obj\Debug\net6.0\HealthCare.Services.csproj.CoreCompileInputs.cache
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Services\obj\Debug\net6.0\HealthCare.Services.dll
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Services\obj\Debug\net6.0\refint\HealthCare.Services.dll
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Services\obj\Debug\net6.0\HealthCare.Services.pdb
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Services\obj\Debug\net6.0\ref\HealthCare.Services.dll
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Services\bin\Debug\net6.0\HealthCare.Core.dll
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Services\bin\Debug\net6.0\HealthCare.Core.pdb
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Services\obj\Debug\net6.0\HealthCare.Services.csproj.CopyComplete
