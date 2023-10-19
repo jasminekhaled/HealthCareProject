@@ -5,11 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HealthCare.Core.Models.AuthModule
+namespace HealthCare.Core.DTOS.AuthModule.RequestDtos
 {
-    public class User
+    public class SignUpRequestDto
     {
-        public int Id { get; set; }
         public int NationalId { get; set; }
         [EmailAddress]
         public string Email { get; set; }
@@ -21,8 +20,6 @@ namespace HealthCare.Core.Models.AuthModule
         [MinLength(length: 15)]
         [MaxLength(length: 100)]
         public string PassWord { get; set; }
-        public List<RefreshToken>? RefreshTokens { get; set; }
-        public List<UserRole> userRoles { get; set; }
-
+        public string PhoneNumber { get; set; }
     }
 }

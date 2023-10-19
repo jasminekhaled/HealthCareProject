@@ -18,6 +18,7 @@ using Microsoft.IdentityModel.Tokens;
 using HealthCare.Core.Helpers;
 using Microsoft.Extensions.Options;
 using HealthCare.Core.DTOS.AuthModule.RequestDtos;
+using HealthCare.Core.Models.PatientModule;
 
 namespace HealthCare.Services.Services
 {
@@ -32,6 +33,82 @@ namespace HealthCare.Services.Services
             _mapper = mapper;
         }
 
+
+
+        public async Task<GeneralResponse<SignUpResponse>> SignUp(SignUpRequestDto dto)
+        {
+            try
+            {
+                if (await _unitOfWork.PatientRepository.AnyAsync(check: c => c.NationalId == dto.NationalId))
+                {
+                    return new GeneralResponse<SignUpResponse>
+                    {
+                        IsSuccess = false,
+                        Message = "User with this national Id is already Exist.",
+                    };
+                }
+                if (!await _unitOfWork.CivilRegestrationRepository.AnyAsync(check: c => c.NationalId == dto.NationalId))
+                {
+                    return new GeneralResponse<SignUpResponse>
+                    {
+                        IsSuccess = false,
+                        Message = "Wrong National Id.",
+                    };
+                }
+                var phoneNumber = Convert.ToInt32(dto.PhoneNumber);
+                if (dto.PhoneNumber.Length != 11 && phoneNumber < 0)
+                {
+                    return new GeneralResponse<SignUpResponse>
+                    {
+                        IsSuccess = false,
+                        Message = "Wrong Phone Number.",
+                    };
+                }
+                if (await _unitOfWork.PatientRepository.AnyAsync(check: c => c.Email == dto.Email))
+                {
+                    return new GeneralResponse<SignUpResponse>
+                    {
+                        IsSuccess = false,
+                        Message = "User with this Email is already Exist.",
+                    };
+                }
+                var patient = _mapper.Map<Patient>(dto);
+                //var user = _mapper.Map<User>(dto);
+                patient.PassWord = HashingService.GetHash(dto.PassWord);
+                //user.PassWord = patient.PassWord;
+                var verificationCode = MailServices.RandomString(6);
+                if (!(await MailServices.SendEmailAsync(dto.Email, "Verification Code", verificationCode)))
+                {
+                    return new GeneralResponse<SignUpResponse>()
+                    {
+                        IsSuccess = false,
+                        Message = "Sending the Verification Code is Failed"
+                    };
+                }
+
+                patient.VerificationCode = verificationCode;
+                await _unitOfWork.CompleteAsync();
+
+                var data = _mapper.Map<SignUpResponse>(patient);
+
+                return new GeneralResponse<SignUpResponse>
+                {
+                    IsSuccess = true,
+                    Message = "Something went wrong",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<SignUpResponse>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+
+        }
 
         public async Task<GeneralResponse<RefreshTokenResponse>> RefreshToken(string? RefreshToken)
         {
@@ -95,9 +172,7 @@ namespace HealthCare.Services.Services
             }
         }
 
-
-
-
+        
 
         private RefreshToken CreateRefreshToken()
         {

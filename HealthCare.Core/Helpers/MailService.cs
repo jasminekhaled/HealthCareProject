@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
 
 namespace HealthCare.Core.Helpers
 {
@@ -52,6 +53,21 @@ namespace HealthCare.Core.Helpers
             {
                 return false;
             }
+        }
+
+
+        // Function to Generate a random string with a given size
+        public static string RandomString(int size, bool lowerCase = false)
+        {
+            var builder = new StringBuilder(size);
+            char offset = lowerCase ? 'a' : 'A';
+            const int lettersOffset = 26;
+            for (var i = 0; i < size; i++)
+            {
+                var @char = (char)RandomNumberGenerator.GetInt32(offset, offset + lettersOffset);
+                builder.Append(@char);
+            }
+            return lowerCase ? builder.ToString().ToLower() : builder.ToString();
         }
 
     }
