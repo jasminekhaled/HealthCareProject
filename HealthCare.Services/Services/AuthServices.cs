@@ -39,7 +39,7 @@ namespace HealthCare.Services.Services
         {
             try
             {
-                if (await _unitOfWork.PatientRepository.AnyAsync(check: c => c.NationalId == dto.NationalId))
+                if(await _unitOfWork.PatientRepository.AnyAsync(check: c => c.NationalId == dto.NationalId))
                 {
                     return new GeneralResponse<SignUpResponse>
                     {
@@ -55,7 +55,7 @@ namespace HealthCare.Services.Services
                         Message = "Wrong National Id.",
                     };
                 }
-                var phoneNumber = Convert.ToInt32(dto.PhoneNumber);
+                var phoneNumber = Convert.ToInt32(dto.PhoneNumber); 
                 if (dto.PhoneNumber.Length != 11 && phoneNumber < 0)
                 {
                     return new GeneralResponse<SignUpResponse>
@@ -73,7 +73,6 @@ namespace HealthCare.Services.Services
                     };
                 }
                 var patient = _mapper.Map<Patient>(dto);
-                //var user = _mapper.Map<User>(dto);
                 patient.PassWord = HashingService.GetHash(dto.PassWord);
                 var verificationCode = MailServices.RandomString(6);
                 if (!(await MailServices.SendEmailAsync(dto.Email, "Verification Code", verificationCode)))
@@ -84,7 +83,7 @@ namespace HealthCare.Services.Services
                         Message = "Sending the Verification Code is Failed"
                     };
                 }
-
+                    
                 patient.VerificationCode = verificationCode;
                 await _unitOfWork.CompleteAsync();
 
@@ -97,7 +96,7 @@ namespace HealthCare.Services.Services
                     Data = data
                 };
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 return new GeneralResponse<SignUpResponse>
                 {
@@ -106,8 +105,74 @@ namespace HealthCare.Services.Services
                     Error = ex
                 };
             }
-
+      
         }
+
+
+        public async Task<GeneralResponse<VerifyResponse>> VerifyEmail(string email, string verificationCode)
+        {
+            try
+            {
+                var patient = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(s => s.Email == email);
+                if(patient == null)
+                {
+                    return new GeneralResponse<VerifyResponse>
+                    {
+                        IsSuccess = false,
+                        Message = "Wrong Email"
+                    };
+                }
+                if(patient.VerificationCode != verificationCode)
+                {
+                    _unitOfWork.PatientRepository.Remove(patient);
+                    await _unitOfWork.CompleteAsync();
+                    return new GeneralResponse<VerifyResponse>
+                    {
+                        IsSuccess = false,
+                        Message = "Wrong Verification code"
+                    };
+                }
+                patient.IsEmailConfirmed = true;
+                _unitOfWork.PatientRepository.Update(patient);
+
+                var user = _mapper.Map<User>(patient);
+                user.RoleId = 3;
+                var userToken = _mapper.Map<UserTokenDto>(user);
+                var Token = TokenServices.CreateJwtToken(userToken);
+                var refreshToken = CreateRefreshToken();
+                user.RefreshTokens?.Add(refreshToken);
+                await _unitOfWork.UserRepository.AddAsync(user);
+                await _unitOfWork.CompleteAsync();
+
+                var data = _mapper.Map<VerifyResponse>(patient);
+                data.RefreshToken = refreshToken.Token;
+                data.RefreshTokenExpiration = refreshToken.ExpiresOn;
+                data.Token = new JwtSecurityTokenHandler().WriteToken(Token);
+                data.ExpiresOn = Token.ValidTo;
+                var Role = await _unitOfWork.RoleRepository.GetByIdAsync(user.RoleId);
+                data.Role = Role.Name;
+
+
+
+                return new GeneralResponse<VerifyResponse>
+                {
+                    IsSuccess = true,
+                    Message = "Something went wrong",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<VerifyResponse>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+
 
         public async Task<GeneralResponse<RefreshTokenResponse>> RefreshToken(string? RefreshToken)
         {
@@ -148,7 +213,7 @@ namespace HealthCare.Services.Services
 
                 var data = new RefreshTokenResponse
                 {
-                    Token = NewJwtToken,
+                    Token = new JwtSecurityTokenHandler().WriteToken(NewJwtToken),
                     RefreshToken = NewRefreshToken.Token,
                     ExpireOn = NewRefreshToken.ExpiresOn
                 };
@@ -189,6 +254,15 @@ namespace HealthCare.Services.Services
             };
         }
 
-
+        public async Task AddNationalId(int nationalId, string name)
+        {
+            var civilRegestration = new CivilRegestration
+            {
+                Name = name,
+                NationalId = nationalId
+            };
+            await _unitOfWork.CivilRegestrationRepository.AddAsync(civilRegestration);
+            await _unitOfWork.CompleteAsync();
+        }
     }
 }

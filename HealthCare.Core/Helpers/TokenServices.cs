@@ -1,4 +1,4 @@
-﻿using HealthCare.Core.DTOS.AuthModule.RequestDtos;
+﻿ using HealthCare.Core.DTOS.AuthModule.RequestDtos;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -14,15 +14,15 @@ namespace HealthCare.Core.Helpers
     {
         private static readonly string SecretKey = "LPzE9/EeJTNzftqmZ33CEK44BC9z+0XExPkuYo91dE0=";
         private static readonly string Issuer = "SecureApi";
-        public static string CreateJwtToken(UserTokenDto dto)
+        public static JwtSecurityToken CreateJwtToken(UserTokenDto dto)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new List<Claim>() {
-                new Claim("userId",dto.UserId.ToString()),
-                new Claim("NationalId",dto.NationalId.ToString()),
-                new Claim("Email",dto.Email)
+                new Claim("userId", dto.UserId.ToString()),
+                new Claim("NationalId", dto.NationalId.ToString()),
+                new Claim("RoleId", dto.RoleId.ToString())
             };
 
             var token = new JwtSecurityToken(Issuer,
@@ -31,7 +31,7 @@ namespace HealthCare.Core.Helpers
               expires: DateTime.Now.AddMinutes(120),
               signingCredentials: credentials);
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return token;
         }
     }
 }

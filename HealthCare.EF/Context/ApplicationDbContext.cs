@@ -20,7 +20,6 @@ namespace HealthCare.EF.Context
         }
 
         public DbSet<User> Users { get; set; }
-        public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Patient> Patients { get; set; }
         public DbSet<MedicalHistory> MedicalHistories { get; set; }

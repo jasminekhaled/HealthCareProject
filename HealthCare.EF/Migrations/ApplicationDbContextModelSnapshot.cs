@@ -116,6 +116,9 @@ namespace HealthCare.EF.Migrations
                     b.Property<DateTime>("ExpiresOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("RevokedOn")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Token")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -172,32 +175,14 @@ namespace HealthCare.EF.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("HealthCare.Core.Models.AuthModule.UserRole", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
                     b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("RoleId");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserRoles");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.BandModule.Band", b =>
@@ -502,7 +487,7 @@ namespace HealthCare.EF.Migrations
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("HealthCare.Core.Models.AuthModule.UserRole", b =>
+            modelBuilder.Entity("HealthCare.Core.Models.AuthModule.User", b =>
                 {
                     b.HasOne("HealthCare.Core.Models.AuthModule.Role", "Role")
                         .WithMany()
@@ -510,15 +495,7 @@ namespace HealthCare.EF.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HealthCare.Core.Models.AuthModule.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Role");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.BandModule.Band", b =>

@@ -12,7 +12,8 @@ namespace HealthCare.Services.IServices
     public interface IAuthServices
     {
         Task<GeneralResponse<SignUpResponse>> SignUp(SignUpRequestDto dto);
-        Task<GeneralResponse<>> VerifyEmail();
+        Task<GeneralResponse<VerifyResponse>> VerifyEmail(string email ,string verificationCode); 
         Task<GeneralResponse<RefreshTokenResponse>> RefreshToken(string? RefreshToken);
+        Task AddNationalId(int nationalId, string name);
     }
 }

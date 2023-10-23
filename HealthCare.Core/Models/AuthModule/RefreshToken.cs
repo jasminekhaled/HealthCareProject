@@ -14,7 +14,7 @@ namespace HealthCare.Core.Models.AuthModule
         public bool IsExpired => DateTime.UtcNow >= ExpiresOn;
         public DateTime CreatedOn { get; set; }
         public DateTime? RevokedOn { get; set; }
-        public bool IsActive => !IsExpired;
+        public bool IsActive => RevokedOn == null && !IsExpired;
 
 
     }

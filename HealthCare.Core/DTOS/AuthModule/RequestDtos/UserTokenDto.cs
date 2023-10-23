@@ -10,5 +10,6 @@ namespace HealthCare.Core.DTOS.AuthModule.RequestDtos
     {
         public int UserId { get; set; }
         public int NationalId { get; set; }
+        public int RoleId { get; set; }
     }
 }

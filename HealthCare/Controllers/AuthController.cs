@@ -1,4 +1,5 @@
-﻿using HealthCare.Services.IServices;
+﻿using HealthCare.Core.DTOS.AuthModule.RequestDtos;
+using HealthCare.Services.IServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,6 +17,47 @@ namespace HealthCare.Controllers
         }
 
 
+        [HttpPost("SignUp")]
+        public async Task<IActionResult> SignUp(SignUpRequestDto dto)
+        {
+            var result = await _authServices.SignUp(dto);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpPost("VerifyEmail")]
+        public async Task<IActionResult> VerifyEmail(string email, string verificationCode)
+        {
+            var result = await _authServices.VerifyEmail(email, verificationCode);
+            if (result.Data != null)
+            {
+                var CookieOptions = new CookieOptions()
+                {
+                    HttpOnly = true,
+                    Expires = result.Data.ExpiresOn
+                };
+                Response.Cookies.Append("refreshToken", result.Data.RefreshToken, CookieOptions);
+            }
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+
+        [HttpPost("AddNationalId")]
+        public async Task<IActionResult> AddNationalId(int nationalId, string name)
+        {
+            await _authServices.AddNationalId(nationalId, name);
+                return Ok();
+
+        }
+
+
+
+
+
+
         [HttpPost("RefreshToken")]
         public async Task<IActionResult> RefreshToken()
         {
@@ -31,6 +73,7 @@ namespace HealthCare.Controllers
             return Ok(result);
 
         }
+
 
 
 

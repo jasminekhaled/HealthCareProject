@@ -22,7 +22,8 @@ namespace HealthCare.Core.Models.AuthModule
         [MaxLength(length: 100)]
         public string PassWord { get; set; }
         public List<RefreshToken>? RefreshTokens { get; set; }
-        public List<UserRole> userRoles { get; set; }
+        public int RoleId { get; set; }
+        public Role Role { get; set; }
 
     }
 }

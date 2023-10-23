@@ -9,7 +9,6 @@ namespace HealthCare.Core.IRepositories
     public interface IUnitOfWork : IDisposable
     {
         public IUserRepository UserRepository { get; }
-        public IUserRoleRepository UserRoleRepository { get; }
         public IRoleRepository RoleRepository { get; }
         public IPatientRepository PatientRepository { get; }
         public IMedicalHistoryRepository MedicalHistoryRepository { get; }
