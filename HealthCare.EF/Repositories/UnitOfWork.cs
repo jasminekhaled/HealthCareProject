@@ -11,7 +11,6 @@ namespace HealthCare.EF.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
-        public IUserRoleRepository UserRoleRepository { get; set; }
 
         public IUserRepository UserRepository { get; set; }
 
@@ -37,7 +36,6 @@ namespace HealthCare.EF.Repositories
             _context = context;
             RoleRepository = new RoleRepository(context);
             UserRepository = new UserRepository(context);
-            UserRoleRepository = new UserRoleRepository(context);
             PatientRepository = new PatientRepository(context);
             DoctorRepository = new DoctorRepository(context);
             HospitalRepository = new HospitalRepository(context);

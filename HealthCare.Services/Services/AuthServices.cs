@@ -75,7 +75,6 @@ namespace HealthCare.Services.Services
                 var patient = _mapper.Map<Patient>(dto);
                 //var user = _mapper.Map<User>(dto);
                 patient.PassWord = HashingService.GetHash(dto.PassWord);
-                //user.PassWord = patient.PassWord;
                 var verificationCode = MailServices.RandomString(6);
                 if (!(await MailServices.SendEmailAsync(dto.Email, "Verification Code", verificationCode)))
                 {
