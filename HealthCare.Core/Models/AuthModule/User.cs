@@ -10,7 +10,7 @@ namespace HealthCare.Core.Models.AuthModule
     public class User
     {
         public int Id { get; set; }
-        public int NationalId { get; set; }
+        public string NationalId { get; set; }
         [EmailAddress]
         public string Email { get; set; }
 
@@ -25,5 +25,5 @@ namespace HealthCare.Core.Models.AuthModule
         public int RoleId { get; set; }
         public Role Role { get; set; }
 
-    }
+}
 }

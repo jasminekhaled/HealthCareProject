@@ -14,6 +14,6 @@ namespace HealthCare.Services.IServices
         Task<GeneralResponse<SignUpResponse>> SignUp(SignUpRequestDto dto);
         Task<GeneralResponse<VerifyResponse>> VerifyEmail(string email ,string verificationCode); 
         Task<GeneralResponse<RefreshTokenResponse>> RefreshToken(string? RefreshToken);
-        Task AddNationalId(int nationalId, string name);
+        Task AddNationalId(string nationalId, string name);
     }
 }

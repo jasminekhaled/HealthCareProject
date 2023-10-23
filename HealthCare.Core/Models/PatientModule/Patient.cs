@@ -10,7 +10,7 @@ namespace HealthCare.Core.Models.PatientModule
     public class Patient 
     {
         public int Id { get; set; }
-        public int NationalId { get; set; }
+        public string NationalId { get; set; }
         [EmailAddress]
         public string Email { get; set; }
 

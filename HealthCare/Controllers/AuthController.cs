@@ -46,7 +46,7 @@ namespace HealthCare.Controllers
 
 
         [HttpPost("AddNationalId")]
-        public async Task<IActionResult> AddNationalId(int nationalId, string name)
+        public async Task<IActionResult> AddNationalId(string nationalId, string name)
         {
             await _authServices.AddNationalId(nationalId, name);
                 return Ok();

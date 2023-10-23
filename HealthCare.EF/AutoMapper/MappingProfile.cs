@@ -19,7 +19,9 @@ namespace HealthCare.EF.AutoMapper
             CreateMap<User ,UserTokenDto>();
             CreateMap<SignUpRequestDto, Patient>()
                 .ForMember(src => src.PassWord, opt => opt.Ignore());
-            CreateMap<Patient, User>();
+            CreateMap<Patient, SignUpResponse>();
+            CreateMap<Patient, User>()
+                .ForMember(src => src.Id, opt => opt.Ignore());
             CreateMap<Patient, VerifyResponse>();
                 
         }

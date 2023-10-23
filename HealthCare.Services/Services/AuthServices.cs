@@ -75,7 +75,7 @@ namespace HealthCare.Services.Services
                 var patient = _mapper.Map<Patient>(dto);
                 patient.PassWord = HashingService.GetHash(dto.PassWord);
                 var verificationCode = MailServices.RandomString(6);
-                if (!(await MailServices.SendEmailAsync(dto.Email, "Verification Code", verificationCode)))
+                if (!await MailServices.SendEmailAsync(dto.Email, "Verification Code", verificationCode))
                 {
                     return new GeneralResponse<SignUpResponse>()
                     {
@@ -85,14 +85,14 @@ namespace HealthCare.Services.Services
                 }
                     
                 patient.VerificationCode = verificationCode;
-                await _unitOfWork.CompleteAsync();
-
                 var data = _mapper.Map<SignUpResponse>(patient);
+                await _unitOfWork.PatientRepository.AddAsync(patient);
+                await _unitOfWork.CompleteAsync();
 
                 return new GeneralResponse<SignUpResponse>
                 {
                     IsSuccess = true,
-                    Message = "Something went wrong",
+                    Message = "Verification Code is send sucessfully",
                     Data = data
                 };
             }
@@ -133,7 +133,7 @@ namespace HealthCare.Services.Services
                     };
                 }
                 patient.IsEmailConfirmed = true;
-                _unitOfWork.PatientRepository.Update(patient);
+                
 
                 var user = _mapper.Map<User>(patient);
                 user.RoleId = 3;
@@ -141,8 +141,6 @@ namespace HealthCare.Services.Services
                 var Token = TokenServices.CreateJwtToken(userToken);
                 var refreshToken = CreateRefreshToken();
                 user.RefreshTokens?.Add(refreshToken);
-                await _unitOfWork.UserRepository.AddAsync(user);
-                await _unitOfWork.CompleteAsync();
 
                 var data = _mapper.Map<VerifyResponse>(patient);
                 data.RefreshToken = refreshToken.Token;
@@ -152,12 +150,15 @@ namespace HealthCare.Services.Services
                 var Role = await _unitOfWork.RoleRepository.GetByIdAsync(user.RoleId);
                 data.Role = Role.Name;
 
-
+                _unitOfWork.PatientRepository.Update(patient);
+                await _unitOfWork.UserRepository.AddAsync(user);
+                
+                await _unitOfWork.CompleteAsync();
 
                 return new GeneralResponse<VerifyResponse>
                 {
                     IsSuccess = true,
-                    Message = "Something went wrong",
+                    Message = "email verified sucessfully.",
                     Data = data
                 };
             }
@@ -254,7 +255,7 @@ namespace HealthCare.Services.Services
             };
         }
 
-        public async Task AddNationalId(int nationalId, string name)
+        public async Task AddNationalId(string nationalId, string name)
         {
             var civilRegestration = new CivilRegestration
             {

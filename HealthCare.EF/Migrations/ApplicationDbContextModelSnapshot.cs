@@ -94,8 +94,9 @@ namespace HealthCare.EF.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("NationalId")
-                        .HasColumnType("int");
+                    b.Property<string>("NationalId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -167,8 +168,9 @@ namespace HealthCare.EF.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("NationalId")
-                        .HasColumnType("int");
+                    b.Property<string>("NationalId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PassWord")
                         .IsRequired()
@@ -308,8 +310,9 @@ namespace HealthCare.EF.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("NationalId")
-                        .HasColumnType("int");
+                    b.Property<string>("NationalId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PassWord")
                         .IsRequired()
@@ -421,8 +424,9 @@ namespace HealthCare.EF.Migrations
                     b.Property<bool>("IsEmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<int>("NationalId")
-                        .HasColumnType("int");
+                    b.Property<string>("NationalId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PassWord")
                         .IsRequired()
@@ -490,7 +494,7 @@ namespace HealthCare.EF.Migrations
             modelBuilder.Entity("HealthCare.Core.Models.AuthModule.User", b =>
                 {
                     b.HasOne("HealthCare.Core.Models.AuthModule.Role", "Role")
-                        .WithMany()
+                        .WithMany("Users")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -583,6 +587,11 @@ namespace HealthCare.EF.Migrations
                         .IsRequired();
 
                     b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.AuthModule.Role", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.AuthModule.User", b =>

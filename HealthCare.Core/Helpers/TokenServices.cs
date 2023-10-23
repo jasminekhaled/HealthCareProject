@@ -21,7 +21,7 @@ namespace HealthCare.Core.Helpers
 
             var claims = new List<Claim>() {
                 new Claim("userId", dto.UserId.ToString()),
-                new Claim("NationalId", dto.NationalId.ToString()),
+                new Claim("NationalId", dto.NationalId),
                 new Claim("RoleId", dto.RoleId.ToString())
             };
 

@@ -9,7 +9,7 @@ namespace HealthCare.Core.DTOS.AuthModule.RequestDtos
 {
     public class SignUpRequestDto
     {
-        public int NationalId { get; set; }
+        public string NationalId { get; set; }
         [EmailAddress]
         public string Email { get; set; }
 

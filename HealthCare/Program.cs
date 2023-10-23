@@ -45,11 +45,12 @@ builder.Services.AddAuthentication(options =>
                     };
                 });
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo()
     {
-        Title = "HealthCare",
+        Title = "JwtTest",
         Version = "v1"
     });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
