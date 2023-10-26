@@ -21,6 +21,7 @@ namespace HealthCare.EF.Context
 
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<Patient> Patients { get; set; }
         public DbSet<MedicalHistory> MedicalHistories { get; set; }
         public DbSet<Hospital> Hospitals { get; set; }
@@ -35,13 +36,15 @@ namespace HealthCare.EF.Context
         public DbSet<CivilRegestration> CivilRegestrations { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
 
-        /*protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Appointment>()
-                .HasOne(a => a.Doctor)
-                .WithMany()
-                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<RefreshToken>()
+                .HasOne(a => a.User)
+                .WithMany(r => r.RefreshTokens)
+                .HasForeignKey(b => b.userId);
 
-        }*/
+
+
+        }
     }
 }

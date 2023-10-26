@@ -10,7 +10,7 @@ namespace HealthCare.Core.Models.AuthModule
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public List<User> Users { get; set; }
+        public List<UserRole> UserRole { get; set; }
 
     }
 }

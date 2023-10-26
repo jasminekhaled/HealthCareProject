@@ -10,6 +10,7 @@ namespace HealthCare.Core.Models.AuthModule
     public class User
     {
         public int Id { get; set; }
+        public int TableId { get; set; }
         public string NationalId { get; set; }
         [EmailAddress]
         public string Email { get; set; }
@@ -21,9 +22,9 @@ namespace HealthCare.Core.Models.AuthModule
         [MinLength(length: 15)]
         [MaxLength(length: 100)]
         public string PassWord { get; set; }
-        public List<RefreshToken>? RefreshTokens { get; set; }
+        public List<RefreshToken> RefreshTokens { get; set; }
         public int RoleId { get; set; }
-        public Role Role { get; set; }
+        public UserRole UserRole { get; set; }
 
-}
+    }
 }

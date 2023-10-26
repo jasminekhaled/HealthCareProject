@@ -117,19 +117,19 @@ namespace HealthCare.EF.Migrations
                     b.Property<DateTime>("ExpiresOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("RevokedOn")
-                        .HasColumnType("datetime2");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Token")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("userId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("userId");
 
                     b.ToTable("RefreshTokens");
                 });
@@ -180,11 +180,36 @@ namespace HealthCare.EF.Migrations
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
 
+                    b.Property<int>("TableId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.AuthModule.UserRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Users");
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("UserRoles");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.BandModule.Band", b =>
@@ -486,20 +511,32 @@ namespace HealthCare.EF.Migrations
 
             modelBuilder.Entity("HealthCare.Core.Models.AuthModule.RefreshToken", b =>
                 {
-                    b.HasOne("HealthCare.Core.Models.AuthModule.User", null)
+                    b.HasOne("HealthCare.Core.Models.AuthModule.User", "User")
                         .WithMany("RefreshTokens")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("userId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("HealthCare.Core.Models.AuthModule.User", b =>
+            modelBuilder.Entity("HealthCare.Core.Models.AuthModule.UserRole", b =>
                 {
                     b.HasOne("HealthCare.Core.Models.AuthModule.Role", "Role")
-                        .WithMany("Users")
+                        .WithMany("UserRole")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("HealthCare.Core.Models.AuthModule.User", "User")
+                        .WithOne("UserRole")
+                        .HasForeignKey("HealthCare.Core.Models.AuthModule.UserRole", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Role");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.BandModule.Band", b =>
@@ -591,12 +628,15 @@ namespace HealthCare.EF.Migrations
 
             modelBuilder.Entity("HealthCare.Core.Models.AuthModule.Role", b =>
                 {
-                    b.Navigation("Users");
+                    b.Navigation("UserRole");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.AuthModule.User", b =>
                 {
                     b.Navigation("RefreshTokens");
+
+                    b.Navigation("UserRole")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.ClinicLab", b =>

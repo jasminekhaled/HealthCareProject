@@ -15,6 +15,7 @@ namespace HealthCare.EF.Repositories
         public IUserRepository UserRepository { get; set; }
 
         public IRoleRepository RoleRepository { get; set; }
+        public IUserRoleRepository UserRoleRepository { get; set; }
 
         public IPatientRepository PatientRepository { get; set; }
 
@@ -36,6 +37,7 @@ namespace HealthCare.EF.Repositories
             _context = context;
             RoleRepository = new RoleRepository(context);
             UserRepository = new UserRepository(context);
+            UserRoleRepository = new UserRoleRepository(context);
             PatientRepository = new PatientRepository(context);
             DoctorRepository = new DoctorRepository(context);
             HospitalRepository = new HospitalRepository(context);

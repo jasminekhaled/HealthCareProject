@@ -44,6 +44,17 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
+        [HttpPost("LoginAsPatient")]
+        public async Task<IActionResult> LoginAsPatient(LoginAsPatientRequest dto)
+        {
+            var result = await _authServices.LoginAsPatient(dto);
+            if (!result.IsSuccess)
+                return BadRequest(result);
+            SetRefreshTokenInCookie(result.Data.RefreshToken, result.Data.RefreshTokenExpiration);
+            return Ok(result);
+        }
+
+
 
         [HttpPost("AddNationalId")]
         public async Task<IActionResult> AddNationalId(string nationalId, string name)
@@ -52,10 +63,6 @@ namespace HealthCare.Controllers
                 return Ok();
 
         }
-
-
-
-
 
 
         [HttpPost("RefreshToken")]
@@ -73,45 +80,6 @@ namespace HealthCare.Controllers
             return Ok(result);
 
         }
-
-
-
-
-        /*[HttpPost("Register")]
-        public async Task<IActionResult> Register(RegisterDto dto)
-        {
-            var result = await _authServices.Register(dto);
-            if (result.Data != null)
-            {
-                var CookieOptions = new CookieOptions()
-                {
-                    HttpOnly = true,
-                    Expires = result.Data.ExpiresOn
-                };
-                Response.Cookies.Append("refreshToken", result.Data.RefreshToken, CookieOptions);
-            }
-            if (result.IsSuccess)
-                return Ok(result);
-            return BadRequest(result);
-        }
-
-
-        [HttpPost("GetToken")]
-        public async Task<IActionResult> GetTokenAsync(TokenRequest dto)
-        {
-            var result = await _authServices.GetTokenAsync(dto);
-
-            if (!result.IsSuccess)
-                return BadRequest(result);
-
-            if (!string.IsNullOrEmpty(result.Data.RefreshToken))
-                SetRefreshTokenInCookie(result.Data.RefreshToken, result.Data.RefreshTokenExpiration);
-
-            return Ok(result);
-
-        }*/
-
-
 
         private void SetRefreshTokenInCookie(string RefreshToken, DateTime expires)
         {
