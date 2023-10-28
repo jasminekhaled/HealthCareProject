@@ -17,11 +17,12 @@ namespace HealthCare.Core.Models.AuthModule
 
         [MinLength(length: 10)]
         [MaxLength(length: 100)]
-        public string FullName { get; set; }
+        public string UserName { get; set; }
 
         [MinLength(length: 15)]
         [MaxLength(length: 100)]
         public string PassWord { get; set; }
+        public string? VerificationCode { get; set; }
         public List<RefreshToken> RefreshTokens { get; set; }
         public int RoleId { get; set; }
         public UserRole UserRole { get; set; }

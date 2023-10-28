@@ -44,16 +44,42 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("LoginAsPatient")]
-        public async Task<IActionResult> LoginAsPatient(LoginAsPatientRequest dto)
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login(LoginRequest dto)
         {
-            var result = await _authServices.LoginAsPatient(dto);
+            var result = await _authServices.Login(dto);
             if (!result.IsSuccess)
                 return BadRequest(result);
             SetRefreshTokenInCookie(result.Data.RefreshToken, result.Data.RefreshTokenExpiration);
             return Ok(result);
         }
+        
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequestDto dto)
+        {
+            var result = await _authServices.ResetPassword(dto);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
 
+        [HttpPost("ForgetPassword")]
+        public async Task<IActionResult> ForgetPassword(ForgetPasswordRequestDto dto)
+        {
+            var result = await _authServices.ForgetPassword(dto);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpPost("ChangeForgettedPassword")]
+        public async Task<IActionResult> ChangeForgettedPassword(ChangeForgettedPasswordDto dto)
+        {
+            var result = await _authServices.ChangeForgettedPassword(dto);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
 
 
         [HttpPost("AddNationalId")]

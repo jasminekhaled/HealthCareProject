@@ -39,7 +39,6 @@ namespace HealthCare.Services.Services
         {
             try
             {
-               // var patient = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(s => s.NationalId == dto.NationalId && s.IsEmailConfirmed);
                 if (!await _unitOfWork.CivilRegestrationRepository.AnyAsync(check: c => c.NationalId == dto.NationalId))
                 {
                     return new GeneralResponse<SignUpResponse>
@@ -76,6 +75,15 @@ namespace HealthCare.Services.Services
                     var UnConfirmedPatient = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(s => s.Email == dto.Email);
                     _unitOfWork.PatientRepository.Remove(UnConfirmedPatient);
                     await _unitOfWork.CompleteAsync();
+                }
+
+                if(await _unitOfWork.UserRepository.AnyAsync(a => a.UserName == dto.UserName))
+                {
+                    return new GeneralResponse<SignUpResponse>
+                    {
+                        IsSuccess = false,
+                        Message = "UserName is already Exist! Please write another UserName.",
+                    };
                 }
 
                 var phoneNumber = Convert.ToInt32(dto.PhoneNumber); 
@@ -135,7 +143,7 @@ namespace HealthCare.Services.Services
                     return new GeneralResponse<VerifyResponse>
                     {
                         IsSuccess = false,
-                        Message = "Wrong Email"
+                        Message = "No Patient Found with this Email"
                     };
                 }
                 if(patient.VerificationCode != verificationCode)
@@ -179,9 +187,6 @@ namespace HealthCare.Services.Services
                 };
                 await _unitOfWork.RefreshTokenRepository.AddAsync(newRefreshToken);
                 await _unitOfWork.CompleteAsync();
-                //user.RefreshTokens.Add(newRefreshToken);
-                //_unitOfWork.UserRepository.Update(user);
-
 
                 var data = _mapper.Map<VerifyResponse>(patient);
                 data.RefreshToken = refreshToken.Token;
@@ -206,6 +211,207 @@ namespace HealthCare.Services.Services
                 {
                     IsSuccess = false,
                     Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+        public async Task<GeneralResponse<LogInResponse>> Login(LoginRequest dto)
+        {
+            try
+            {
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(s => s.UserName == dto.UserName);
+
+                var HashedPassword = HashingService.GetHash(dto.PassWord);
+                if (user == null || user.Email != dto.Email || user.PassWord != HashedPassword)
+                {
+                    return new GeneralResponse<LogInResponse>()
+                    {
+                        IsSuccess = false,
+                        Message = "User isnot found!.",
+                    };
+                }
+                
+                var data = _mapper.Map<LogInResponse>(user);
+                var userToken = _mapper.Map<UserTokenDto>(user);
+                var Token = TokenServices.CreateJwtToken(userToken);
+                data.Token = new JwtSecurityTokenHandler().WriteToken(Token);
+                data.ExpiresOn = Token.ValidTo;
+                var Role = await _unitOfWork.RoleRepository.GetByIdAsync(user.RoleId);
+                data.Role = Role.Name;
+
+                var userTokens = await _unitOfWork.RefreshTokenRepository.GetFirstItem(w => w.userId == user.Id && w.IsActive);
+                if(userTokens != null)
+                {
+                    data.RefreshToken = userTokens.Token;
+                    data.RefreshTokenExpiration = userTokens.ExpiresOn;
+                }
+                else
+                {
+                    var refreshToken = CreateRefreshToken();
+
+                    var newRefreshToken = new RefreshToken
+                    {
+                        Token = refreshToken.Token,
+                        ExpiresOn = refreshToken.ExpiresOn,
+                        CreatedOn = refreshToken.CreatedOn,
+                        IsActive = true,
+                        userId = user.Id
+                    };
+                    await _unitOfWork.RefreshTokenRepository.AddAsync(newRefreshToken);
+                    await _unitOfWork.CompleteAsync();
+                    data.RefreshToken = newRefreshToken.Token;
+                    data.RefreshTokenExpiration = newRefreshToken.ExpiresOn;
+                }
+
+
+                return new GeneralResponse<LogInResponse>()
+                {
+                    IsSuccess = true,
+                    Message = "LoggedIn Successfully.",
+                    Data = data
+                };
+
+
+            }
+            catch(Exception ex)
+            {
+                return new GeneralResponse<LogInResponse>()
+                {
+                    IsSuccess = false,
+                    Message = "Something Went Wrong.",
+                    Error = ex
+                };
+            }
+        }
+
+
+        
+
+        public async Task<GeneralResponse<string>> ResetPassword(ResetPasswordRequestDto dto)
+        {
+            try
+            {
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(s => s.UserName == dto.UserName);
+                if(user == null || user.Email != dto.Email || user.PassWord != HashingService.GetHash(dto.PassWord))
+                {
+                    return new GeneralResponse<string>()
+                    {
+                        IsSuccess = false,
+                        Message = "Wrong Email Or Password or UserName."
+                    };
+                }
+                if(dto.NewPassWord != dto.ConfirmNewPassWord)
+                {
+                    return new GeneralResponse<string>()
+                    {
+                        IsSuccess = false,
+                        Message = "Your Confirmation Password is different than your NewPassword."
+                    };
+                }
+                var HashNewPassword = HashingService.GetHash(dto.NewPassWord);
+                user.PassWord = HashNewPassword;
+                _unitOfWork.UserRepository.Update(user);
+                await _unitOfWork.CompleteAsync();
+                
+
+                return new GeneralResponse<string>()
+                {
+                    IsSuccess = true,
+                    Message = "Password changed Successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<string>()
+                {
+                    IsSuccess = false,
+                    Message = "Something Went Wrong.",
+                    Error = ex
+                };
+            }
+
+        }
+
+
+        public async Task<GeneralResponse<string>> ForgetPassword(ForgetPasswordRequestDto dto)
+        {
+            try
+            {
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(s => s.UserName == dto.UserName);
+                if (user == null || user.Email != dto.Email)
+                {
+                    return new GeneralResponse<string>()
+                    {
+                        IsSuccess = false,
+                        Message = "Wrong Email or UserName."
+                    };
+                }
+
+                var verificationCode = MailServices.RandomString(6);
+                if (!await MailServices.SendEmailAsync(dto.Email, "Verification Code", verificationCode))
+                {
+                    return new GeneralResponse<string>()
+                    {
+                        IsSuccess = false,
+                        Message = "Sending the Verification Code is Failed"
+                    };
+                }
+                user.VerificationCode = verificationCode;
+                _unitOfWork.UserRepository.Update(user);
+                await _unitOfWork.CompleteAsync();
+
+                return new GeneralResponse<string>()
+                {
+                    IsSuccess = true,
+                    Message = "Verification code send Successfully."
+                };
+
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<string>()
+                {
+                    IsSuccess = false,
+                    Message = "Something Went Wrong.",
+                    Error = ex
+                };
+            }
+        }
+
+
+        public async Task<GeneralResponse<string>> ChangeForgettedPassword(ChangeForgettedPasswordDto dto)
+        {
+            try
+            {
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(s => s.UserName == dto.UserName);
+                if (user == null || user.VerificationCode != dto.VerificationCode)
+                {
+                    return new GeneralResponse<string>()
+                    {
+                        IsSuccess = false,
+                        Message = "Wrong UserName or verificationCode."
+                    };
+                }
+                var HashedPassword = HashingService.GetHash(dto.PassWord);
+                user.PassWord = HashedPassword;
+                _unitOfWork.UserRepository.Update(user);
+                await _unitOfWork.CompleteAsync();
+
+
+                return new GeneralResponse<string>()
+                {
+                    IsSuccess = true,
+                    Message = "Password Changed Successfully."
+                };
+
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<string>()
+                {
+                    IsSuccess = false,
+                    Message = "Something Went Wrong.",
                     Error = ex
                 };
             }
@@ -252,8 +458,6 @@ namespace HealthCare.Services.Services
                     userId = user.Id
                 };
                 await _unitOfWork.RefreshTokenRepository.AddAsync(refreshToken);
-               // user.RefreshTokens.Add(refreshToken);
-                //_unitOfWork.UserRepository.Update(user);
                 await _unitOfWork.CompleteAsync();
 
                 var userToken= _mapper.Map<UserTokenDto>(user);
@@ -314,83 +518,6 @@ namespace HealthCare.Services.Services
             await _unitOfWork.CompleteAsync();
         }
 
-        public async Task<GeneralResponse<VerifyResponse>> LoginAsPatient(LoginAsPatientRequest dto)
-        {
-            try
-            {
-                var patient = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(s => s.Email == dto.Email);
-
-                var HashedPassword = HashingService.GetHash(dto.PassWord);
-                if (patient == null || patient.PassWord != HashedPassword )
-                {
-                    return new GeneralResponse<VerifyResponse>()
-                    {
-                        IsSuccess = false,
-                        Message = "User isnot found!.",
-                    };
-                }
-                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(s => s.TableId == patient.Id && s.RoleId == 3);
-                if(user == null)
-                {
-                    _unitOfWork.PatientRepository.Remove(patient);
-                    await _unitOfWork.CompleteAsync();
-
-                    return new GeneralResponse<VerifyResponse>()
-                    {
-                        IsSuccess = false,
-                        Message = "User isnot found!.",
-                    };
-                }
-                var data = _mapper.Map<VerifyResponse>(patient);
-                var userToken = _mapper.Map<UserTokenDto>(user);
-                var Token = TokenServices.CreateJwtToken(userToken);
-                data.Token = new JwtSecurityTokenHandler().WriteToken(Token);
-                data.ExpiresOn = Token.ValidTo;
-                data.Role = "Patient";
-
-                var userTokens = await _unitOfWork.RefreshTokenRepository.GetFirstItem(w => w.userId == user.Id && w.IsActive);
-                if(userTokens != null)
-                {
-                    data.RefreshToken = userTokens.Token;
-                    data.RefreshTokenExpiration = userTokens.ExpiresOn;
-                }
-                else
-                {
-                    var refreshToken = CreateRefreshToken();
-
-                    var newRefreshToken = new RefreshToken
-                    {
-                        Token = refreshToken.Token,
-                        ExpiresOn = refreshToken.ExpiresOn,
-                        CreatedOn = refreshToken.CreatedOn,
-                        IsActive = true,
-                        userId = user.Id
-                    };
-                    await _unitOfWork.RefreshTokenRepository.AddAsync(newRefreshToken);
-                    await _unitOfWork.CompleteAsync();
-                    data.RefreshToken = newRefreshToken.Token;
-                    data.RefreshTokenExpiration = newRefreshToken.ExpiresOn;
-                }
-
-
-                return new GeneralResponse<VerifyResponse>()
-                {
-                    IsSuccess = true,
-                    Message = "LoggedIn Successfully.",
-                    Data = data
-                };
-
-
-            }
-            catch(Exception ex)
-            {
-                return new GeneralResponse<VerifyResponse>()
-                {
-                    IsSuccess = false,
-                    Message = "Something Went Wrong.",
-                    Error = ex
-                };
-            }
-        }
+        
     }
 }

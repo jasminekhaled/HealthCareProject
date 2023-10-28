@@ -18,7 +18,7 @@ namespace HealthCare.Core.DTOS.AuthModule.ResponseDtos
 
         [MinLength(length: 10)]
         [MaxLength(length: 100)]
-        public string FullName { get; set; }
+        public string UserName { get; set; }
 
         [MinLength(length: 15)]
         [MaxLength(length: 100)]
