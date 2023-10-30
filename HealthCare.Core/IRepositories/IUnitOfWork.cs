@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HealthCare.Core.IRepositories.AppointmentModule;
+using HealthCare.Core.IRepositories.AuthModule;
+using HealthCare.Core.IRepositories.BandModule;
+using HealthCare.Core.IRepositories.HospitalModule;
+using HealthCare.Core.IRepositories.PatientModule;
 
 namespace HealthCare.Core.IRepositories
 {

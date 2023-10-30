@@ -19,6 +19,7 @@ using HealthCare.Core.Helpers;
 using Microsoft.Extensions.Options;
 using HealthCare.Core.DTOS.AuthModule.RequestDtos;
 using HealthCare.Core.Models.PatientModule;
+using HealthCare.Core.DTOS.PatientModule.ResponseDto;
 
 namespace HealthCare.Services.Services
 {
@@ -86,16 +87,27 @@ namespace HealthCare.Services.Services
                     };
                 }
 
-                var phoneNumber = Convert.ToInt32(dto.PhoneNumber); 
-                if (dto.PhoneNumber.Length != 11 && phoneNumber < 0)
+                foreach (var n in dto.PhoneNumber)
+                {
+                    if (!char.IsDigit(n))
+                    {
+                        return new GeneralResponse<SignUpResponse>
+                        {
+                            IsSuccess = false,
+                            Message = "Wrong Phone Number"
+                        };
+                    }
+                }
+                var phoneNumber = Convert.ToInt32(dto.PhoneNumber);
+                if (dto.PhoneNumber.Length != 11 || phoneNumber < 0)
                 {
                     return new GeneralResponse<SignUpResponse>
                     {
                         IsSuccess = false,
-                        Message = "Wrong Phone Number.",
+                        Message = "Wrong Phone Number"
                     };
                 }
-                
+
                 var patient = _mapper.Map<Patient>(dto);
                 patient.PassWord = HashingService.GetHash(dto.PassWord);
                 var verificationCode = MailServices.RandomString(6);

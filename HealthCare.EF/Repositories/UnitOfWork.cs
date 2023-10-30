@@ -1,5 +1,15 @@
 ﻿using HealthCare.Core.IRepositories;
+using HealthCare.Core.IRepositories.AppointmentModule;
+using HealthCare.Core.IRepositories.AuthModule;
+using HealthCare.Core.IRepositories.BandModule;
+using HealthCare.Core.IRepositories.HospitalModule;
+using HealthCare.Core.IRepositories.PatientModule;
 using HealthCare.EF.Context;
+using HealthCare.EF.Repositories.AppointmentRepositories;
+using HealthCare.EF.Repositories.AuthRepositories;
+using HealthCare.EF.Repositories.BandRepostiories;
+using HealthCare.EF.Repositories.HospitalRepositories;
+using HealthCare.EF.Repositories.PatientRepositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
