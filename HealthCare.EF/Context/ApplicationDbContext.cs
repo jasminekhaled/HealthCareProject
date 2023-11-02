@@ -25,6 +25,9 @@ namespace HealthCare.EF.Context
         public DbSet<Patient> Patients { get; set; }
         public DbSet<MedicalHistory> MedicalHistories { get; set; }
         public DbSet<Hospital> Hospitals { get; set; }
+        public DbSet<HospitalAdmin> HospitalAdmins { get; set; }
+        public DbSet<HospitalClinicLab> HospitalClinicLabs { get; set; }
+        public DbSet<AdminOfHospital> AdminOfHospitals { get; set; }
         public DbSet<Doctor> Doctors { get; set; }
         public DbSet<HospitalDoctor> HospitalDoctors { get; set; }
         public DbSet<ClinicLab> ClinicLabs { get; set; }
