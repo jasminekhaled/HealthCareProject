@@ -9,7 +9,9 @@ namespace HealthCare.Core.DTOS.AuthModule.RequestDtos
     public class UserTokenDto
     {
         public int UserId { get; set; }
+        public string userName { get; set; }
         public string NationalId { get; set; }
-        public int RoleId { get; set; }
+
+        public string Role { get; set; }
     }
 }

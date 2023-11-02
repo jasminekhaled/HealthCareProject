@@ -2,6 +2,7 @@
 using HealthCare.Core.DTOS.PatientModule.RequestDto;
 using HealthCare.Services.IServices;
 using HealthCare.Services.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +17,8 @@ namespace HealthCare.Controllers
         {
             _patientServices = patientServices;
         }
-
+        
+        [Authorize(Roles = "SuperAdmin")] 
         [HttpGet("ListOfPatients")]
         public async Task<IActionResult> ListOfPatients()
         {
@@ -26,7 +28,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-
+        [Authorize(Roles = "SuperAdmin")]
         [HttpGet("GetPatientByUserName")]
         public async Task<IActionResult> GetPatientByUserName(string userName)
         {
@@ -36,7 +38,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-
+        [Authorize(Roles = "SuperAdmin")]
         [HttpGet("GetPatientByNationalId")]
         public async Task<IActionResult> GetPatientByNationalId(string nationalId)
         {
@@ -46,7 +48,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-
+        [Authorize(Roles = "SuperAdmin")]
         [HttpDelete("DeletePatient")]
         public async Task<IActionResult> DeletePatient(int patientId)
         {
@@ -56,7 +58,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-
+        [Authorize(Roles = "Patient, SuperAdmin")]
         [HttpGet("PatientDetails")]
         public async Task<IActionResult> PatientDetails(int patientId)
         {
@@ -66,7 +68,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-
+        [Authorize(Roles = "Patient")]
         [HttpPut("EditPatient")]
         public async Task<IActionResult> EditPatient(int PatientId, [FromForm]EditPatientDto dto)
         {

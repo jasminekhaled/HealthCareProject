@@ -212,28 +212,13 @@ namespace HealthCare.Services.Services
                 }
 
                 
-                if (dto.PhoneNumber != null)
+                if (dto.PhoneNumber != null && !dto.PhoneNumber.All(char.IsDigit))
                 {
-                    foreach (var n in dto.PhoneNumber)
-                    {
-                        if(!char.IsDigit(n))
-                        {
-                            return new GeneralResponse<PatientDto>
-                            {
-                                IsSuccess = false,
-                                Message = "Wrong Phone Number"
-                            };
-                        }
-                    }
-                    var phoneNumber = Convert.ToInt32(dto.PhoneNumber);
-                    if(dto.PhoneNumber.Length != 11 || phoneNumber < 0)
-                    {
                         return new GeneralResponse<PatientDto>
                         {
                             IsSuccess = false,
                             Message = "Wrong Phone Number"
                         };
-                    }
                 }
 
                 var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(s => s.UserName == patient.UserName);

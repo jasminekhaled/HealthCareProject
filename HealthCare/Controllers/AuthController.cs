@@ -1,5 +1,6 @@
 ﻿using HealthCare.Core.DTOS.AuthModule.RequestDtos;
 using HealthCare.Services.IServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -53,6 +54,7 @@ namespace HealthCare.Controllers
             SetRefreshTokenInCookie(result.Data.RefreshToken, result.Data.RefreshTokenExpiration);
             return Ok(result);
         }
+
         
         [HttpPost("ResetPassword")]
         public async Task<IActionResult> ResetPassword(ResetPasswordRequestDto dto)

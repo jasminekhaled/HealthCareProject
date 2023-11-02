@@ -13,6 +13,8 @@ namespace HealthCare.Core.DTOS.PatientModule.RequestDto
         [MinLength(length: 10)]
         [MaxLength(length: 100)]
         public string? UserName { get; set; }
+        [MinLength(length: 11)]
+        [MaxLength(length: 11)]
         public string? PhoneNumber { get; set; }
 
     }

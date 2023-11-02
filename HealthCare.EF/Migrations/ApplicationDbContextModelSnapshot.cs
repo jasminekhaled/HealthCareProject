@@ -117,9 +117,6 @@ namespace HealthCare.EF.Migrations
                     b.Property<DateTime>("ExpiresOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Token")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

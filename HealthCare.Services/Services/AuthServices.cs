@@ -61,7 +61,7 @@ namespace HealthCare.Services.Services
                     return new GeneralResponse<SignUpResponse>
                     {
                         IsSuccess = false,
-                        Message = "User with this national Id is already Exist.",
+                        Message = "User with this email is already Exist.",
                     };
                 }
                 
@@ -87,19 +87,7 @@ namespace HealthCare.Services.Services
                     };
                 }
 
-                foreach (var n in dto.PhoneNumber)
-                {
-                    if (!char.IsDigit(n))
-                    {
-                        return new GeneralResponse<SignUpResponse>
-                        {
-                            IsSuccess = false,
-                            Message = "Wrong Phone Number"
-                        };
-                    }
-                }
-                var phoneNumber = Convert.ToInt32(dto.PhoneNumber);
-                if (dto.PhoneNumber.Length != 11 || phoneNumber < 0)
+                if(!dto.PhoneNumber.All(char.IsDigit))
                 {
                     return new GeneralResponse<SignUpResponse>
                     {
@@ -187,6 +175,7 @@ namespace HealthCare.Services.Services
                 await _unitOfWork.CompleteAsync();
 
                 var userToken = _mapper.Map<UserTokenDto>(user);
+                userToken.Role = "Patient";
                 var Token = TokenServices.CreateJwtToken(userToken);
                 var refreshToken = CreateRefreshToken();
                 var newRefreshToken = new RefreshToken
@@ -194,7 +183,6 @@ namespace HealthCare.Services.Services
                     Token = refreshToken.Token,
                     ExpiresOn = refreshToken.ExpiresOn,
                     CreatedOn = refreshToken.CreatedOn,
-                    IsActive = true,
                     userId = user.Id
                 };
                 await _unitOfWork.RefreshTokenRepository.AddAsync(newRefreshToken);
@@ -246,13 +234,16 @@ namespace HealthCare.Services.Services
                 
                 var data = _mapper.Map<LogInResponse>(user);
                 var userToken = _mapper.Map<UserTokenDto>(user);
+                var userRole = await _unitOfWork.UserRoleRepository.SingleOrDefaultAsync(s => s.UserId == user.Id);
+                var role  = await _unitOfWork.RoleRepository.SingleOrDefaultAsync(s => s.Id == userRole.RoleId);
+                userToken.Role = role.Name;
                 var Token = TokenServices.CreateJwtToken(userToken);
                 data.Token = new JwtSecurityTokenHandler().WriteToken(Token);
                 data.ExpiresOn = Token.ValidTo;
                 var Role = await _unitOfWork.RoleRepository.GetByIdAsync(user.RoleId);
                 data.Role = Role.Name;
 
-                var userTokens = await _unitOfWork.RefreshTokenRepository.GetFirstItem(w => w.userId == user.Id && w.IsActive);
+                var userTokens = await _unitOfWork.RefreshTokenRepository.GetFirstItem(w => w.userId == user.Id && w.ExpiresOn>DateTime.Now);
                 if(userTokens != null)
                 {
                     data.RefreshToken = userTokens.Token;
@@ -267,7 +258,6 @@ namespace HealthCare.Services.Services
                         Token = refreshToken.Token,
                         ExpiresOn = refreshToken.ExpiresOn,
                         CreatedOn = refreshToken.CreatedOn,
-                        IsActive = true,
                         userId = user.Id
                     };
                     await _unitOfWork.RefreshTokenRepository.AddAsync(newRefreshToken);
@@ -447,7 +437,7 @@ namespace HealthCare.Services.Services
                     };
                 }
 
-                var ExistingRefreshToken = user.RefreshTokens.Single(t => t.Token == RefreshToken);
+                var ExistingRefreshToken = await _unitOfWork.RefreshTokenRepository.GetSpecificItem(filter: s => s.userId == user.Id, single: r => r.Token == RefreshToken);
 
                 if (!ExistingRefreshToken.IsActive)
                 {
@@ -458,21 +448,23 @@ namespace HealthCare.Services.Services
                     };
                 }
 
-
-                ExistingRefreshToken.IsActive = false;
+                
                 var NewRefreshToken = CreateRefreshToken();
                 var refreshToken = new RefreshToken
                 {
                     Token = NewRefreshToken.Token,
                     ExpiresOn = NewRefreshToken.ExpiresOn,
                     CreatedOn = NewRefreshToken.CreatedOn,
-                    IsActive = true,
                     userId = user.Id
                 };
+                _unitOfWork.RefreshTokenRepository.Remove(ExistingRefreshToken);
                 await _unitOfWork.RefreshTokenRepository.AddAsync(refreshToken);
                 await _unitOfWork.CompleteAsync();
 
                 var userToken= _mapper.Map<UserTokenDto>(user);
+                var userRole = await _unitOfWork.UserRoleRepository.SingleOrDefaultAsync(s => s.UserId == user.Id);
+                var role = await _unitOfWork.RoleRepository.SingleOrDefaultAsync(s => s.Id == userRole.RoleId);
+                userToken.Role = role.Name;
                 var NewJwtToken = TokenServices.CreateJwtToken(userToken);
 
                 var data = new RefreshTokenResponse
@@ -513,9 +505,8 @@ namespace HealthCare.Services.Services
             return new RefreshToken
             {
                 Token = Convert.ToBase64String(randomNumber),
-                ExpiresOn = DateTime.UtcNow.AddMinutes(120),
-                CreatedOn = DateTime.UtcNow,
-                IsActive = true
+                ExpiresOn = DateTime.Now.AddMinutes(120),
+                CreatedOn = DateTime.Now
             };
         }
 
