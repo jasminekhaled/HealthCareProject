@@ -16,14 +16,16 @@ namespace HealthCare.Core.Models.HospitalModule
         [MinLength(length: 5)]
         [MaxLength(length: 150)]
         public string Address { get; set; }
-        public string Government { get; set; }
+
         [MinLength(length: 5)]
         [MaxLength(length: 500)]
         public string Description { get; set; }
-        public string ImagePath { get; set; }
+        public int UploadedFileId { get; set; }
+        public UploadedFile UploadedFile { get; set; }
         public List<HospitalDoctor> hospitalDoctors { get; set; }
         public List<AdminOfHospital> AdminOfHospitals { get; set; }
-
+        public HospitalGovernorate HospitalGovernorate { get; set; }
+        public List<HospitalClinicLab> HospitalClinicLabs { get; set; }
 
     }
 }

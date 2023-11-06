@@ -19,6 +19,8 @@ namespace HealthCare.Core.IRepositories
         public IPatientRepository PatientRepository { get; }
         public IMedicalHistoryRepository MedicalHistoryRepository { get; }
         public IHospitalRepository HospitalRepository { get; }
+        public IHospitalGovernorateRepository HospitalGovernorateRepository { get; }
+        public IGovernorateRepository GovernorateRepository { get; }
         public IDoctorRepository DoctorRepository { get; }
         public IHospitalDoctorRepository HospitalDoctorRepository { get; }
         public IClinicLabRepository ClinicLabRepository { get; }
@@ -29,6 +31,7 @@ namespace HealthCare.Core.IRepositories
         public ICurrentStateRepository CurrentStateRepository { get; }
         public ICivilRegestrationRepository CivilRegestrationRepository { get; }
         public IRefreshTokenRepository RefreshTokenRepository { get; }
+        public IUploadedFileRepository UploadedFileRepository { get; }
         Task<int> CompleteAsync();
         void Dispose();
     }

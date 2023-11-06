@@ -22,4 +22,8 @@
     <ProjectReference Include="..\HealthCare.Services\HealthCare.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Uploads\HospitalImages\" />
+  </ItemGroup>
+
 </Project>

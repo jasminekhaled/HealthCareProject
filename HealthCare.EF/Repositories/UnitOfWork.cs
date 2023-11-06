@@ -8,6 +8,7 @@ using HealthCare.EF.Context;
 using HealthCare.EF.Repositories.AppointmentRepositories;
 using HealthCare.EF.Repositories.AuthRepositories;
 using HealthCare.EF.Repositories.BandRepostiories;
+using HealthCare.EF.Repositories.HospitalModule;
 using HealthCare.EF.Repositories.HospitalRepositories;
 using HealthCare.EF.Repositories.PatientRepositories;
 using System;
@@ -32,6 +33,8 @@ namespace HealthCare.EF.Repositories
         public IDoctorRepository DoctorRepository { get; set; }
         public IMedicalHistoryRepository MedicalHistoryRepository { get; set; }
         public IHospitalRepository HospitalRepository { get; set; }
+        public IHospitalGovernorateRepository HospitalGovernorateRepository { get; set; }
+        public IGovernorateRepository GovernorateRepository { get; set; }
         public IHospitalDoctorRepository HospitalDoctorRepository { get; set; }
         public IClinicLabRepository ClinicLabRepository { get; }
         public IClinicLabDoctorRepository ClinicLabDoctorRepository { get; set; }
@@ -41,7 +44,7 @@ namespace HealthCare.EF.Repositories
         public ICurrentStateRepository CurrentStateRepository { get; set; }
         public ICivilRegestrationRepository CivilRegestrationRepository { get; set; }
         public IRefreshTokenRepository RefreshTokenRepository { get; }
-
+        public IUploadedFileRepository UploadedFileRepository { get; }
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
@@ -61,6 +64,9 @@ namespace HealthCare.EF.Repositories
             MedicalHistoryRepository = new MedicalHistoryRepository(context);
             CivilRegestrationRepository = new CivilRegestrationRepository(context);
             RefreshTokenRepository = new RefreshTokenRepository(context);
+            UploadedFileRepository = new UploadedFileRepository(context);
+            GovernorateRepository = new GovernorateRepository(context);
+            HospitalGovernorateRepository = new HospitalGovernorateRepository(context);
         }
 
 

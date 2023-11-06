@@ -1,4 +1,5 @@
-﻿using HealthCare.Core.Models.AppointmentModule;
+﻿using HealthCare.Core.Models;
+using HealthCare.Core.Models.AppointmentModule;
 using HealthCare.Core.Models.AuthModule;
 using HealthCare.Core.Models.BandModule;
 using HealthCare.Core.Models.HospitalModule;
@@ -25,6 +26,8 @@ namespace HealthCare.EF.Context
         public DbSet<Patient> Patients { get; set; }
         public DbSet<MedicalHistory> MedicalHistories { get; set; }
         public DbSet<Hospital> Hospitals { get; set; }
+        public DbSet<HospitalGovernorate> HospitalGovernorates { get; set; }
+        public DbSet<Governorate> Governorates { get; set; }
         public DbSet<HospitalAdmin> HospitalAdmins { get; set; }
         public DbSet<HospitalClinicLab> HospitalClinicLabs { get; set; }
         public DbSet<AdminOfHospital> AdminOfHospitals { get; set; }
@@ -38,6 +41,7 @@ namespace HealthCare.EF.Context
         public DbSet<CurrentState> CurrentStates { get; set; }
         public DbSet<CivilRegestration> CivilRegestrations { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<UploadedFile> UploadedFiles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -45,6 +49,11 @@ namespace HealthCare.EF.Context
                 .HasOne(a => a.User)
                 .WithMany(r => r.RefreshTokens)
                 .HasForeignKey(b => b.userId);
+
+            modelBuilder.Entity<UploadedFile>()
+                .HasOne(a => a.Hospital)
+                .WithOne(r => r.UploadedFile)
+                .HasForeignKey<Hospital>(b => b.UploadedFileId);
 
 
 

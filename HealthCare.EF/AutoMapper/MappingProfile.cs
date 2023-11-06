@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using HealthCare.Core.DTOS.AuthModule.RequestDtos;
 using HealthCare.Core.DTOS.AuthModule.ResponseDtos;
+using HealthCare.Core.DTOS.HospitalModule.RequestDto;
+using HealthCare.Core.DTOS.HospitalModule.ResponseDto;
 using HealthCare.Core.DTOS.PatientModule.ResponseDto;
 using HealthCare.Core.Models.AuthModule;
 using HealthCare.Core.Models.HospitalModule;
@@ -28,6 +30,8 @@ namespace HealthCare.EF.AutoMapper
             CreateMap<Doctor, LogInResponse>();
             CreateMap<User, LogInResponse>();
             CreateMap<Patient, PatientDto>();
+            CreateMap<HospitalRequestDto, Hospital>();
+            CreateMap<Hospital, HospitalDto>();
 
 
         }

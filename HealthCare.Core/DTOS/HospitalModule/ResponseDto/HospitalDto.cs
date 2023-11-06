@@ -11,7 +11,7 @@ namespace HealthCare.Core.DTOS.HospitalModule.ResponseDto
     {
         public string Name { get; set; }
         public string Address { get; set; }
-        public string Government { get; set; }
+        public string Governorate { get; set; }
         public string Description { get; set; }
         public string ImagePath { get; set; }
     }

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using HealthCare.Core.DTOS.HospitalModule.ResponseDto;
 using HealthCare.Core.DTOS.HospitalModule.RequestDto;
 using HealthCare.Core.Models.HospitalModule;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HealthCare.Services.IServices
 {
