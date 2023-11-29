@@ -1,4 +1,5 @@
 ﻿using HealthCare.Core.IRepositories;
+using HealthCare.Core.Models.HospitalModule;
 using HealthCare.EF.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -24,9 +25,50 @@ namespace HealthCare.EF.Repositories
         public async Task<IEnumerable<T>> GetAllAsync() =>
             await _dbSet.ToListAsync();
 
+        public async Task<IEnumerable<T>> GetAllIncludedAsync(params Expression<Func<T, object>>[] includes)
+        {
+            var query = _dbSet.AsQueryable();
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<IEnumerable<T>> WhereIncludeAsync(Expression<Func<T, bool>> filter, params Expression<Func<T, object>>[] includes)
+        {
+            var query = _dbSet.AsQueryable();
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            return await query.ToListAsync();
+        }
+
         public async Task<T> GetByIdAsync(int id) =>
             await _dbSet.FindAsync(id);
 
+
+        public async Task<T> GetSingleWithIncludesAsync(Expression<Func<T, bool>> single, params Expression<Func<T, object>>[] includes)
+        {
+            var query = _dbSet.AsQueryable();
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            return await query.SingleOrDefaultAsync(single);
+        }
 
         public async Task<T> AddAsync(T entity)
         {

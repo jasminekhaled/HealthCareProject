@@ -25,6 +25,63 @@ namespace HealthCare.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
-        
+
+        [HttpGet("ListOfHospitals")]
+        public async Task<IActionResult> ListOfHospitals()
+        {
+            var result = await _hospitalServices.ListOfHospitals();
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+
+        [HttpDelete("DeleteHospital")]
+        public async Task<IActionResult> DeleteHospital(int hospitalId)
+        {
+            var result = await _hospitalServices.DeleteHospital(hospitalId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpGet("GetHospitalByName")]
+        public async Task<IActionResult> GetHospitalByName(string Name)
+        {
+            var result = await _hospitalServices.GetHospitalByName(Name);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+
+        [HttpGet("GetHospitalByGovernorate")]
+        public async Task<IActionResult> GetHospitalByGovernorate(int governoratetId)
+        {
+            var result = await _hospitalServices.GetHospitalByGovernorate( governoratetId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+
+        [HttpGet("HospitalDetails")]
+        public async Task<IActionResult> HospitalDetails(int hospitalId)
+        {
+            var result = await _hospitalServices.HospitalDetails(hospitalId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+
+        [HttpPatch("EditHospital")]
+        public async Task<IActionResult> EditHospital(int hospitalId, [FromForm] EditHospitalDto dto)
+        {
+            var result = await _hospitalServices.EditHospital(hospitalId, dto);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
     }
 }

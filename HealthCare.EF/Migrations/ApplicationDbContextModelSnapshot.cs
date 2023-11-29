@@ -609,6 +609,9 @@ namespace HealthCare.EF.Migrations
                     b.Property<string>("FileName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FilePath")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("StoredFileName")
                         .HasColumnType("nvarchar(max)");
 

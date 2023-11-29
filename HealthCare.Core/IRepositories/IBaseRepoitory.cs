@@ -8,9 +8,12 @@ using System.Threading.Tasks;
 namespace HealthCare.Core.IRepositories
 {
     public interface IBaseRepository<T> where T : class
-    {
+    { 
         Task<IEnumerable<T>> GetAllAsync();
+        Task<IEnumerable<T>> GetAllIncludedAsync(params Expression<Func<T, object>>[] includes);
+        Task<IEnumerable<T>> WhereIncludeAsync(Expression<Func<T, bool>> filter, params Expression<Func<T, object>>[] includes);
         Task<T> GetByIdAsync(int id);
+        Task<T> GetSingleWithIncludesAsync(Expression<Func<T, bool>> single, params Expression<Func<T, object>>[] includes);
         Task<T> AddAsync(T entity);
         Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities);
         void Remove(T entity);

@@ -31,7 +31,9 @@ namespace HealthCare.EF.AutoMapper
             CreateMap<User, LogInResponse>();
             CreateMap<Patient, PatientDto>();
             CreateMap<HospitalRequestDto, Hospital>();
-            CreateMap<Hospital, HospitalDto>();
+            CreateMap<Hospital, HospitalDto>()
+                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath))
+                .ForMember(dest => dest.Governorate, opt => opt.MapFrom(src => src.HospitalGovernorate.Governorate.Name));
 
 
         }

@@ -13,6 +13,7 @@ namespace HealthCare.Core.Models
         public string? FileName { get; set; }
         public string? StoredFileName { get; set; }
         public string? ContentType { get; set; }
+        public string? FilePath { get; set; }
         public Hospital Hospital { get; set; }
 
     }
