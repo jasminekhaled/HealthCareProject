@@ -15,6 +15,6 @@ namespace HealthCare.Core.Models
         public string? ContentType { get; set; }
         public string? FilePath { get; set; }
         public Hospital Hospital { get; set; }
-
+        public HospitalAdmin HospitalAdmin { get; set; }
     }
 }

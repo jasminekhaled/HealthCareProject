@@ -19,6 +19,10 @@ using Microsoft.Extensions.Configuration;
 using System.Xml.Linq;
 using System.ComponentModel.DataAnnotations;
 using HealthCare.Core.Models.PatientModule;
+using HealthCare.Core.Models.AuthModule;
+using HealthCare.Core.DTOS.AuthModule.RequestDtos;
+using HealthCare.Core.Helpers;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace HealthCare.Services.Services
 {
@@ -171,10 +175,9 @@ namespace HealthCare.Services.Services
                     };
                 }
                 var upload = await _unitOfWork.UploadedFileRepository.GetByIdAsync(hospital.UploadedFileId);
-                if(upload != null)
-                {
-                    _unitOfWork.UploadedFileRepository.Remove(upload);
-                }
+                File.Delete(upload.FilePath);
+                _unitOfWork.UploadedFileRepository.Remove(upload);
+                
                 _unitOfWork.HospitalRepository.Remove(hospital);
                 await _unitOfWork.CompleteAsync();
                 
@@ -409,35 +412,250 @@ namespace HealthCare.Services.Services
         }
 
 
-        public Task<GeneralResponse<HospitalAdminDto>> AddHospitalAdmin(int OldHospitalAdminId, HospitalAdminRequestDto dto)
+        public async Task<GeneralResponse<HospitalAdminDto>> AddHospitalAdmin(int hospitalId, [FromForm]HospitalAdminRequestDto dto)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var hospital = await _unitOfWork.HospitalRepository.GetByIdAsync(hospitalId);
+                if(hospital == null)
+                {
+                    return new GeneralResponse<HospitalAdminDto>
+                    {
+                        IsSuccess = false,
+                        Message = "No Hospital Found."
+                    };
+                }
+                if(await _unitOfWork.UserRepository.AnyAsync(a => a.UserName == dto.UserName))
+                {
+                    return new GeneralResponse<HospitalAdminDto>
+                    {
+                        IsSuccess = false,
+                        Message = "This UserName is already used."
+                    };
+                }
+                if (!await _unitOfWork.CivilRegestrationRepository.AnyAsync(a => a.NationalId == dto.NationalId) || await _unitOfWork.HospitalAdminRepository.AnyAsync(a => a.NationalId == dto.NationalId) || await _unitOfWork.HospitalAdminRepository.AnyAsync(a => a.Email == dto.Email))
+                {
+                    return new GeneralResponse<HospitalAdminDto>
+                    {
+                        IsSuccess = false,
+                        Message = "NationalId Or Email cannot be accepted."
+                    };
+                }
+                
+                var admin = _mapper.Map<HospitalAdmin>(dto);
+                admin.PassWord = HashingService.GetHash(dto.PassWord);
+                var data = _mapper.Map<HospitalAdminDto>(admin);
+
+                if(dto.Image == null)
+                {
+                    var DefaultFile = new UploadedFile()
+                    {
+                        FileName = "DefaultImage.png",
+                        StoredFileName = "DefaultImage",
+                        ContentType = "image/png",
+                        FilePath = "G:\\WEB DEVELOPMENT\\HealthCareProject\\HealthCareAPIs\\HealthCare\\Uploads\\DefaultImage"
+
+                    };
+                    await _unitOfWork.UploadedFileRepository.AddAsync(DefaultFile);
+                    admin.UploadedFile = DefaultFile;
+                    await _unitOfWork.CompleteAsync();
+
+                    data.ImagePath = DefaultFile.FilePath;
+                }
+                else
+                {
+                    var MaxAllowedPosterSize = _configuration.GetValue<long>("MaxAllowedPosterSize");
+                    List<string> AllowedExtenstions = _configuration.GetSection("AllowedExtenstions").Get<List<string>>();
+
+                    if (!AllowedExtenstions.Contains(Path.GetExtension(dto.Image.FileName).ToLower()))
+                    {
+                        return new GeneralResponse<HospitalAdminDto>
+                        {
+                            IsSuccess = false,
+                            Message = "Only .jpg and .png Images Are Allowed."
+                        };
+                    }
+
+                    if (dto.Image.Length > MaxAllowedPosterSize)
+                    {
+                        return new GeneralResponse<HospitalAdminDto>
+                        {  
+                            IsSuccess = false,
+                            Message = "Max Allowed Size Is 1MB."
+                        };
+                    }
+
+                    var fakeFileName = Path.GetRandomFileName();
+                    var uploadedFile = new UploadedFile()
+                    {
+                        FileName = dto.Image.FileName,
+                        ContentType = dto.Image.ContentType,
+                        StoredFileName = fakeFileName
+                    };
+                    var directoryPath = Path.Combine(_webHostEnvironment.ContentRootPath, "Uploads", "HospitalAdminImages");
+                    var path = Path.Combine(directoryPath, fakeFileName);
+                    using FileStream fileStream = new(path, FileMode.Create);
+                    dto.Image.CopyTo(fileStream);
+                    uploadedFile.FilePath = path;
+                    await _unitOfWork.UploadedFileRepository.AddAsync(uploadedFile);
+                    admin.UploadedFile = uploadedFile;
+                    await _unitOfWork.CompleteAsync();
+                    data.ImagePath = path;
+
+                }
+                await _unitOfWork.HospitalAdminRepository.AddAsync(admin);
+                await _unitOfWork.CompleteAsync();
+                
+                var adminOfHospital = new AdminOfHospital()
+                {
+                    HospitalId = hospitalId,
+                    HospitalAdminId = admin.Id
+                };
+                await _unitOfWork.AdminOfHospitalRepository.AddAsync(adminOfHospital);
+                await _unitOfWork.CompleteAsync();
+
+                var user = _mapper.Map<User>(admin);
+                user.RoleId = 2;
+                user.TableId = admin.Id;
+                await _unitOfWork.UserRepository.AddAsync(user);
+                await _unitOfWork.CompleteAsync();
+
+                var userRole = new UserRole()
+                {
+                    UserId = user.Id,
+                    RoleId = 2
+                };
+                await _unitOfWork.UserRoleRepository.AddAsync(userRole);
+                await _unitOfWork.CompleteAsync();
+
+
+                var userToken = _mapper.Map<UserTokenDto>(user);
+                userToken.Role = "HospitalAdmin";
+                var Token = TokenServices.CreateJwtToken(userToken);
+                var refreshToken = TokenServices.CreateRefreshToken();
+                var newRefreshToken = new RefreshToken
+                {
+                    Token = refreshToken.Token,
+                    ExpiresOn = refreshToken.ExpiresOn,
+                    CreatedOn = refreshToken.CreatedOn,
+                    userId = user.Id
+                };
+               
+                await _unitOfWork.RefreshTokenRepository.AddAsync(newRefreshToken);
+                await _unitOfWork.CompleteAsync();
+
+                data.RefreshToken = refreshToken.Token;
+                data.RefreshTokenExpiration = refreshToken.ExpiresOn;
+                data.Token = new JwtSecurityTokenHandler().WriteToken(Token);
+                data.ExpiresOn = Token.ValidTo;
+
+
+                return new GeneralResponse<HospitalAdminDto>
+                {
+                    IsSuccess = true,
+                    Message = "New Admin is added Successfully.",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<HospitalAdminDto>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+
         }
 
         
 
-        public Task<GeneralResponse<string>> DeleteHospitalAdmin(int hospitalAdminId)
+        public async Task<GeneralResponse<string>> DeleteHospitalAdmin(int hospitalAdminId)
+        {
+            try
+            {
+                var admin = await _unitOfWork.HospitalAdminRepository.GetByIdAsync(hospitalAdminId);
+                if(admin == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No Admin Found!"
+                    };
+                }
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(s => s.UserName == admin.UserName);
+                var refreshToken = await _unitOfWork.RefreshTokenRepository.SingleOrDefaultAsync(s => s.userId == user.Id);
+                var uploadedFile = await _unitOfWork.UploadedFileRepository.GetByIdAsync(admin.UploadedFileId);
+                if(uploadedFile.FilePath != "G:\\WEB DEVELOPMENT\\HealthCareProject\\HealthCareAPIs\\HealthCare\\Uploads\\DefaultImage")
+                {
+                    File.Delete(uploadedFile.FilePath);
+                }
+                
+                _unitOfWork.RefreshTokenRepository.Remove(refreshToken);
+                _unitOfWork.UserRepository.Remove(user);
+                _unitOfWork.HospitalAdminRepository.Remove(admin);
+                _unitOfWork.UploadedFileRepository.Remove(uploadedFile);
+                await _unitOfWork.CompleteAsync();
+
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = true,
+                    Message = "Admin is deleted successfully"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+        
+        public async Task<GeneralResponse<EditHospitalAdminResponse>> HospitalAdminDetails(int hospitalAdminId)
+        {
+            try
+            {
+                var admin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(single: s => s.Id  == hospitalAdminId, i => i.UploadedFile);
+                if (admin == null)
+                {
+                    return new GeneralResponse<EditHospitalAdminResponse>
+                    {
+                        IsSuccess = false,
+                        Message = "No Admin Found!"
+                    };
+                }
+                var data = _mapper.Map<EditHospitalAdminResponse>(admin);
+
+                return new GeneralResponse<EditHospitalAdminResponse>
+                {
+                    IsSuccess = true,
+                    Message = "Admin Details have been Displayed successfully",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<EditHospitalAdminResponse>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+
+        public Task<GeneralResponse<EditHospitalAdminResponse>> EditHospitalAdmin(EditHospitalAdminDto dto)
         {
             throw new NotImplementedException();
         }
 
-        
-
-        public Task<GeneralResponse<HospitalAdminDto>> EditHospitalAdmin(EditHospitalAdminDto dto)
-        {
-            throw new NotImplementedException();
-        }
-
-       
-
-        public Task<GeneralResponse<HospitalAdminDto>> HospitalAdminDetails(int hospitalAdminId)
-        {
-            throw new NotImplementedException();
-        }
-
-        
-
-        
+      
 
         public Task<GeneralResponse<List<HospitalAdminDto>>> ListOfSpecificHospitalAdmins(int HospitalId)
         {

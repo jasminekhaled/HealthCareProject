@@ -53,7 +53,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("Appointments");
+                    b.ToTable("Appointments", (string)null);
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.Reservation", b =>
@@ -79,7 +79,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Reservations");
+                    b.ToTable("Reservations", (string)null);
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.AuthModule.CivilRegestration", b =>
@@ -100,7 +100,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CivilRegestrations");
+                    b.ToTable("CivilRegestrations", (string)null);
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.AuthModule.RefreshToken", b =>
@@ -128,7 +128,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasIndex("userId");
 
-                    b.ToTable("RefreshTokens");
+                    b.ToTable("RefreshTokens", (string)null);
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.AuthModule.Role", b =>
@@ -145,7 +145,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.AuthModule.User", b =>
@@ -185,7 +185,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.AuthModule.UserRole", b =>
@@ -209,7 +209,7 @@ namespace HealthCare.EF.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("UserRoles");
+                    b.ToTable("UserRoles", (string)null);
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.BandModule.Band", b =>
@@ -240,7 +240,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Bands");
+                    b.ToTable("Bands", (string)null);
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.BandModule.CurrentState", b =>
@@ -262,7 +262,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CurrentStates");
+                    b.ToTable("CurrentStates", (string)null);
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.AdminOfHospital", b =>
@@ -286,7 +286,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasIndex("HospitalId");
 
-                    b.ToTable("AdminOfHospitals");
+                    b.ToTable("AdminOfHospitals", (string)null);
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.ClinicLab", b =>
@@ -307,7 +307,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ClinicLabs");
+                    b.ToTable("ClinicLabs", (string)null);
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.ClinicLabDoctor", b =>
@@ -330,7 +330,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("ClinicLabDoctors");
+                    b.ToTable("ClinicLabDoctors", (string)null);
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.Doctor", b =>
@@ -368,7 +368,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Doctors");
+                    b.ToTable("Doctors", (string)null);
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.Governorate", b =>
@@ -385,7 +385,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Governorates");
+                    b.ToTable("Governorates", (string)null);
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.Hospital", b =>
@@ -419,7 +419,7 @@ namespace HealthCare.EF.Migrations
                     b.HasIndex("UploadedFileId")
                         .IsUnique();
 
-                    b.ToTable("Hospitals");
+                    b.ToTable("Hospitals", (string)null);
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.HospitalAdmin", b =>
@@ -434,10 +434,6 @@ namespace HealthCare.EF.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ImagePath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("NationalId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -447,6 +443,9 @@ namespace HealthCare.EF.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<int>("UploadedFileId")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -454,7 +453,10 @@ namespace HealthCare.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HospitalAdmins");
+                    b.HasIndex("UploadedFileId")
+                        .IsUnique();
+
+                    b.ToTable("HospitalAdmins", (string)null);
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.HospitalClinicLab", b =>
@@ -478,7 +480,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasIndex("HospitalId");
 
-                    b.ToTable("HospitalClinicLabs");
+                    b.ToTable("HospitalClinicLabs", (string)null);
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.HospitalDoctor", b =>
@@ -501,7 +503,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasIndex("HospitalId");
 
-                    b.ToTable("HospitalDoctors");
+                    b.ToTable("HospitalDoctors", (string)null);
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.HospitalGovernorate", b =>
@@ -525,7 +527,7 @@ namespace HealthCare.EF.Migrations
                     b.HasIndex("HospitalId")
                         .IsUnique();
 
-                    b.ToTable("HospitalGovernorates");
+                    b.ToTable("HospitalGovernorates", (string)null);
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.PatientModule.MedicalHistory", b =>
@@ -550,7 +552,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("MedicalHistories");
+                    b.ToTable("MedicalHistories", (string)null);
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.PatientModule.Patient", b =>
@@ -592,7 +594,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Patients");
+                    b.ToTable("Patients", (string)null);
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.UploadedFile", b =>
@@ -617,7 +619,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UploadedFiles");
+                    b.ToTable("UploadedFiles", (string)null);
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.Appointment", b =>
@@ -764,6 +766,17 @@ namespace HealthCare.EF.Migrations
                     b.Navigation("UploadedFile");
                 });
 
+            modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.HospitalAdmin", b =>
+                {
+                    b.HasOne("HealthCare.Core.Models.UploadedFile", "UploadedFile")
+                        .WithOne("HospitalAdmin")
+                        .HasForeignKey("HealthCare.Core.Models.HospitalModule.HospitalAdmin", "UploadedFileId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("UploadedFile");
+                });
+
             modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.HospitalClinicLab", b =>
                 {
                     b.HasOne("HealthCare.Core.Models.HospitalModule.ClinicLab", "ClinicLab")
@@ -886,6 +899,9 @@ namespace HealthCare.EF.Migrations
             modelBuilder.Entity("HealthCare.Core.Models.UploadedFile", b =>
                 {
                     b.Navigation("Hospital")
+                        .IsRequired();
+
+                    b.Navigation("HospitalAdmin")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

@@ -83,5 +83,43 @@ namespace HealthCare.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
+
+
+        [HttpPost("AddHospitalAdmin")]
+        public async Task<IActionResult> AddHospitalAdmin(int hospitalId, [FromForm] HospitalAdminRequestDto dto)
+        {
+            var result = await _hospitalServices.AddHospitalAdmin(hospitalId, dto);
+            if (result.Data != null)
+            {
+                var CookieOptions = new CookieOptions()
+                {
+                    HttpOnly = true,
+                    Expires = result.Data.ExpiresOn
+                };
+                Response.Cookies.Append("refreshToken", result.Data.RefreshToken, CookieOptions);
+            }
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+
+        [HttpDelete("DeleteHospitalAdmin")]
+        public async Task<IActionResult> DeleteHospitalAdmin(int hospitalAdminId)
+        {
+            var result = await _hospitalServices.DeleteHospitalAdmin(hospitalAdminId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpGet("HospitalAdminDetails")]
+        public async Task<IActionResult> HospitalAdminDetails(int hospitalAdminId)
+        {
+            var result = await _hospitalServices.HospitalAdminDetails(hospitalAdminId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
     }
 }

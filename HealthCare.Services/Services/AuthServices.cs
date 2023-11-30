@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿ using AutoMapper;
 using HealthCare.Core.DTOS.AuthModule.ResponseDtos;
 using HealthCare.Core.DTOS;
 using HealthCare.Core.IRepositories;
@@ -177,7 +177,7 @@ namespace HealthCare.Services.Services
                 var userToken = _mapper.Map<UserTokenDto>(user);
                 userToken.Role = "Patient";
                 var Token = TokenServices.CreateJwtToken(userToken);
-                var refreshToken = CreateRefreshToken();
+                var refreshToken = TokenServices.CreateRefreshToken();
                 var newRefreshToken = new RefreshToken
                 {
                     Token = refreshToken.Token,
@@ -251,7 +251,7 @@ namespace HealthCare.Services.Services
                 }
                 else
                 {
-                    var refreshToken = CreateRefreshToken();
+                    var refreshToken = TokenServices.CreateRefreshToken();
 
                     var newRefreshToken = new RefreshToken
                     {
@@ -449,7 +449,7 @@ namespace HealthCare.Services.Services
                 }
 
                 
-                var NewRefreshToken = CreateRefreshToken();
+                var NewRefreshToken = TokenServices.CreateRefreshToken();
                 var refreshToken = new RefreshToken
                 {
                     Token = NewRefreshToken.Token,

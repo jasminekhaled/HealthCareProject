@@ -33,9 +33,11 @@ namespace HealthCare.EF.Repositories
         public IDoctorRepository DoctorRepository { get; set; }
         public IMedicalHistoryRepository MedicalHistoryRepository { get; set; }
         public IHospitalRepository HospitalRepository { get; set; }
+        public IAdminOfHospitalRepository AdminOfHospitalRepository { get; set; }
         public IHospitalGovernorateRepository HospitalGovernorateRepository { get; set; }
         public IGovernorateRepository GovernorateRepository { get; set; }
         public IHospitalDoctorRepository HospitalDoctorRepository { get; set; }
+        public IHospitalAdminRepository HospitalAdminRepository { get; set; }
         public IClinicLabRepository ClinicLabRepository { get; }
         public IClinicLabDoctorRepository ClinicLabDoctorRepository { get; set; }
         public IReservationRepository ReservationRepository { get; set; }
@@ -54,8 +56,10 @@ namespace HealthCare.EF.Repositories
             PatientRepository = new PatientRepository(context);
             DoctorRepository = new DoctorRepository(context);
             HospitalRepository = new HospitalRepository(context);
+            AdminOfHospitalRepository = new AdminOfHospitalRepository(context);
             ClinicLabRepository = new ClinicLabRepository(context);
             HospitalDoctorRepository = new HospitalDoctorRepository(context);
+            HospitalAdminRepository = new HospitalAdminRepository(context);
             ClinicLabDoctorRepository = new ClinicLabDoctorRepository(context);
             AppointmentRepository = new AppointmentRepository(context);
             ReservationRepository = new ReservationRepository(context);

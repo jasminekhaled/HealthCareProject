@@ -21,7 +21,8 @@ namespace HealthCare.Core.Models.HospitalModule
         [MinLength(length: 15)]
         [MaxLength(length: 100)]
         public string PassWord { get; set; }
-        public string ImagePath { get; set; }
+        public int UploadedFileId { get; set; }
+        public UploadedFile UploadedFile { get; set; }
         public AdminOfHospital AdminOfHospital { get; set; }
 
     }

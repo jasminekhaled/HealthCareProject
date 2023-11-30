@@ -22,11 +22,11 @@ namespace HealthCare.Services.IServices
         Task<GeneralResponse<string>> DeleteHospital(int hospitalId);
         Task<GeneralResponse<HospitalDto>> HospitalDetails(int hospitalId);
         Task<GeneralResponse<HospitalDto>> EditHospital(int hospitalId, [FromForm] EditHospitalDto dto);
-        Task<GeneralResponse<HospitalAdminDto>> AddHospitalAdmin(int OldHospitalAdminId, HospitalAdminRequestDto dto);
+        Task<GeneralResponse<HospitalAdminDto>> AddHospitalAdmin(int hospitalId, [FromForm] HospitalAdminRequestDto dto);
         Task<GeneralResponse<List<HospitalAdminDto>>> ListOfSpecificHospitalAdmins(int HospitalId);
         Task<GeneralResponse<string>> DeleteHospitalAdmin(int hospitalAdminId);
-        Task<GeneralResponse<HospitalAdminDto>> HospitalAdminDetails(int hospitalAdminId);
-        Task<GeneralResponse<HospitalAdminDto>> EditHospitalAdmin(EditHospitalAdminDto dto);
+        Task<GeneralResponse<EditHospitalAdminResponse>> HospitalAdminDetails(int hospitalAdminId);
+        Task<GeneralResponse<EditHospitalAdminResponse>> EditHospitalAdmin(EditHospitalAdminDto dto);
 
     }
 }

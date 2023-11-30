@@ -55,6 +55,12 @@ namespace HealthCare.EF.Context
                 .WithOne(r => r.UploadedFile)
                 .HasForeignKey<Hospital>(b => b.UploadedFileId);
 
+            modelBuilder.Entity<UploadedFile>()
+                .HasOne(a => a.HospitalAdmin)
+                .WithOne(r => r.UploadedFile)
+                .HasForeignKey<HospitalAdmin>(b => b.UploadedFileId)
+                .OnDelete(DeleteBehavior.NoAction);
+
 
 
         }

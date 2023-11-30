@@ -1,10 +1,12 @@
 ﻿ using HealthCare.Core.DTOS.AuthModule.RequestDtos;
+using HealthCare.Core.Models.AuthModule;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -33,6 +35,23 @@ namespace HealthCare.Core.Helpers
               signingCredentials: credentials);
 
             return token;
+        }
+
+
+        public static RefreshToken CreateRefreshToken()
+        {
+            var randomNumber = new byte[32];
+
+            using var generator = new RNGCryptoServiceProvider();
+
+            generator.GetBytes(randomNumber);
+
+            return new RefreshToken
+            {
+                Token = Convert.ToBase64String(randomNumber),
+                ExpiresOn = DateTime.Now.AddMinutes(120),
+                CreatedOn = DateTime.Now
+            };
         }
     }
 }

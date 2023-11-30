@@ -22,6 +22,6 @@ namespace HealthCare.Core.DTOS.HospitalModule.RequestDto
         [MinLength(length: 15)]
         [MaxLength(length: 100)]
         public string PassWord { get; set; }
-        public IFormFile Image { get; set; }
+        public IFormFile? Image { get; set; }
     }
 }
