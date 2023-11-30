@@ -650,9 +650,124 @@ namespace HealthCare.Services.Services
         }
 
 
-        public Task<GeneralResponse<EditHospitalAdminResponse>> EditHospitalAdmin(EditHospitalAdminDto dto)
+        public async Task<GeneralResponse<EditHospitalAdminResponse>> EditHospitalAdmin(int hospitalAdminId, [FromForm]EditHospitalAdminDto dto)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var admin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(single: s => s.Id == hospitalAdminId, i => i.UploadedFile);
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(s => s.UserName == admin.UserName);
+                if (admin == null)
+                {
+                    return new GeneralResponse<EditHospitalAdminResponse>
+                    {
+                        IsSuccess = false,
+                        Message = "No Admin Found!"
+                    };
+                }
+                if(await _unitOfWork.UserRepository.AnyAsync(a => a.UserName == dto.UserName))
+                {
+                    return new GeneralResponse<EditHospitalAdminResponse>
+                    {
+                        IsSuccess = false,
+                        Message = "UserName ia already used."
+                    };
+                }
+                if (dto.NationalId != null && !await _unitOfWork.CivilRegestrationRepository.AnyAsync(a => a.NationalId == dto.NationalId))
+                {
+                    return new GeneralResponse<EditHospitalAdminResponse>
+                    {
+                        IsSuccess = false,
+                        Message = "NationalId isn't accepted!"
+                    };
+                }
+          
+                var check = await _unitOfWork.HospitalAdminRepository.SingleOrDefaultAsync(s => s.NationalId == dto.NationalId);
+                if(check != null && admin != check)
+                {
+                    return new GeneralResponse<EditHospitalAdminResponse>
+                    {
+                        IsSuccess = false,
+                        Message = "NationalId isn't accepted!"
+                    };
+                }
+                var emailUser = await _unitOfWork.HospitalAdminRepository.SingleOrDefaultAsync(s => s.Email == dto.Email);
+                if (emailUser != null && admin != emailUser)
+                {
+                    return new GeneralResponse<EditHospitalAdminResponse>
+                    {
+                        IsSuccess = false,
+                        Message = "Email isn't accepted!"
+                    };
+                }
+                if (dto.Image != null)
+                {
+                    var MaxAllowedPosterSize = _configuration.GetValue<long>("MaxAllowedPosterSize");
+                    List<string> AllowedExtenstions = _configuration.GetSection("AllowedExtenstions").Get<List<string>>();
+
+                    if (!AllowedExtenstions.Contains(Path.GetExtension(dto.Image.FileName).ToLower()))
+                    {
+                        return new GeneralResponse<EditHospitalAdminResponse>
+                        {
+                            IsSuccess = false,
+                            Message = "Only .jpg and .png Images Are Allowed."
+                        };
+                    }
+
+                    if (dto.Image.Length > MaxAllowedPosterSize)
+                    {
+                        return new GeneralResponse<EditHospitalAdminResponse>
+                        {
+                            IsSuccess = false,
+                            Message = "Max Allowed Size Is 1MB."
+                        };
+                    }
+
+                    var fakeFileName = Path.GetRandomFileName();
+                    var uploadedFile = await _unitOfWork.UploadedFileRepository.GetByIdAsync(admin.UploadedFileId);
+                    File.Delete(uploadedFile.FilePath);
+                    uploadedFile.FileName = dto.Image.FileName;
+                    uploadedFile.ContentType = dto.Image.ContentType;
+                    uploadedFile.StoredFileName = fakeFileName;
+
+                    var directoryPath = Path.Combine(_webHostEnvironment.ContentRootPath, "Uploads", "HospitalAdminImages");
+                    var path = Path.Combine(directoryPath, fakeFileName);
+                    using FileStream fileStream = new(path, FileMode.Create);
+                    dto.Image.CopyTo(fileStream);
+
+                    uploadedFile.FilePath = path;
+                    _unitOfWork.UploadedFileRepository.Update(uploadedFile);
+                    await _unitOfWork.CompleteAsync();
+                }
+                admin.Email = dto.Email ?? admin.Email;
+                admin.UserName = dto.UserName ?? admin.UserName;
+                admin.NationalId = dto.NationalId ?? admin.NationalId;
+                admin.PassWord = HashingService.GetHash(dto.PassWord) ?? admin.PassWord;
+                user.PassWord = admin.PassWord;
+                user.UserName = admin.Email;
+                user.Email = admin.Email;
+                user.NationalId = admin.NationalId;
+                _unitOfWork.HospitalAdminRepository.Update(admin);
+                _unitOfWork.UserRepository.Update(user);
+                await _unitOfWork.CompleteAsync();
+                
+                var data = _mapper.Map<EditHospitalAdminResponse>(admin);
+
+                return new GeneralResponse<EditHospitalAdminResponse>
+                {
+                    IsSuccess = true,
+                    Message = "Admin Details have been Displayed successfully",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<EditHospitalAdminResponse>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
         }
 
       

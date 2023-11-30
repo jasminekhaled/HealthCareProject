@@ -121,5 +121,15 @@ namespace HealthCare.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
+
+
+        [HttpPatch("EditHospitalAdmin")]
+        public async Task<IActionResult> EditHospitalAdmin(int hospitalAdminId, [FromForm] EditHospitalAdminDto dto)
+        {
+            var result = await _hospitalServices.EditHospitalAdmin(hospitalAdminId, dto);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
     }
 }

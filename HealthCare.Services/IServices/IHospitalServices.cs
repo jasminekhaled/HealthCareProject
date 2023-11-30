@@ -26,7 +26,7 @@ namespace HealthCare.Services.IServices
         Task<GeneralResponse<List<HospitalAdminDto>>> ListOfSpecificHospitalAdmins(int HospitalId);
         Task<GeneralResponse<string>> DeleteHospitalAdmin(int hospitalAdminId);
         Task<GeneralResponse<EditHospitalAdminResponse>> HospitalAdminDetails(int hospitalAdminId);
-        Task<GeneralResponse<EditHospitalAdminResponse>> EditHospitalAdmin(EditHospitalAdminDto dto);
+        Task<GeneralResponse<EditHospitalAdminResponse>> EditHospitalAdmin(int hospitalAdminId, [FromForm]EditHospitalAdminDto dto);
 
     }
 }
