@@ -492,24 +492,6 @@ namespace HealthCare.Services.Services
             }
         }
 
-        
-
-        private RefreshToken CreateRefreshToken()
-        {
-            var randomNumber = new byte[32];
-
-            using var generator = new RNGCryptoServiceProvider();
-
-            generator.GetBytes(randomNumber);
-
-            return new RefreshToken
-            {
-                Token = Convert.ToBase64String(randomNumber),
-                ExpiresOn = DateTime.Now.AddMinutes(120),
-                CreatedOn = DateTime.Now
-            };
-        }
-
         public async Task AddNationalId(string nationalId, string name)
         {
             var civilRegestration = new CivilRegestration
