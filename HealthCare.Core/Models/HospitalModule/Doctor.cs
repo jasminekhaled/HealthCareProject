@@ -17,12 +17,16 @@ namespace HealthCare.Core.Models.HospitalModule
         [MinLength(length: 10)]
         [MaxLength(length: 100)]
         public string UserName { get; set; }
+        public string FullName { get; set; }
 
         [MinLength(length: 15)]
         [MaxLength(length: 100)]
         public string PassWord { get; set; }
-        public string ImagePath { get; set; }
+        public string Description { get; set; }
         public int Rate { get; set; }
+        public int UploadedFileId { get; set; }
+        public UploadedFile UploadedFile { get; set; }
+        public List<DoctorSpecialization> DoctorSpecialization { get; set; }
         public List<HospitalDoctor> hospitalDoctors { get; set; }
         public List<ClinicLabDoctor> clinicLabDoctors { get; set; }
 

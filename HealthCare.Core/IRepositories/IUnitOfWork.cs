@@ -24,6 +24,8 @@ namespace HealthCare.Core.IRepositories
         public IHospitalGovernorateRepository HospitalGovernorateRepository { get; }
         public IGovernorateRepository GovernorateRepository { get; }
         public IDoctorRepository DoctorRepository { get; }
+        public IDoctorSpecializationRepository DoctorSpecializationRepository { get; }
+        public ISpecializationRepository SpecializationRepository { get; }
         public IHospitalDoctorRepository HospitalDoctorRepository { get; }
         public IClinicLabRepository ClinicLabRepository { get; }
         public IClinicLabDoctorRepository ClinicLabDoctorRepository { get; }

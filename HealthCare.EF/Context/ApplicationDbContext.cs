@@ -31,7 +31,8 @@ namespace HealthCare.EF.Context
         public DbSet<HospitalAdmin> HospitalAdmins { get; set; }
         public DbSet<HospitalClinicLab> HospitalClinicLabs { get; set; }
         public DbSet<AdminOfHospital> AdminOfHospitals { get; set; }
-        public DbSet<Doctor> Doctors { get; set; }
+        public DbSet<DoctorSpecialization> DoctorSpecializations { get; set; }
+        public DbSet<Specialization> Specializations { get; set; }
         public DbSet<HospitalDoctor> HospitalDoctors { get; set; }
         public DbSet<ClinicLab> ClinicLabs { get; set; }
         public DbSet<ClinicLabDoctor> ClinicLabDoctors { get; set; }
