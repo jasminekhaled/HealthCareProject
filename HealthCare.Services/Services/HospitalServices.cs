@@ -42,23 +42,23 @@ namespace HealthCare.Services.Services
         }
 
 
-        public async Task<GeneralResponse<List<HospitalDto>>> ListOfHospitals()
+        public async Task<GeneralResponse<List<ListOfHospitalDto>>> ListOfHospitals()
         {
             try
             {
                 var hospitals = await _unitOfWork.HospitalRepository.GetAllIncludedAsync(i => i.UploadedFile, i => i.HospitalGovernorate.Governorate);
                 if(hospitals == null)
                 {
-                    return new GeneralResponse<List<HospitalDto>>
+                    return new GeneralResponse<List<ListOfHospitalDto>>
                     {
                         IsSuccess = false,
                         Message = "No Hospitals Found!!"
                     };
 
                 }
-                var data = _mapper.Map<List<HospitalDto>>(hospitals);
+                var data = _mapper.Map<List<ListOfHospitalDto>>(hospitals);
 
-                return new GeneralResponse<List<HospitalDto>>
+                return new GeneralResponse<List<ListOfHospitalDto>>
                 {
                     IsSuccess = true,
                     Message = "Hospitals Listed Successfully.",
@@ -67,7 +67,7 @@ namespace HealthCare.Services.Services
             }
             catch (Exception ex)
             {
-                return new GeneralResponse<List<HospitalDto>>
+                return new GeneralResponse<List<ListOfHospitalDto>>
                 {
                     IsSuccess = false,
                     Message = "Something went wrong",
@@ -201,7 +201,7 @@ namespace HealthCare.Services.Services
 
         
 
-        public async Task<GeneralResponse<List<HospitalDto>>> GetHospitalByName(string Name)
+        public async Task<GeneralResponse<List<ListOfHospitalDto>>> GetHospitalByName(string Name)
         {
             try
             {
@@ -209,15 +209,15 @@ namespace HealthCare.Services.Services
                 var hospital = hospitals.Where(a => a.Name == Name).ToList();
                 if (hospital.Count == 0)
                 {
-                    return new GeneralResponse<List<HospitalDto>>
+                    return new GeneralResponse<List<ListOfHospitalDto>>
                     {
                         IsSuccess = false,
                         Message = "No hospital Found."
                     };
                 }
-                var data = _mapper.Map<List<HospitalDto>>(hospital);
+                var data = _mapper.Map<List<ListOfHospitalDto>>(hospital);
 
-                return new GeneralResponse<List<HospitalDto>>
+                return new GeneralResponse<List<ListOfHospitalDto>>
                 {
                     IsSuccess = true,
                     Message = "Hospitals with inserted name listed successfully.",
@@ -226,7 +226,7 @@ namespace HealthCare.Services.Services
             }
             catch (Exception ex)
             {
-                return new GeneralResponse<List<HospitalDto>>
+                return new GeneralResponse<List<ListOfHospitalDto>>
                 {
                     IsSuccess = false,
                     Message = "Something went wrong",
@@ -236,13 +236,13 @@ namespace HealthCare.Services.Services
         }
 
 
-        public async Task<GeneralResponse<List<HospitalDto>>> GetHospitalByGovernorate(int governoratetId)
+        public async Task<GeneralResponse<List<ListOfHospitalDto>>> GetHospitalByGovernorate(int governoratetId)
         {
             try
             {
                 if(!await _unitOfWork.GovernorateRepository.AnyAsync(n => n.Id == governoratetId))
                 {
-                    return new GeneralResponse<List<HospitalDto>>
+                    return new GeneralResponse<List<ListOfHospitalDto>>
                     {
                         IsSuccess = false,
                         Message = "No Governorate Found."
@@ -252,15 +252,15 @@ namespace HealthCare.Services.Services
                 
                 if (!hospitals.Any())
                 {
-                    return new GeneralResponse<List<HospitalDto>>
+                    return new GeneralResponse<List<ListOfHospitalDto>>
                     {
                         IsSuccess = false,
                         Message = "No hospital found ."
                     };
                 }
-                var data = _mapper.Map<List<HospitalDto>>(hospitals);
+                var data = _mapper.Map<List<ListOfHospitalDto>>(hospitals);
 
-                return new GeneralResponse<List<HospitalDto>>
+                return new GeneralResponse<List<ListOfHospitalDto>>
                 {
                     IsSuccess = true,
                     Message = "Hospitals with inserted name listed successfully.",
@@ -269,7 +269,7 @@ namespace HealthCare.Services.Services
             }
             catch (Exception ex)
             {
-                return new GeneralResponse<List<HospitalDto>>
+                return new GeneralResponse<List<ListOfHospitalDto>>
                 {
                     IsSuccess = false,
                     Message = "Something went wrong",
@@ -741,8 +741,12 @@ namespace HealthCare.Services.Services
                 admin.Email = dto.Email ?? admin.Email;
                 admin.UserName = dto.UserName ?? admin.UserName;
                 admin.NationalId = dto.NationalId ?? admin.NationalId;
-                admin.PassWord = HashingService.GetHash(dto.PassWord) ?? admin.PassWord;
-                user.PassWord = admin.PassWord;
+                if(dto.PassWord != null)
+                {
+                    var pw = HashingService.GetHash(dto.PassWord);
+                    admin.PassWord = pw;
+                    user.PassWord = admin.PassWord;
+                }
                 user.UserName = admin.Email;
                 user.Email = admin.Email;
                 user.NationalId = admin.NationalId;
@@ -772,9 +776,40 @@ namespace HealthCare.Services.Services
 
       
 
-        public Task<GeneralResponse<List<HospitalAdminDto>>> ListOfSpecificHospitalAdmins(int HospitalId)
+        public async Task<GeneralResponse<List<ListOfHospitalAdminDto>>> ListOfSpecificHospitalAdmins(int HospitalId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var hospital = await _unitOfWork.HospitalRepository.GetByIdAsync(HospitalId);
+                if(hospital == null)
+                {
+                    return new GeneralResponse<List<ListOfHospitalAdminDto>>
+                    {
+                        IsSuccess = false,
+                        Message = "No Hospital Found"
+                    };
+                }
+                var adminsOfHospital = await _unitOfWork.AdminOfHospitalRepository.GetSpecificItems(filter: w => w.HospitalId == HospitalId, select: s => s.HospitalAdminId);
+                var admins = await _unitOfWork.HospitalAdminRepository.WhereIncludeAsync(filter: i => adminsOfHospital.Contains(i.Id), a => a.UploadedFile );
+                var data = _mapper.Map<List<ListOfHospitalAdminDto>>(admins);
+
+                return new GeneralResponse<List<ListOfHospitalAdminDto>>
+                {
+                    IsSuccess = true,
+                    Message = "Admins of Selected Hospital have been Listed Successfuly",
+                    Data = data
+                };
+
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<List<ListOfHospitalAdminDto>>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
         }
     }
 }

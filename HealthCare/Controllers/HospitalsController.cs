@@ -131,5 +131,15 @@ namespace HealthCare.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
+
+
+        [HttpGet("ListOfSpecificHospitalAdmins")]
+        public async Task<IActionResult> ListOfSpecificHospitalAdmins(int HospitalId)
+        {
+            var result = await _hospitalServices.ListOfSpecificHospitalAdmins(HospitalId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
     }
 }

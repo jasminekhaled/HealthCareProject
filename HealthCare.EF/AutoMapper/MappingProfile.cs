@@ -34,12 +34,17 @@ namespace HealthCare.EF.AutoMapper
             CreateMap<Hospital, HospitalDto>()
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath))
                 .ForMember(dest => dest.Governorate, opt => opt.MapFrom(src => src.HospitalGovernorate.Governorate.Name));
+            CreateMap<Hospital, ListOfHospitalDto>()
+                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath))
+                .ForMember(dest => dest.Governorate, opt => opt.MapFrom(src => src.HospitalGovernorate.Governorate.Name));
             CreateMap<HospitalAdmin, HospitalAdminDto>()
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath));
             CreateMap<HospitalAdminRequestDto, HospitalAdmin>();
             CreateMap<HospitalAdmin, User>()
                 .ForMember(src => src.Id, opt => opt.Ignore());
             CreateMap<HospitalAdmin, EditHospitalAdminResponse>()
+                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath));
+            CreateMap<HospitalAdmin, ListOfHospitalAdminDto>()
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath));
 
 
