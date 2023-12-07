@@ -1,31 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace HealthCare.Core.Models.AuthModule
 {
-    public class User
+    [Table("Users")]
+    public class User : GeneralUser
     {
-        public int Id { get; set; }
-        public int TableId { get; set; }
-        public string NationalId { get; set; }
-        [EmailAddress]
-        public string Email { get; set; }
-
-        [MinLength(length: 10)]
-        [MaxLength(length: 100)]
-        public string UserName { get; set; }
-
-        [MinLength(length: 15)]
-        [MaxLength(length: 100)]
-        public string PassWord { get; set; }
         public string? VerificationCode { get; set; }
         public List<RefreshToken> RefreshTokens { get; set; }
         public int RoleId { get; set; }
         public UserRole UserRole { get; set; }
+        public int UploadedFileId { get; set; }
+        public UploadedFile UploadedFile { get; set; }
 
     }
 }

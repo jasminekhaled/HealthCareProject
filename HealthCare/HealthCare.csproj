@@ -25,6 +25,7 @@
   <ItemGroup>
     <Folder Include="Uploads\HospitalImages\" />
     <Folder Include="Uploads\HospitalAdminImages\" />
+    <Folder Include="Uploads\DoctorImages\" />
   </ItemGroup>
 
 </Project>

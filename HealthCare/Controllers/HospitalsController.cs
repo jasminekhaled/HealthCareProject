@@ -141,5 +141,32 @@ namespace HealthCare.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
+
+        [HttpPost("AddGovernorate")]
+        public async Task<IActionResult> AddGovernorate(string name)
+        {
+            var result = await _hospitalServices.AddGovernorate(name);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpGet("ListOfGovernorates")]
+        public async Task<IActionResult> ListOfGovernorates()
+        {
+            var result = await _hospitalServices.ListOfGovernorates();
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpDelete("DeleteGovernorate")]
+        public async Task<IActionResult> DeleteGovernorate(int governorateId)
+        {
+            var result = await _hospitalServices.DeleteGovernorate(governorateId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
     }
 }

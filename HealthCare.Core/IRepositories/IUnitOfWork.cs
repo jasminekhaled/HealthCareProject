@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using HealthCare.Core.IRepositories.AppointmentModule;
 using HealthCare.Core.IRepositories.AuthModule;
 using HealthCare.Core.IRepositories.BandModule;
+using HealthCare.Core.IRepositories.DoctorModule;
 using HealthCare.Core.IRepositories.HospitalModule;
 using HealthCare.Core.IRepositories.PatientModule;
 
@@ -26,6 +27,7 @@ namespace HealthCare.Core.IRepositories
         public IDoctorRepository DoctorRepository { get; }
         public IDoctorSpecializationRepository DoctorSpecializationRepository { get; }
         public ISpecializationRepository SpecializationRepository { get; }
+        public IRateDoctorRepository RateDoctorRepository { get; }
         public IHospitalDoctorRepository HospitalDoctorRepository { get; }
         public IClinicLabRepository ClinicLabRepository { get; }
         public IClinicLabDoctorRepository ClinicLabDoctorRepository { get; }

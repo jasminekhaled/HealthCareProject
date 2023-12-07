@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HealthCare.Core.Models.AuthModule;
+using HealthCare.Core.Models.DoctorModule;
 
 namespace HealthCare.Core.Models.HospitalModule
 {

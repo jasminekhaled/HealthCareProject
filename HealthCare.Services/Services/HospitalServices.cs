@@ -23,6 +23,7 @@ using HealthCare.Core.Models.AuthModule;
 using HealthCare.Core.DTOS.AuthModule.RequestDtos;
 using HealthCare.Core.Helpers;
 using System.IdentityModel.Tokens.Jwt;
+using HealthCare.Core.DTOS.DoctorModule.ResponseDtos;
 
 namespace HealthCare.Services.Services
 {
@@ -516,7 +517,6 @@ namespace HealthCare.Services.Services
 
                 var user = _mapper.Map<User>(admin);
                 user.RoleId = 2;
-                user.TableId = admin.Id;
                 await _unitOfWork.UserRepository.AddAsync(user);
                 await _unitOfWork.CompleteAsync();
 
@@ -804,6 +804,102 @@ namespace HealthCare.Services.Services
             catch (Exception ex)
             {
                 return new GeneralResponse<List<ListOfHospitalAdminDto>>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+        public async Task<GeneralResponse<List<GovernorateDto>>> ListOfGovernorates()
+        {
+            try
+            {
+                var governorates = await _unitOfWork.GovernorateRepository.GetAllAsync();
+                if (governorates == null)
+                {
+                    return new GeneralResponse<List<GovernorateDto>>
+                    {
+                        IsSuccess = false,
+                        Message = "No Governorates Found!"
+                    };
+                }
+
+                var data = _mapper.Map<List<GovernorateDto>>(governorates);
+
+                return new GeneralResponse<List<GovernorateDto>>
+                {
+                    IsSuccess = true,
+                    Message = "The Governorates Listed successfully.",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<List<GovernorateDto>>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+        public async Task<GeneralResponse<string>> AddGovernorate(string name)
+        {
+            try
+            {
+                var governorate = new Governorate()
+                {
+                    Name = name
+                };
+                await _unitOfWork.GovernorateRepository.AddAsync(governorate);
+                await _unitOfWork.CompleteAsync();
+
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = true,
+                    Message = "New Governorate added successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+        public async Task<GeneralResponse<string>> DeleteGovernorate(int governorateId)
+        {
+            try
+            {
+                var governorate = await _unitOfWork.GovernorateRepository.GetByIdAsync(governorateId);
+                if (governorate == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "Governorate Not Found!"
+                    };
+                }
+
+                _unitOfWork.GovernorateRepository.Remove(governorate);
+                await _unitOfWork.CompleteAsync();
+
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = true,
+                    Message = "The Governorate Deleted successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<string>
                 {
                     IsSuccess = false,
                     Message = "Something went wrong",

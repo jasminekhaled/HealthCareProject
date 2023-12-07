@@ -53,7 +53,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("Appointments", (string)null);
+                    b.ToTable("Appointments");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.Reservation", b =>
@@ -79,7 +79,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Reservations", (string)null);
+                    b.ToTable("Reservations");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.AuthModule.CivilRegestration", b =>
@@ -100,7 +100,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CivilRegestrations", (string)null);
+                    b.ToTable("CivilRegestrations");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.AuthModule.RefreshToken", b =>
@@ -128,7 +128,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasIndex("userId");
 
-                    b.ToTable("RefreshTokens", (string)null);
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.AuthModule.Role", b =>
@@ -145,7 +145,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.AuthModule.User", b =>
@@ -172,7 +172,7 @@ namespace HealthCare.EF.Migrations
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TableId")
+                    b.Property<int>("UploadedFileId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserName")
@@ -185,7 +185,10 @@ namespace HealthCare.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.HasIndex("UploadedFileId")
+                        .IsUnique();
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.AuthModule.UserRole", b =>
@@ -209,7 +212,7 @@ namespace HealthCare.EF.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("UserRoles", (string)null);
+                    b.ToTable("UserRoles");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.BandModule.Band", b =>
@@ -240,7 +243,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Bands", (string)null);
+                    b.ToTable("Bands");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.BandModule.CurrentState", b =>
@@ -262,7 +265,138 @@ namespace HealthCare.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CurrentStates", (string)null);
+                    b.ToTable("CurrentStates");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.DoctorModule.Doctor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NationalId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PassWord")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("Rate")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Doctors");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.DoctorModule.DoctorSpecialization", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SpecializationId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("SpecializationId");
+
+                    b.ToTable("DoctorSpecializations");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.DoctorModule.HospitalDoctor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("HospitalId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("HospitalId");
+
+                    b.ToTable("HospitalDoctors");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.DoctorModule.RateDoctor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Rate")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("RateDoctors");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.Governorate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Governorates");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.AdminOfHospital", b =>
@@ -286,7 +420,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasIndex("HospitalId");
 
-                    b.ToTable("AdminOfHospitals", (string)null);
+                    b.ToTable("AdminOfHospitals");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.ClinicLab", b =>
@@ -307,7 +441,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ClinicLabs", (string)null);
+                    b.ToTable("ClinicLabs");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.ClinicLabDoctor", b =>
@@ -330,62 +464,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("ClinicLabDoctors", (string)null);
-                });
-
-            modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.Doctor", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImagePath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NationalId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PassWord")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("Rate")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Doctors", (string)null);
-                });
-
-            modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.Governorate", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Governorates", (string)null);
+                    b.ToTable("ClinicLabDoctors");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.Hospital", b =>
@@ -419,7 +498,7 @@ namespace HealthCare.EF.Migrations
                     b.HasIndex("UploadedFileId")
                         .IsUnique();
 
-                    b.ToTable("Hospitals", (string)null);
+                    b.ToTable("Hospitals");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.HospitalAdmin", b =>
@@ -456,7 +535,7 @@ namespace HealthCare.EF.Migrations
                     b.HasIndex("UploadedFileId")
                         .IsUnique();
 
-                    b.ToTable("HospitalAdmins", (string)null);
+                    b.ToTable("HospitalAdmins");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.HospitalClinicLab", b =>
@@ -480,30 +559,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasIndex("HospitalId");
 
-                    b.ToTable("HospitalClinicLabs", (string)null);
-                });
-
-            modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.HospitalDoctor", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("DoctorId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("HospitalId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DoctorId");
-
-                    b.HasIndex("HospitalId");
-
-                    b.ToTable("HospitalDoctors", (string)null);
+                    b.ToTable("HospitalClinicLabs");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.HospitalGovernorate", b =>
@@ -527,7 +583,24 @@ namespace HealthCare.EF.Migrations
                     b.HasIndex("HospitalId")
                         .IsUnique();
 
-                    b.ToTable("HospitalGovernorates", (string)null);
+                    b.ToTable("HospitalGovernorates");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.Specialization", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Specializations");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.PatientModule.MedicalHistory", b =>
@@ -552,7 +625,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("MedicalHistories", (string)null);
+                    b.ToTable("MedicalHistories");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.PatientModule.Patient", b =>
@@ -594,7 +667,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Patients", (string)null);
+                    b.ToTable("Patients");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.UploadedFile", b =>
@@ -619,7 +692,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UploadedFiles", (string)null);
+                    b.ToTable("UploadedFiles");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.Appointment", b =>
@@ -630,7 +703,7 @@ namespace HealthCare.EF.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HealthCare.Core.Models.HospitalModule.Doctor", "Doctor")
+                    b.HasOne("HealthCare.Core.Models.DoctorModule.Doctor", "Doctor")
                         .WithMany()
                         .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -669,6 +742,17 @@ namespace HealthCare.EF.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.AuthModule.User", b =>
+                {
+                    b.HasOne("HealthCare.Core.Models.UploadedFile", "UploadedFile")
+                        .WithOne("User")
+                        .HasForeignKey("HealthCare.Core.Models.AuthModule.User", "UploadedFileId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("UploadedFile");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.AuthModule.UserRole", b =>
@@ -717,6 +801,63 @@ namespace HealthCare.EF.Migrations
                     b.Navigation("Patient");
                 });
 
+            modelBuilder.Entity("HealthCare.Core.Models.DoctorModule.DoctorSpecialization", b =>
+                {
+                    b.HasOne("HealthCare.Core.Models.DoctorModule.Doctor", "Doctor")
+                        .WithMany("DoctorSpecialization")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HealthCare.Core.Models.HospitalModule.Specialization", "Specialization")
+                        .WithMany("DoctorSpecialization")
+                        .HasForeignKey("SpecializationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Specialization");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.DoctorModule.HospitalDoctor", b =>
+                {
+                    b.HasOne("HealthCare.Core.Models.DoctorModule.Doctor", "Doctor")
+                        .WithMany("hospitalDoctors")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HealthCare.Core.Models.HospitalModule.Hospital", "Hospital")
+                        .WithMany("hospitalDoctors")
+                        .HasForeignKey("HospitalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Hospital");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.DoctorModule.RateDoctor", b =>
+                {
+                    b.HasOne("HealthCare.Core.Models.DoctorModule.Doctor", "Docttor")
+                        .WithMany("RateDoctor")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HealthCare.Core.Models.PatientModule.Patient", "Patient")
+                        .WithMany("RateDoctor")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Docttor");
+
+                    b.Navigation("Patient");
+                });
+
             modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.AdminOfHospital", b =>
                 {
                     b.HasOne("HealthCare.Core.Models.HospitalModule.HospitalAdmin", "HospitalAdmin")
@@ -744,7 +885,7 @@ namespace HealthCare.EF.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HealthCare.Core.Models.HospitalModule.Doctor", "Doctor")
+                    b.HasOne("HealthCare.Core.Models.DoctorModule.Doctor", "Doctor")
                         .WithMany("clinicLabDoctors")
                         .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -796,28 +937,9 @@ namespace HealthCare.EF.Migrations
                     b.Navigation("Hospital");
                 });
 
-            modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.HospitalDoctor", b =>
-                {
-                    b.HasOne("HealthCare.Core.Models.HospitalModule.Doctor", "Doctor")
-                        .WithMany("hospitalDoctors")
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("HealthCare.Core.Models.HospitalModule.Hospital", "Hospital")
-                        .WithMany("hospitalDoctors")
-                        .HasForeignKey("HospitalId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Doctor");
-
-                    b.Navigation("Hospital");
-                });
-
             modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.HospitalGovernorate", b =>
                 {
-                    b.HasOne("HealthCare.Core.Models.HospitalModule.Governorate", "Governorate")
+                    b.HasOne("HealthCare.Core.Models.Governorate", "Governorate")
                         .WithMany("HospitalGovernorates")
                         .HasForeignKey("GovernorateId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -858,24 +980,28 @@ namespace HealthCare.EF.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("HealthCare.Core.Models.DoctorModule.Doctor", b =>
+                {
+                    b.Navigation("DoctorSpecialization");
+
+                    b.Navigation("RateDoctor");
+
+                    b.Navigation("clinicLabDoctors");
+
+                    b.Navigation("hospitalDoctors");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.Governorate", b =>
+                {
+                    b.Navigation("HospitalGovernorates");
+                });
+
             modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.ClinicLab", b =>
                 {
                     b.Navigation("HospitalClinicLab")
                         .IsRequired();
 
                     b.Navigation("clinicLabDoctors");
-                });
-
-            modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.Doctor", b =>
-                {
-                    b.Navigation("clinicLabDoctors");
-
-                    b.Navigation("hospitalDoctors");
-                });
-
-            modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.Governorate", b =>
-                {
-                    b.Navigation("HospitalGovernorates");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.Hospital", b =>
@@ -896,12 +1022,25 @@ namespace HealthCare.EF.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.Specialization", b =>
+                {
+                    b.Navigation("DoctorSpecialization");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.PatientModule.Patient", b =>
+                {
+                    b.Navigation("RateDoctor");
+                });
+
             modelBuilder.Entity("HealthCare.Core.Models.UploadedFile", b =>
                 {
                     b.Navigation("Hospital")
                         .IsRequired();
 
                     b.Navigation("HospitalAdmin")
+                        .IsRequired();
+
+                    b.Navigation("User")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

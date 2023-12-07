@@ -1,30 +1,23 @@
-﻿using System;
+﻿using HealthCare.Core.Models.DoctorModule;
+using HealthCare.Core.Models.HospitalModule;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace HealthCare.Core.Models.PatientModule
 {
-    public class Patient 
+    [Table("Patients")]
+    public class Patient : GeneralUser
     {
-        public int Id { get; set; }
-        public string NationalId { get; set; }
-        [EmailAddress]
-        public string Email { get; set; }
-
-        [MinLength(length: 10)]
-        [MaxLength(length: 100)]
-        public string UserName { get; set; }
-
-        [MinLength(length: 15)]
-        [MaxLength(length: 100)]
-        public string PassWord { get; set; }
         public bool IsEmailConfirmed { get; set; }
         [StringLength(11)]
         public string PhoneNumber { get; set; }
         public string? VerificationCode { get; set; }
+        public List<RateDoctor> RateDoctor { get; set; }
 
     }
 }

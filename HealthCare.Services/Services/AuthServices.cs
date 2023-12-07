@@ -162,7 +162,6 @@ namespace HealthCare.Services.Services
 
                 var user = _mapper.Map<User>(patient);
                 user.RoleId = 3;
-                user.TableId = patient.Id;
                 await _unitOfWork.UserRepository.AddAsync(user);
                 await _unitOfWork.CompleteAsync();
 

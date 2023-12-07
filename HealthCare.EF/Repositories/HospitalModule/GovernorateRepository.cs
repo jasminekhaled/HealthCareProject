@@ -1,5 +1,5 @@
 ﻿using HealthCare.Core.IRepositories.HospitalModule;
-using HealthCare.Core.Models.HospitalModule;
+using HealthCare.Core.Models;
 using HealthCare.EF.Context;
 using System;
 using System.Collections.Generic;

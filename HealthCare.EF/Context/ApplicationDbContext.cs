@@ -2,6 +2,7 @@
 using HealthCare.Core.Models.AppointmentModule;
 using HealthCare.Core.Models.AuthModule;
 using HealthCare.Core.Models.BandModule;
+using HealthCare.Core.Models.DoctorModule;
 using HealthCare.Core.Models.HospitalModule;
 using HealthCare.Core.Models.PatientModule;
 using Microsoft.EntityFrameworkCore;
@@ -43,7 +44,8 @@ namespace HealthCare.EF.Context
         public DbSet<CivilRegestration> CivilRegestrations { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<UploadedFile> UploadedFiles { get; set; }
-
+        public DbSet<Doctor> Doctors { get; set; }
+        public DbSet<RateDoctor> RateDoctors { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RefreshToken>()
@@ -55,6 +57,12 @@ namespace HealthCare.EF.Context
                 .HasOne(a => a.Hospital)
                 .WithOne(r => r.UploadedFile)
                 .HasForeignKey<Hospital>(b => b.UploadedFileId);
+
+            modelBuilder.Entity<UploadedFile>()
+                .HasOne(a => a.User)
+                .WithOne(r => r.UploadedFile)
+                .HasForeignKey<User>(b => b.UploadedFileId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<UploadedFile>()
                 .HasOne(a => a.HospitalAdmin)

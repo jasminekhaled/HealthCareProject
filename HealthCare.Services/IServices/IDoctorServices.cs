@@ -1,6 +1,4 @@
-﻿using HealthCare.Core.DTOS.DoctorModule.RequestDto;
-using HealthCare.Core.DTOS.DoctorModule.ResponseDto;
-using HealthCare.Core.DTOS;
+﻿using HealthCare.Core.DTOS;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -17,6 +15,7 @@ namespace HealthCare.Services.IServices
     {
         Task<GeneralResponse<string>> AddSpecialization(string Name);
         Task<GeneralResponse<string>> DeleteSpecialization(int specializationId);
+        Task<GeneralResponse<List<SpecializationDto>>> ListOfSpecialization();
         Task<GeneralResponse<List<DoctorDto>>> ListOfDoctors();
         Task<GeneralResponse<List<DoctorDto>>> ListOfDoctorsinHospital(int hospitalId);
         Task<GeneralResponse<List<ListOfHospitalDto>>> ListOfHospitalsADoctorWorksin(int doctorId);
