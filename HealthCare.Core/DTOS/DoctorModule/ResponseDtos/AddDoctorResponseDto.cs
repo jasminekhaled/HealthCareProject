@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using HealthCare.Core.DTOS.HospitalModule.ResponseDto;
+using HealthCare.Core.Models.HospitalModule;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -17,15 +19,15 @@ namespace HealthCare.Core.DTOS.DoctorModule.ResponseDtos
         public string FullName { get; set; }
         public string Description { get; set; }
         public string ImagePath { get; set; }
-        public List<string> SpecializationNames { get; set; }
-        public List<int> HospitalNames { get; set; }
-        public List<int> ClinicLabsNames { get; set; }
+        public List<SpecializationDto> SpecializationNames { get; set; }
+        public List<HospitalIdDto> HospitalNames { get; set; }
+        public List<ClinicIdDto> ClinicLabsNames { get; set; }
         public string Token { get; set; }
         public DateTime ExpiresOn { get; set; }
 
         [JsonIgnore]
         public string? RefreshToken { get; set; }
 
-        public DateTime RefreshTokenExpiration { get; set; }
+        public DateTime RefreshTokenExpiration { get; set; } 
     }
 }

@@ -1,4 +1,5 @@
-﻿using HealthCare.Core.DTOS.HospitalModule.RequestDto;
+﻿using HealthCare.Core.DTOS.DoctorModule.RequestDtos;
+using HealthCare.Core.DTOS.HospitalModule.RequestDto;
 using HealthCare.Services.IServices;
 using HealthCare.Services.Services;
 using Microsoft.AspNetCore.Http;
@@ -40,6 +41,24 @@ namespace HealthCare.Controllers
         public async Task<IActionResult> ListOfSpecialization()
         {
             var result = await _doctorServices.ListOfSpecialization();
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpPost("AddDoctor")]
+        public async Task<IActionResult> AddDoctor([FromForm]DoctorRequestDto dto)
+        {
+            var result = await _doctorServices.AddDoctor(dto);
+            if (result.Data != null)
+            {
+                var CookieOptions = new CookieOptions()
+                {
+                    HttpOnly = true,
+                    Expires = result.Data.ExpiresOn
+                };
+                Response.Cookies.Append("refreshToken", result.Data.RefreshToken, CookieOptions);
+            }
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using HealthCare.Core.DTOS.AuthModule.RequestDtos;
 using HealthCare.Core.DTOS.AuthModule.ResponseDtos;
+using HealthCare.Core.DTOS.DoctorModule.RequestDtos;
 using HealthCare.Core.DTOS.DoctorModule.ResponseDtos;
 using HealthCare.Core.DTOS.HospitalModule.RequestDto;
 using HealthCare.Core.DTOS.HospitalModule.ResponseDto;
@@ -51,7 +52,17 @@ namespace HealthCare.EF.AutoMapper
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath));
             CreateMap<Specialization, SpecializationDto>();
             CreateMap<Governorate, GovernorateDto>();
-
+            CreateMap<DoctorRequestDto, Doctor>()
+                .ForMember(src => src.Id, opt => opt.Ignore())
+                .ForMember(src => src.hospitalDoctors, opt => opt.Ignore())
+                .ForMember(src => src.RateDoctor, opt => opt.Ignore())
+                .ForMember(src => src.clinicLabDoctors, opt => opt.Ignore())
+                .ForMember(src => src.DoctorSpecialization, opt => opt.Ignore());
+            CreateMap<Doctor, User>()
+                .ForMember(src => src.Id, opt => opt.Ignore());
+            CreateMap<Doctor, AddDoctorResponseDto>();
+            CreateMap<Hospital, HospitalIdDto>();
+            CreateMap<ClinicLab, ClinicIdDto>();
         }
     }
 }
