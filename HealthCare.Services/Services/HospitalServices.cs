@@ -517,6 +517,7 @@ namespace HealthCare.Services.Services
 
                 var user = _mapper.Map<User>(admin);
                 user.RoleId = 2;
+                user.UploadedFile = admin.UploadedFile;
                 await _unitOfWork.UserRepository.AddAsync(user);
                 await _unitOfWork.CompleteAsync();
 
@@ -747,9 +748,11 @@ namespace HealthCare.Services.Services
                     admin.PassWord = pw;
                     user.PassWord = admin.PassWord;
                 }
-                user.UserName = admin.Email;
+                 
+                user.UserName = admin.UserName;
                 user.Email = admin.Email;
                 user.NationalId = admin.NationalId;
+                user.UploadedFile = admin.UploadedFile;
                 _unitOfWork.HospitalAdminRepository.Update(admin);
                 _unitOfWork.UserRepository.Update(user);
                 await _unitOfWork.CompleteAsync();

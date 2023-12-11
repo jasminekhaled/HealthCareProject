@@ -24,6 +24,7 @@ namespace HealthCare.Core.DTOS.AuthModule.ResponseDtos
         [MaxLength(length: 100)]
         public string PhoneNumber { get; set; }
         public string Role { get; set; }
+        public string ImagePath { get; set; }
         public string Token { get; set; }
         public DateTime ExpiresOn { get; set; }
 

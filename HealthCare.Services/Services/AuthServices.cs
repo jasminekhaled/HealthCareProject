@@ -20,6 +20,7 @@ using Microsoft.Extensions.Options;
 using HealthCare.Core.DTOS.AuthModule.RequestDtos;
 using HealthCare.Core.Models.PatientModule;
 using HealthCare.Core.DTOS.PatientModule.ResponseDto;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HealthCare.Services.Services
 {
@@ -34,9 +35,7 @@ namespace HealthCare.Services.Services
             _mapper = mapper;
         }
 
-
-
-        public async Task<GeneralResponse<SignUpResponse>> SignUp(SignUpRequestDto dto)
+        public async Task<GeneralResponse<SignUpResponse>> SignUp([FromForm]SignUpRequestDto dto)
         {
             try
             {
@@ -87,7 +86,7 @@ namespace HealthCare.Services.Services
                     };
                 }
 
-                if(!dto.PhoneNumber.All(char.IsDigit))
+                if(!dto.PhoneNumber.All(char.IsDigit) || dto.PhoneNumber.Length != 11)
                 {
                     return new GeneralResponse<SignUpResponse>
                     {
@@ -116,7 +115,7 @@ namespace HealthCare.Services.Services
                 return new GeneralResponse<SignUpResponse>
                 {
                     IsSuccess = true,
-                    Message = "Verification Code is send sucessfully",
+                    Message = "Verification Code has been sent sucessfully",
                     Data = data
                 };
             }
@@ -131,7 +130,6 @@ namespace HealthCare.Services.Services
             }
       
         }
-
 
         public async Task<GeneralResponse<VerifyResponse>> VerifyEmail(string email, string verificationCode)
         {
@@ -162,6 +160,16 @@ namespace HealthCare.Services.Services
 
                 var user = _mapper.Map<User>(patient);
                 user.RoleId = 3;
+                var DefaultFile = new UploadedFile()
+                {
+                    FileName = "DefaultImage.png",
+                    StoredFileName = "DefaultImage",
+                    ContentType = "image/png",
+                    FilePath = "G:\\WEB DEVELOPMENT\\HealthCareProject\\HealthCareAPIs\\HealthCare\\Uploads\\DefaultImage"
+
+                };
+                await _unitOfWork.UploadedFileRepository.AddAsync(DefaultFile);
+                user.UploadedFile = DefaultFile;
                 await _unitOfWork.UserRepository.AddAsync(user);
                 await _unitOfWork.CompleteAsync();
 
@@ -194,8 +202,7 @@ namespace HealthCare.Services.Services
                 data.ExpiresOn = Token.ValidTo;
                 var Role = await _unitOfWork.RoleRepository.GetByIdAsync(user.RoleId);
                 data.Role = Role.Name;
-
-                
+                data.ImagePath = DefaultFile.FilePath;
 
                 return new GeneralResponse<VerifyResponse>
                 {
@@ -215,7 +222,7 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public async Task<GeneralResponse<LogInResponse>> Login(LoginRequest dto)
+        public async Task<GeneralResponse<LogInResponse>> Login([FromForm] LoginRequest dto)
         {
             try
             {
@@ -287,9 +294,7 @@ namespace HealthCare.Services.Services
         }
 
 
-        
-
-        public async Task<GeneralResponse<string>> ResetPassword(ResetPasswordRequestDto dto)
+        public async Task<GeneralResponse<string>> ResetPassword([FromForm] ResetPasswordRequestDto dto)
         {
             try
             {
@@ -335,7 +340,7 @@ namespace HealthCare.Services.Services
         }
 
 
-        public async Task<GeneralResponse<string>> ForgetPassword(ForgetPasswordRequestDto dto)
+        public async Task<GeneralResponse<string>> ForgetPassword([FromForm] ForgetPasswordRequestDto dto)
         {
             try
             {
@@ -380,8 +385,7 @@ namespace HealthCare.Services.Services
             }
         }
 
-
-        public async Task<GeneralResponse<string>> ChangeForgettedPassword(ChangeForgettedPasswordDto dto)
+        public async Task<GeneralResponse<string>> ChangeForgettedPassword([FromForm]ChangeForgettedPasswordDto dto)
         {
             try
             {
@@ -417,8 +421,6 @@ namespace HealthCare.Services.Services
                 };
             }
         }
-
-
 
         public async Task<GeneralResponse<RefreshTokenResponse>> RefreshToken(string? RefreshToken)
         {
