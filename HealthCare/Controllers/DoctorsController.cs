@@ -81,5 +81,42 @@ namespace HealthCare.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
+
+        [HttpGet("DoctorDetails")]
+        public async Task<IActionResult> DoctorDetails(int doctorId)
+        {
+            var result = await _doctorServices.DoctorDetails(doctorId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpGet("GetDoctorByName")]
+        public async Task<IActionResult> GetDoctorByName(string FullName)
+        {
+            var result = await _doctorServices.GetDoctorByName(FullName);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpGet("ListOfDoctorsinHospital")]
+        public async Task<IActionResult> ListOfDoctorsinHospital(int hospitalId)
+        {
+            var result = await _doctorServices.ListOfDoctorsinHospital(hospitalId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+
+        [HttpGet("ListOfHospitalsADoctorWorksin")]
+        public async Task<IActionResult> ListOfHospitalsADoctorWorksin(int doctorId)
+        {
+            var result = await _doctorServices.ListOfHospitalsADoctorWorksin(doctorId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
     }
 }

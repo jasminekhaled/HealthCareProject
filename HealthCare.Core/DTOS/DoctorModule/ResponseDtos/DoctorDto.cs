@@ -17,6 +17,6 @@ namespace HealthCare.Core.DTOS.DoctorModule.ResponseDtos
         public string Rate { get; set; }
         public string ImagePath { get; set; }
         public List<SpecializationDto> Specializations { get; set; }
-        public List<HospitalIdDto> Hospitals { get; set; }
+        public List<ListOfHospitalDto> Hospitals { get; set; }
     }
 }
