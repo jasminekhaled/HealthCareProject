@@ -26,6 +26,7 @@ namespace HealthCare.Core.IRepositories
         Task<int> CountAsync(Expression<Func<T, bool>> criteria);
         Task<IEnumerable<T>> Where(Expression<Func<T, bool>> criteria);
         Task<IEnumerable<TResult>> Select<TResult>(Expression<Func<T, TResult>> criteria);
+        Task<TResult> WhereSelectTheFirstAsync<TResult>(Expression<Func<T, bool>> filter, Expression<Func<T, TResult>> select);
         Task<IEnumerable<TResult>> GetSpecificItems<TResult>(Expression<Func<T, bool>> filter, Expression<Func<T, TResult>> select);
         Task<T> GetSpecificItem(Expression<Func<T, bool>> filter, Expression<Func<T, bool>> single);
         Task<T> GetFirstItem(Expression<Func<T, bool>> filter);

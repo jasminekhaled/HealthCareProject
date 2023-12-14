@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HealthCare.Core.DTOS.HospitalModule.ResponseDto;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -11,9 +12,11 @@ namespace HealthCare.Core.DTOS.DoctorModule.ResponseDtos
     {
         public int Id { get; set; }
         public string FullName { get; set; }
+        public string UserName { get; set; } 
         public string Description { get; set; }
-        public int Rate { get; set; }
+        public string Rate { get; set; }
         public string ImagePath { get; set; }
-        public List<string> SpecializationNames { get; set; }
+        public List<SpecializationDto> Specializations { get; set; }
+        public List<HospitalIdDto> Hospitals { get; set; }
     }
 }

@@ -63,5 +63,23 @@ namespace HealthCare.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
+
+        [HttpDelete("DeleteDoctor")]
+        public async Task<IActionResult> DeleteDoctor(int doctorId)
+        {
+            var result = await _doctorServices.DeleteDoctor(doctorId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpGet("ListOfDoctors")]
+        public async Task<IActionResult> ListOfDoctors()
+        {
+            var result = await _doctorServices.ListOfDoctors();
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
     }
 }

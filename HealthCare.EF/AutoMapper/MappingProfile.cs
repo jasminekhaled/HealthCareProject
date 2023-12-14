@@ -63,6 +63,10 @@ namespace HealthCare.EF.AutoMapper
             CreateMap<Doctor, AddDoctorResponseDto>();
             CreateMap<Hospital, HospitalIdDto>();
             CreateMap<ClinicLab, ClinicIdDto>();
+            CreateMap<Doctor, DoctorDto>()
+                .ForMember(src => src.Hospitals, opt => opt.Ignore())
+                .ForMember(src => src.Specializations, opt => opt.Ignore())
+                .ForMember(src => src.Rate, opt => opt.Ignore());
         }
     }
 }

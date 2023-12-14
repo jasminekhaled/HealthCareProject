@@ -37,6 +37,7 @@ namespace HealthCare.EF.Repositories
             return await query.ToListAsync();
         }
 
+
         public async Task<IEnumerable<T>> WhereIncludeAsync(Expression<Func<T, bool>> filter, params Expression<Func<T, object>>[] includes)
         {
             var query = _dbSet.AsQueryable();
@@ -129,6 +130,9 @@ namespace HealthCare.EF.Repositories
         public async Task<IEnumerable<TResult>> GetSpecificItems<TResult>(Expression<Func<T, bool>> filter, Expression<Func<T, TResult>> select) =>
             await _dbSet.AsNoTracking().Where(filter).Select(select).ToListAsync();
 
+
+        public async Task<TResult> WhereSelectTheFirstAsync<TResult>(Expression<Func<T, bool>> filter, Expression<Func<T, TResult>> select) =>
+            await _dbSet.AsNoTracking().Where(filter).Select(select).FirstOrDefaultAsync();
 
         public async Task<T> GetSpecificItem(Expression<Func<T, bool>> filter, Expression<Func<T, bool>> single) =>
             await _dbSet.AsNoTracking().Where(filter).SingleOrDefaultAsync(single);

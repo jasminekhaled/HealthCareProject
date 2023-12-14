@@ -34,7 +34,7 @@ namespace HealthCare.Services.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-
+         
         public async Task<GeneralResponse<SignUpResponse>> SignUp([FromForm]SignUpRequestDto dto)
         {
             try
