@@ -17,12 +17,9 @@ namespace HealthCare.Core.DTOS.DoctorModule.RequestDtos
         [MinLength(length: 10)]
         [MaxLength(length: 100)]
         public string? UserName { get; set; }
-        [MinLength(length: 2)]
-        [MaxLength(length: 20)]
-        public string? FirstName { get; set; }
-        [MinLength(length: 2)]
-        [MaxLength(length: 20)]
-        public string? LastName { get; set; }
+        [MinLength(length: 5)]
+        [MaxLength(length: 40)]
+        public string? FullName { get; set; }
         [MinLength(length: 15)]
         [MaxLength(length: 100)]
         public string? PassWord { get; set; }

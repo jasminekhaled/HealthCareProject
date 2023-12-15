@@ -516,9 +516,185 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public Task<GeneralResponse<EditDoctorResponseDto>> EditDoctor(int doctorId, [FromForm] EditDoctorDto dto)
+        public async Task<GeneralResponse<EditDoctorResponseDto>> EditDoctor(int doctorId, [FromForm] EditDoctorDto dto)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var doctor = await _unitOfWork.DoctorRepository.GetSingleWithIncludesAsync(single: a => a.Id == doctorId, i => i.DoctorSpecialization, s => s.hospitalDoctors);
+                if (doctor == null)
+                {
+                    return new GeneralResponse<EditDoctorResponseDto>
+                    {
+                        IsSuccess = false,
+                        Message = "No Doctor Found!"
+                    };
+
+                }
+                var user = await _unitOfWork.UserRepository.GetSingleWithIncludesAsync(single: s => s.UserName == doctor.UserName, includes: i => i.UploadedFile);
+
+                if(dto.UserName != null)
+                {
+                    var person = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.UserName == dto.UserName);
+                    if(person != null && person != user)
+                    return new GeneralResponse<EditDoctorResponseDto>
+                    {
+                        IsSuccess = false,
+                        Message = "UserName ia already used."
+                    };
+                }
+                if (dto.NationalId != null && !await _unitOfWork.CivilRegestrationRepository.AnyAsync(a => a.NationalId == dto.NationalId))
+                {
+                    return new GeneralResponse<EditDoctorResponseDto>
+                    {
+                        IsSuccess = false,
+                        Message = "NationalId isn't accepted!"
+                    };
+                }
+          
+                var check = await _unitOfWork.DoctorRepository.SingleOrDefaultAsync(s => s.NationalId == dto.NationalId);
+                if(check != null && doctor != check)
+                {
+                    return new GeneralResponse<EditDoctorResponseDto>
+                    {
+                        IsSuccess = false,
+                        Message = "NationalId isn't accepted!"
+                    };
+                }
+                var emailCheck = await _unitOfWork.DoctorRepository.SingleOrDefaultAsync(s => s.Email == dto.Email);
+                if (emailCheck != null && doctor != emailCheck)
+                {
+                    return new GeneralResponse<EditDoctorResponseDto>
+                    {
+                        IsSuccess = false,
+                        Message = "Email isn't accepted!"
+                    };
+                }
+
+                var specializations = new List<Specialization>();
+                if (dto.SpecializationId != null)
+                {
+                    foreach (var id in dto.SpecializationId)
+                    {
+                        var specialization = await _unitOfWork.SpecializationRepository.GetByIdAsync(id);
+                        if (specialization == null)
+                        {
+                            return new GeneralResponse<EditDoctorResponseDto>
+                            {
+                                IsSuccess = false,
+                                Message = "specialization not found!"
+                            };
+                        }
+                        specializations.Add(specialization);
+                    }
+                }
+
+                if (dto.Image != null)
+                {
+                    var MaxAllowedPosterSize = _configuration.GetValue<long>("MaxAllowedPosterSize");
+                    List<string> AllowedExtenstions = _configuration.GetSection("AllowedExtenstions").Get<List<string>>();
+
+                    if (!AllowedExtenstions.Contains(Path.GetExtension(dto.Image.FileName).ToLower()))
+                    {
+                        return new GeneralResponse<EditDoctorResponseDto>
+                        {
+                            IsSuccess = false,
+                            Message = "Only .jpg and .png Images Are Allowed."
+                        };
+                    }
+
+                    if (dto.Image.Length > MaxAllowedPosterSize)
+                    {
+                        return new GeneralResponse<EditDoctorResponseDto>
+                        {
+                            IsSuccess = false,
+                            Message = "Max Allowed Size Is 1MB."
+                        };
+                    }
+
+                    var fakeFileName = Path.GetRandomFileName();
+                    var uploadedFile = await _unitOfWork.UploadedFileRepository.GetByIdAsync(user.UploadedFileId);
+                    File.Delete(uploadedFile.FilePath);
+                    uploadedFile.FileName = dto.Image.FileName;
+                    uploadedFile.ContentType = dto.Image.ContentType;
+                    uploadedFile.StoredFileName = fakeFileName;
+
+                    var directoryPath = Path.Combine(_webHostEnvironment.ContentRootPath, "Uploads", "DoctorImages");
+                    var path = Path.Combine(directoryPath, fakeFileName);
+                    using FileStream fileStream = new(path, FileMode.Create);
+                    dto.Image.CopyTo(fileStream);
+
+                    uploadedFile.FilePath = path;
+                    _unitOfWork.UploadedFileRepository.Update(uploadedFile);
+                    
+                }
+
+                
+
+                if (dto.PassWord != null)
+                {
+                    var pw = HashingService.GetHash(dto.PassWord);
+                    doctor.PassWord = pw;
+                    user.PassWord = pw;
+                }
+                doctor.Email = dto.Email ?? doctor.Email;
+                doctor.UserName = dto.UserName ?? doctor.UserName;
+                doctor.NationalId = dto.NationalId ?? doctor.NationalId;
+                doctor.FullName = dto.FullName ?? doctor.FullName;
+                doctor.Description = dto.Description ?? doctor.Description;
+
+                var data = _mapper.Map<EditDoctorResponseDto>(doctor);
+                if (dto.SpecializationId != null)
+                {
+                    var oldDS = await _unitOfWork.DoctorSpecializationRepository.WhereIncludeAsync(s => s.DoctorId == doctor.Id);
+                    _unitOfWork.DoctorSpecializationRepository.RemoveRange(oldDS);
+                    await _unitOfWork.CompleteAsync();
+
+                    var doctorSpecialization = dto.SpecializationId.Select(s => new DoctorSpecialization
+                    {
+                        SpecializationId = s,
+                        DoctorId = doctorId
+                    }).ToList();
+                    await _unitOfWork.DoctorSpecializationRepository.AddRangeAsync(doctorSpecialization);
+                    //await _unitOfWork.CompleteAsync();
+                    var s = _mapper.Map<List<SpecializationDto>>(specializations);
+                    data.specializations = s;
+                }
+
+                user.UserName = doctor.UserName;
+                user.Email = doctor.Email;
+                user.NationalId = doctor.NationalId;
+                
+                _unitOfWork.DoctorRepository.Update(doctor);
+                _unitOfWork.UserRepository.Update(user);
+                await _unitOfWork.CompleteAsync();
+                
+                data.ImagePath = user.UploadedFile.FilePath;
+                if(dto.SpecializationId == null)
+                {
+                    var specializationIds = doctor.DoctorSpecialization.Select(ds => ds.SpecializationId);
+                    var specia = await _unitOfWork.SpecializationRepository
+                        .Where(s => specializationIds.Contains(s.Id));
+                    data.specializations = _mapper.Map<List<SpecializationDto>>(specia);
+                }
+                
+
+
+                return new GeneralResponse<EditDoctorResponseDto>
+                {
+                    IsSuccess = true,
+                    Message = "Doctor Details have been displayed Successfully.",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<EditDoctorResponseDto>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong.",
+                    Error = ex
+                };
+            }
         }
 
         public async Task<GeneralResponse<List<DoctorDto>>> GetDoctorByName(string FullName)

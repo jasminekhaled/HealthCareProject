@@ -91,6 +91,15 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
+        [HttpPatch("EditDoctor")]
+        public async Task<IActionResult> EditDoctor(int doctorId, [FromForm] EditDoctorDto dto)
+        {
+            var result = await _doctorServices.EditDoctor(doctorId, dto);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
         [HttpGet("GetDoctorByName")]
         public async Task<IActionResult> GetDoctorByName(string FullName)
         {
@@ -118,5 +127,11 @@ namespace HealthCare.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
+
+        
+
+        
+
+
     }
 }

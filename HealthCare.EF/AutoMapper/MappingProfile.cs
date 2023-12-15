@@ -67,6 +67,9 @@ namespace HealthCare.EF.AutoMapper
                 .ForMember(src => src.Hospitals, opt => opt.Ignore())
                 .ForMember(src => src.Specializations, opt => opt.Ignore())
                 .ForMember(src => src.Rate, opt => opt.Ignore());
+            CreateMap<Doctor, EditDoctorResponseDto>()
+                .ForMember(src => src.ImagePath, opt => opt.Ignore())
+                .ForMember(src => src.specializations, opt => opt.Ignore());
         }
     }
 }

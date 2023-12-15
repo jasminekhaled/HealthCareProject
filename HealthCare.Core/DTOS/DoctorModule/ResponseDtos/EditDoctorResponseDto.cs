@@ -15,7 +15,7 @@ namespace HealthCare.Core.DTOS.DoctorModule.ResponseDtos
         public string FullName { get; set; }
         public string Description { get; set; }
         public string ImagePath { get; set; }
-        public List<string> SpecializationNames { get; set; }
+        public List<SpecializationDto> specializations { get; set; }
         
     }
 }
