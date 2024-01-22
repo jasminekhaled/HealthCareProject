@@ -15,7 +15,7 @@ namespace HealthCare.Core.Models.DoctorModule
     {
         public string FullName { get; set; }
         public string Description { get; set; }
-        public int Rate { get; set; }
+        public float Rate { get; set; }
         public List<DoctorSpecialization> DoctorSpecialization { get; set; }
         public List<HospitalDoctor> hospitalDoctors { get; set; }
         public List<ClinicLabDoctor> clinicLabDoctors { get; set; }

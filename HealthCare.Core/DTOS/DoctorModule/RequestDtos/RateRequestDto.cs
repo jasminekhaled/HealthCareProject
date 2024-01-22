@@ -9,7 +9,6 @@ namespace HealthCare.Core.DTOS.DoctorModule.RequestDtos
 {
     public class RateRequestDto
     {
-        [MaxLength(length: 2)]
-        public int Rate { get; set; }
+        public float Rate { get; set; }
     }
 }

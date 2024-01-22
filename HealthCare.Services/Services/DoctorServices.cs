@@ -10,6 +10,7 @@ using HealthCare.Core.Models;
 using HealthCare.Core.Models.AuthModule;
 using HealthCare.Core.Models.DoctorModule;
 using HealthCare.Core.Models.HospitalModule;
+using HealthCare.Core.Models.PatientModule;
 using HealthCare.Services.IServices;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +20,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -862,29 +864,184 @@ namespace HealthCare.Services.Services
             }
         }
         
-        public Task<GeneralResponse<string>> RateTheDoctor(int doctorId, int PatientId, [FromForm] RateRequestDto dto)
+        public async Task<GeneralResponse<string>> RateTheDoctor(int doctorId, int PatientId, [FromForm] RateRequestDto dto)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var doctor = await _unitOfWork.DoctorRepository.GetByIdAsync(doctorId);
+                if (doctor == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No Doctor Found!"
+                    };
+                }
+                var patient = await _unitOfWork.PatientRepository.GetByIdAsync(PatientId);
+                if (patient == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No Patient Found!"
+                    };
+                }
+                if(dto.Rate <= 0 || dto.Rate > 10)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "Your rating is unacceptable!"
+                    };
+                }
+                var appliedRate = (float)Math.Round(dto.Rate, 1);
+                var rate = await _unitOfWork.RateDoctorRepository.SingleOrDefaultAsync(w => w.PatientId == PatientId && w.DoctorId == doctorId);
+                if(rate != null)
+                {
+                    rate.Rate = appliedRate;
+                    _unitOfWork.RateDoctorRepository.Update(rate);
+                }
+                else
+                {
+                    var Rating = new RateDoctor()
+                    {
+                        Doctor = doctor,
+                        Patient = patient,
+                        Rate = appliedRate
+                    };
+                    await _unitOfWork.RateDoctorRepository.AddAsync(Rating);
+                }
+                await _unitOfWork.CompleteAsync();
+
+                var TotalRate = await _unitOfWork.RateDoctorRepository.GetSpecificItems(filter: w => w.DoctorId == doctorId, select: s => s.Rate);
+                var Total = TotalRate.Average();
+                doctor.Rate = (float)Math.Round(Total, 1);
+                _unitOfWork.DoctorRepository.Update(doctor);
+                await _unitOfWork.CompleteAsync();
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = true,
+                    Message = "Rating Process was completed successfully."   
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
         }
 
-        public Task<GeneralResponse<string>> AddDoctorToClinic(int doctorId, int clinicId)
+        public async Task<GeneralResponse<string>> AddDoctorToHospital(int doctorId, int hospitalAdminId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var doctor = await _unitOfWork.DoctorRepository.GetByIdAsync(doctorId);
+                if (doctor == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No Doctor Found!"
+                    };
+                }
+                var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetByIdAsync(hospitalAdminId);
+                if (hospitalAdmin == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No hospitalAdmin Found!"
+                    };
+                }
+
+                var raw = await _unitOfWork.AdminOfHospitalRepository.SingleOrDefaultAsync(w => w.HospitalAdminId == hospitalAdminId);
+                var hospitalId = raw.HospitalId;
+                if(await _unitOfWork.HospitalDoctorRepository.AnyAsync(s => s.DoctorId == doctorId && s.HospitalId == hospitalId))
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "The doctor is already added to this hospital."
+                    };
+                }
+                var hospitalDoctor = new HospitalDoctor()
+                {
+                    Hospital = await _unitOfWork.HospitalRepository.GetByIdAsync(hospitalId),
+                    Doctor = doctor
+                };
+                await _unitOfWork.HospitalDoctorRepository.AddAsync(hospitalDoctor);
+                await _unitOfWork.CompleteAsync();
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = true,
+                    Message = "Doctor is added successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
         }
 
-        public Task<GeneralResponse<string>> AddDoctorToHospital(int doctorId, int hospitalId)
+        public async Task<GeneralResponse<string>> DeleteDoctorFromHospital(int doctorId, int hospitalAdminId)
         {
-            throw new NotImplementedException();
-        }
+            try
+            {
+                var doctor = await _unitOfWork.DoctorRepository.GetByIdAsync(doctorId);
+                if (doctor == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No Doctor Found!"
+                    };
+                }
+                var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetByIdAsync(hospitalAdminId);
+                if (hospitalAdmin == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No hospitalAdmin Found!"
+                    };
+                }
 
-        public Task<GeneralResponse<string>> DeleteDoctorFromClinic(int doctorId, int clinicId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<GeneralResponse<string>> DeleteDoctorFromHospital(int doctorId, int hospitalId)
-        {
-            throw new NotImplementedException();
+                var raw = await _unitOfWork.AdminOfHospitalRepository.SingleOrDefaultAsync(w => w.HospitalAdminId == hospitalAdminId);
+                var hospitalDoctor = await _unitOfWork.HospitalDoctorRepository.SingleOrDefaultAsync(s => s.DoctorId == doctorId && s.HospitalId == raw.HospitalId);
+                if(hospitalDoctor == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "The doctor isnot working in this hospital."
+                    };
+                }
+                _unitOfWork.HospitalDoctorRepository.Remove(hospitalDoctor);
+                await _unitOfWork.CompleteAsync();
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = true,
+                    Message = "Doctor is removed successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
         }
 
 

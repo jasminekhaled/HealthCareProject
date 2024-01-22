@@ -27,11 +27,11 @@ namespace HealthCare.Services.IServices
         Task<GeneralResponse<string>> DeleteDoctor(int doctorId);
         Task<GeneralResponse<EditDoctorResponseDto>> EditDoctor(int doctorId, [FromForm]EditDoctorDto dto);
         Task<GeneralResponse<DoctorDto>> DoctorDetails(int doctorId);
-        Task<GeneralResponse<string>> AddDoctorToHospital(int doctorId, int hospitalId);
-        Task<GeneralResponse<string>> AddDoctorToClinic(int doctorId, int clinicId);
-        Task<GeneralResponse<string>> DeleteDoctorFromHospital(int doctorId, int hospitalId);
-        Task<GeneralResponse<string>> DeleteDoctorFromClinic(int doctorId, int clinicId);
-        Task<GeneralResponse<string>> RateTheDoctor(int doctorId, int PatientId, [FromForm]RateRequestDto dto);
+        Task<GeneralResponse<string>> AddDoctorToHospital(int doctorId, int hospitalAdminId);
+        Task<GeneralResponse<string>> DeleteDoctorFromHospital(int doctorId, int hospitalAdminId);
+        Task<GeneralResponse<string>> RateTheDoctor(int doctorId, int PatientId, [FromForm] RateRequestDto dto);
+        //Task<GeneralResponse<string>> AddDoctorToClinic(int doctorId, int clinicId);
+        // Task<GeneralResponse<string>> DeleteDoctorFromClinic(int doctorId, int clinicId);
 
     }
 }

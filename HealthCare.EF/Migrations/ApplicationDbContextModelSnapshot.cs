@@ -148,6 +148,31 @@ namespace HealthCare.EF.Migrations
                     b.ToTable("Roles");
                 });
 
+            modelBuilder.Entity("HealthCare.Core.Models.AuthModule.UploadedFile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ContentType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FilePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StoredFileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UploadedFiles");
+                });
+
             modelBuilder.Entity("HealthCare.Core.Models.AuthModule.User", b =>
                 {
                     b.Property<int>("Id")
@@ -297,8 +322,8 @@ namespace HealthCare.EF.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("Rate")
-                        .HasColumnType("int");
+                    b.Property<float>("Rate")
+                        .HasColumnType("real");
 
                     b.Property<string>("UserName")
                         .IsRequired()
@@ -370,8 +395,8 @@ namespace HealthCare.EF.Migrations
                     b.Property<int>("PatientId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Rate")
-                        .HasColumnType("int");
+                    b.Property<float>("Rate")
+                        .HasColumnType("real");
 
                     b.HasKey("Id");
 
@@ -670,31 +695,6 @@ namespace HealthCare.EF.Migrations
                     b.ToTable("Patients");
                 });
 
-            modelBuilder.Entity("HealthCare.Core.Models.UploadedFile", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("ContentType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FileName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FilePath")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StoredFileName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UploadedFiles");
-                });
-
             modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.Appointment", b =>
                 {
                     b.HasOne("HealthCare.Core.Models.HospitalModule.ClinicLab", "ClinicLab")
@@ -746,7 +746,7 @@ namespace HealthCare.EF.Migrations
 
             modelBuilder.Entity("HealthCare.Core.Models.AuthModule.User", b =>
                 {
-                    b.HasOne("HealthCare.Core.Models.UploadedFile", "UploadedFile")
+                    b.HasOne("HealthCare.Core.Models.AuthModule.UploadedFile", "UploadedFile")
                         .WithOne("User")
                         .HasForeignKey("HealthCare.Core.Models.AuthModule.User", "UploadedFileId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -841,7 +841,7 @@ namespace HealthCare.EF.Migrations
 
             modelBuilder.Entity("HealthCare.Core.Models.DoctorModule.RateDoctor", b =>
                 {
-                    b.HasOne("HealthCare.Core.Models.DoctorModule.Doctor", "Docttor")
+                    b.HasOne("HealthCare.Core.Models.DoctorModule.Doctor", "Doctor")
                         .WithMany("RateDoctor")
                         .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -853,7 +853,7 @@ namespace HealthCare.EF.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Docttor");
+                    b.Navigation("Doctor");
 
                     b.Navigation("Patient");
                 });
@@ -898,7 +898,7 @@ namespace HealthCare.EF.Migrations
 
             modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.Hospital", b =>
                 {
-                    b.HasOne("HealthCare.Core.Models.UploadedFile", "UploadedFile")
+                    b.HasOne("HealthCare.Core.Models.AuthModule.UploadedFile", "UploadedFile")
                         .WithOne("Hospital")
                         .HasForeignKey("HealthCare.Core.Models.HospitalModule.Hospital", "UploadedFileId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -909,7 +909,7 @@ namespace HealthCare.EF.Migrations
 
             modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.HospitalAdmin", b =>
                 {
-                    b.HasOne("HealthCare.Core.Models.UploadedFile", "UploadedFile")
+                    b.HasOne("HealthCare.Core.Models.AuthModule.UploadedFile", "UploadedFile")
                         .WithOne("HospitalAdmin")
                         .HasForeignKey("HealthCare.Core.Models.HospitalModule.HospitalAdmin", "UploadedFileId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -972,6 +972,18 @@ namespace HealthCare.EF.Migrations
                     b.Navigation("UserRole");
                 });
 
+            modelBuilder.Entity("HealthCare.Core.Models.AuthModule.UploadedFile", b =>
+                {
+                    b.Navigation("Hospital")
+                        .IsRequired();
+
+                    b.Navigation("HospitalAdmin")
+                        .IsRequired();
+
+                    b.Navigation("User")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("HealthCare.Core.Models.AuthModule.User", b =>
                 {
                     b.Navigation("RefreshTokens");
@@ -1030,18 +1042,6 @@ namespace HealthCare.EF.Migrations
             modelBuilder.Entity("HealthCare.Core.Models.PatientModule.Patient", b =>
                 {
                     b.Navigation("RateDoctor");
-                });
-
-            modelBuilder.Entity("HealthCare.Core.Models.UploadedFile", b =>
-                {
-                    b.Navigation("Hospital")
-                        .IsRequired();
-
-                    b.Navigation("HospitalAdmin")
-                        .IsRequired();
-
-                    b.Navigation("User")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

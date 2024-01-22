@@ -128,9 +128,35 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        
+        [HttpPost("RateTheDoctor")]
+        public async Task<IActionResult> RateTheDoctor(int doctorId, int PatientId, [FromForm] RateRequestDto dto)
+        {
+            var result = await _doctorServices.RateTheDoctor(doctorId, PatientId, dto);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
 
-        
+        [HttpPost("AddDoctorToHospital")]
+        public async Task<IActionResult> AddDoctorToHospital(int doctorId, int hospitalAdminId)
+        {
+            var result = await _doctorServices.AddDoctorToHospital(doctorId, hospitalAdminId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpDelete("DeleteDoctorFromHospital")]
+        public async Task<IActionResult> DeleteDoctorFromHospital(int doctorId, int hospitalAdminId)
+        {
+            var result = await _doctorServices.DeleteDoctorFromHospital(doctorId, hospitalAdminId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+
+
 
 
     }

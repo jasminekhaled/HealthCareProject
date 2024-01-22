@@ -12,9 +12,9 @@ namespace HealthCare.Core.Models.DoctorModule
     {
         public int Id { get; set; }
         public int DoctorId { get; set; }
-        public Doctor Docttor { get; set; }
+        public Doctor Doctor { get; set; }
         public int PatientId { get; set; }
         public Patient Patient { get; set; }
-        public int Rate { get; set; }
+        public float Rate { get; set; }
     }
 }
