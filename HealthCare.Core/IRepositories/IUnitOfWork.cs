@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using HealthCare.Core.IRepositories.AppointmentModule;
 using HealthCare.Core.IRepositories.AuthModule;
 using HealthCare.Core.IRepositories.BandModule;
+using HealthCare.Core.IRepositories.ClinicModule;
 using HealthCare.Core.IRepositories.DoctorModule;
 using HealthCare.Core.IRepositories.HospitalModule;
 using HealthCare.Core.IRepositories.PatientModule;
@@ -38,6 +39,10 @@ namespace HealthCare.Core.IRepositories
         public ICivilRegestrationRepository CivilRegestrationRepository { get; }
         public IRefreshTokenRepository RefreshTokenRepository { get; }
         public IUploadedFileRepository UploadedFileRepository { get; }
+        public IXraySpecializationRepository XraySpecializationRepository { get; }
+        public IXrayDoctorRepository XrayDoctorRepository { get; }
+        public IXrayRepository XrayRepository { get; }
+        public IHospitalXrayRepository HospitalXrayRepository { get; }
         Task<int> CompleteAsync();
         void Dispose();
     }

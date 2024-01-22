@@ -1,5 +1,5 @@
 ﻿using HealthCare.Core.Models.AuthModule;
-using HealthCare.Core.Models.HospitalModule;
+using HealthCare.Core.Models.ClinicModule;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

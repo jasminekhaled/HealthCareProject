@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HealthCare.Core.Models.AuthModule;
+using HealthCare.Core.Models.ClinicModule;
 using HealthCare.Core.Models.DoctorModule;
 
 namespace HealthCare.Core.Models.HospitalModule
@@ -28,6 +29,6 @@ namespace HealthCare.Core.Models.HospitalModule
         public List<AdminOfHospital> AdminOfHospitals { get; set; }
         public HospitalGovernorate HospitalGovernorate { get; set; }
         public List<HospitalClinicLab> HospitalClinicLabs { get; set; }
-
+        public List<HospitalXray> HospitalXrays { get; set; }
     }
 }

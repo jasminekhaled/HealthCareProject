@@ -4,21 +4,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using HealthCare.Core.Models.ClinicModule;
 using HealthCare.Core.Models.DoctorModule;
 
-namespace HealthCare.Core.Models.AppointmentModule
+namespace HealthCare.Core.Models.ClinicModule
 {
-    public class Appointment
+    public class ClinicLabDoctor
     {
         public int Id { get; set; }
-        public string Day { get; set; }
-        public string Time { get; set; }
-        public int Price { get; set; }
         public int ClinicLabId { get; set; }
         public ClinicLab ClinicLab { get; set; }
         public int DoctorId { get; set; }
         public Doctor Doctor { get; set; }
-
     }
 }

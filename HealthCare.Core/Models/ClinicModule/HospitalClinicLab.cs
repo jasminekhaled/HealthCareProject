@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using HealthCare.Core.Models.DoctorModule;
+using HealthCare.Core.Models.HospitalModule;
 
-namespace HealthCare.Core.Models.HospitalModule
+namespace HealthCare.Core.Models.ClinicModule
 {
-    public class ClinicLabDoctor
+    public class HospitalClinicLab
     {
         public int Id { get; set; }
+        public int HospitalId { get; set; }
+        public Hospital Hospital { get; set; }
         public int ClinicLabId { get; set; }
         public ClinicLab ClinicLab { get; set; }
-        public int DoctorId { get; set; }
-        public Doctor Doctor { get; set; }
     }
 }

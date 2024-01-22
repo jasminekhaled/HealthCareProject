@@ -2,6 +2,7 @@
 using HealthCare.Core.IRepositories.AppointmentModule;
 using HealthCare.Core.IRepositories.AuthModule;
 using HealthCare.Core.IRepositories.BandModule;
+using HealthCare.Core.IRepositories.ClinicModule;
 using HealthCare.Core.IRepositories.DoctorModule;
 using HealthCare.Core.IRepositories.HospitalModule;
 using HealthCare.Core.IRepositories.PatientModule;
@@ -10,6 +11,7 @@ using HealthCare.EF.Repositories.AppointmentRepositories;
 using HealthCare.EF.Repositories.AuthModule;
 using HealthCare.EF.Repositories.AuthRepositories;
 using HealthCare.EF.Repositories.BandRepostiories;
+using HealthCare.EF.Repositories.ClinicModule;
 using HealthCare.EF.Repositories.DoctorModule;
 using HealthCare.EF.Repositories.HospitalModule;
 using HealthCare.EF.Repositories.HospitalRepositories;
@@ -52,6 +54,10 @@ namespace HealthCare.EF.Repositories
         public ICivilRegestrationRepository CivilRegestrationRepository { get; set; }
         public IRefreshTokenRepository RefreshTokenRepository { get; }
         public IUploadedFileRepository UploadedFileRepository { get; }
+        public IXrayRepository XrayRepository { get; }
+        public IXrayDoctorRepository XrayDoctorRepository { get; }
+        public IXraySpecializationRepository XraySpecializationRepository { get; }
+        public IHospitalXrayRepository HospitalXrayRepository { get; }
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
@@ -79,6 +85,10 @@ namespace HealthCare.EF.Repositories
             UploadedFileRepository = new UploadedFileRepository(context);
             GovernorateRepository = new GovernorateRepository(context);
             HospitalGovernorateRepository = new HospitalGovernorateRepository(context);
+            HospitalXrayRepository = new HospitalXrayRepository(context);
+            XrayRepository = new XrayRepository(context);
+            XrayDoctorRepository = new XrayDoctorRepository(context);
+            XraySpecializationRepository = new XraySpecializationRepository(context);
         }
 
 

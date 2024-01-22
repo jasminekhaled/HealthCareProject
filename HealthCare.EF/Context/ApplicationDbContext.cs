@@ -2,6 +2,7 @@
 using HealthCare.Core.Models.AppointmentModule;
 using HealthCare.Core.Models.AuthModule;
 using HealthCare.Core.Models.BandModule;
+using HealthCare.Core.Models.ClinicModule;
 using HealthCare.Core.Models.DoctorModule;
 using HealthCare.Core.Models.HospitalModule;
 using HealthCare.Core.Models.PatientModule;
@@ -46,6 +47,10 @@ namespace HealthCare.EF.Context
         public DbSet<UploadedFile> UploadedFiles { get; set; }
         public DbSet<Doctor> Doctors { get; set; }
         public DbSet<RateDoctor> RateDoctors { get; set; }
+        public DbSet<Xray> Xrays { get; set; }
+        public DbSet<XrayDoctor> XrayDoctors { get; set; }
+        public DbSet<XraySpecialization> XraySpecializations { get; set; }
+        public DbSet<HospitalXray> HospitalXrays { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RefreshToken>()

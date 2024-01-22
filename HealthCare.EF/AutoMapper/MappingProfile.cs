@@ -8,6 +8,7 @@ using HealthCare.Core.DTOS.HospitalModule.ResponseDto;
 using HealthCare.Core.DTOS.PatientModule.ResponseDto;
 using HealthCare.Core.Models;
 using HealthCare.Core.Models.AuthModule;
+using HealthCare.Core.Models.ClinicModule;
 using HealthCare.Core.Models.DoctorModule;
 using HealthCare.Core.Models.HospitalModule;
 using HealthCare.Core.Models.PatientModule;
