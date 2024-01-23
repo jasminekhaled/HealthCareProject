@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using HealthCare.Core.DTOS;
 using HealthCare.Core.DTOS.AuthModule.RequestDtos;
+using HealthCare.Core.DTOS.ClinicModule.RequestDto;
 using HealthCare.Core.DTOS.DoctorModule.RequestDtos;
 using HealthCare.Core.DTOS.DoctorModule.ResponseDtos;
 using HealthCare.Core.DTOS.HospitalModule.ResponseDto;
@@ -45,15 +46,32 @@ namespace HealthCare.Services.Services
         }
 
 
-        public async Task<GeneralResponse<string>> AddSpecialization(string Name)
+
+        public async Task<GeneralResponse<string>> AddSpecialization([FromForm]SpecializationRequestDto dto)
         {
             try
             {
-                var specialization = new Specialization()
+                var fakeFileName = Path.GetRandomFileName();
+                var uploadedFile = new UploadedFile()
                 {
-                    Name = Name
+                    FileName = dto.Image.FileName,
+                    ContentType = dto.Image.ContentType,
+                    StoredFileName = fakeFileName
                 };
-                await _unitOfWork.SpecializationRepository.AddAsync(specialization);
+                var directoryPath = Path.Combine(_webHostEnvironment.ContentRootPath, "Uploads", "SpecializationImages");
+                var path = Path.Combine(directoryPath, fakeFileName);
+                using FileStream fileStream = new(path, FileMode.Create);
+                dto.Image.CopyTo(fileStream);
+                uploadedFile.FilePath = path;
+                await _unitOfWork.UploadedFileRepository.AddAsync(uploadedFile);
+                await _unitOfWork.CompleteAsync();
+
+                var Specialization = new Specialization()
+                {
+                    Name = dto.Name,
+                    UploadedFile = uploadedFile
+                };
+                await _unitOfWork.SpecializationRepository.AddAsync(Specialization);
                 await _unitOfWork.CompleteAsync();
 
                 return new GeneralResponse<string>
@@ -71,14 +89,14 @@ namespace HealthCare.Services.Services
                     Error = ex
                 };
             }
-        
+
         }
-        public async Task<GeneralResponse<string>> DeleteSpecialization(int specializationId)
+        public async Task<GeneralResponse<string>> DeleteSpecialization(int SpecializationId)
         {
             try
             {
-                var specialization = await _unitOfWork.SpecializationRepository.GetByIdAsync(specializationId);
-                if(specialization == null)
+                var Specialization = await _unitOfWork.SpecializationRepository.GetByIdAsync(SpecializationId);
+                if (Specialization == null)
                 {
                     return new GeneralResponse<string>
                     {
@@ -86,8 +104,10 @@ namespace HealthCare.Services.Services
                         Message = "Specialization Not Found!"
                     };
                 }
-
-                _unitOfWork.SpecializationRepository.Remove(specialization);
+                var uploadedFile = await _unitOfWork.UploadedFileRepository.GetByIdAsync(Specialization.UploadedFileId);
+                File.Delete(uploadedFile.FilePath);
+                _unitOfWork.SpecializationRepository.Remove(Specialization);
+                _unitOfWork.UploadedFileRepository.Remove(uploadedFile);
                 await _unitOfWork.CompleteAsync();
 
                 return new GeneralResponse<string>
@@ -106,6 +126,8 @@ namespace HealthCare.Services.Services
                 };
             }
         }
+
+
 
         public async Task<GeneralResponse<List<SpecializationDto>>> ListOfSpecialization()
         {

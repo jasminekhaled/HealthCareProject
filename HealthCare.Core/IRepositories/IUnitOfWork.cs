@@ -42,7 +42,6 @@ namespace HealthCare.Core.IRepositories
         public IXraySpecializationRepository XraySpecializationRepository { get; }
         public IXrayDoctorRepository XrayDoctorRepository { get; }
         public IXrayRepository XrayRepository { get; }
-        public IHospitalXrayRepository HospitalXrayRepository { get; }
         Task<int> CompleteAsync();
         void Dispose();
     }

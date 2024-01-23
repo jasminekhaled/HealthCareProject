@@ -31,7 +31,6 @@ namespace HealthCare.EF.Context
         public DbSet<HospitalGovernorate> HospitalGovernorates { get; set; }
         public DbSet<Governorate> Governorates { get; set; }
         public DbSet<HospitalAdmin> HospitalAdmins { get; set; }
-        public DbSet<HospitalClinicLab> HospitalClinicLabs { get; set; }
         public DbSet<AdminOfHospital> AdminOfHospitals { get; set; }
         public DbSet<DoctorSpecialization> DoctorSpecializations { get; set; }
         public DbSet<Specialization> Specializations { get; set; }
@@ -50,7 +49,6 @@ namespace HealthCare.EF.Context
         public DbSet<Xray> Xrays { get; set; }
         public DbSet<XrayDoctor> XrayDoctors { get; set; }
         public DbSet<XraySpecialization> XraySpecializations { get; set; }
-        public DbSet<HospitalXray> HospitalXrays { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RefreshToken>()
@@ -64,6 +62,17 @@ namespace HealthCare.EF.Context
                 .HasForeignKey<Hospital>(b => b.UploadedFileId);
 
             modelBuilder.Entity<UploadedFile>()
+                .HasOne(a => a.Specialization)
+                .WithOne(r => r.UploadedFile)
+                .HasForeignKey<Specialization>(b => b.UploadedFileId)
+                .OnDelete(DeleteBehavior.NoAction); ;
+
+            modelBuilder.Entity<UploadedFile>()
+                .HasOne(a => a.XraySpecialization)
+                .WithOne(r => r.UploadedFile)
+                .HasForeignKey<XraySpecialization>(b => b.UploadedFileId);
+
+            modelBuilder.Entity<UploadedFile>()
                 .HasOne(a => a.User)
                 .WithOne(r => r.UploadedFile)
                 .HasForeignKey<User>(b => b.UploadedFileId)
@@ -75,7 +84,26 @@ namespace HealthCare.EF.Context
                 .HasForeignKey<HospitalAdmin>(b => b.UploadedFileId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<ClinicLab>()
+                .HasOne(a => a.Hospital)
+                .WithMany(r => r.ClinicLabs)
+                .HasForeignKey(b => b.HospitalId);
 
+            modelBuilder.Entity<Xray>()
+                .HasOne(a => a.Hospital)
+                .WithMany(r => r.Xrays)
+                .HasForeignKey(b => b.HospitalId);
+
+            modelBuilder.Entity<ClinicLab>()
+                .HasOne(a => a.Specialization)
+                .WithMany(r => r.ClinicLabs)
+                .HasForeignKey(b => b.SpecializationId);
+
+            modelBuilder.Entity<Xray>()
+                .HasOne(a => a.XraySpecialization)
+                .WithMany(r => r.Xrays)
+                .HasForeignKey(b => b.XraySpecializationId)
+                .OnDelete(DeleteBehavior.NoAction); ;
 
         }
     }

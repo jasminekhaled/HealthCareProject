@@ -8,19 +8,18 @@ using System.Threading.Tasks;
 using HealthCare.Core.DTOS.HospitalModule.ResponseDto;
 using HealthCare.Core.DTOS.DoctorModule.ResponseDtos;
 using HealthCare.Core.DTOS.DoctorModule.RequestDtos;
+using HealthCare.Core.DTOS.ClinicModule.RequestDto;
 
 namespace HealthCare.Services.IServices
 {
     public interface IDoctorServices
     {
-        Task<GeneralResponse<string>> AddSpecialization(string Name);
+        Task<GeneralResponse<string>> AddSpecialization([FromForm]SpecializationRequestDto dto);
         Task<GeneralResponse<string>> DeleteSpecialization(int specializationId);
         Task<GeneralResponse<List<SpecializationDto>>> ListOfSpecialization();
         Task<GeneralResponse<List<DoctorDto>>> ListOfDoctors();
         Task<GeneralResponse<List<DoctorDto>>> ListOfDoctorsinHospital(int hospitalId);
         Task<GeneralResponse<List<ListOfHospitalDto>>> ListOfHospitalsADoctorWorksin(int doctorId);
-        //Task<GeneralResponse<List<DoctorDto>>> ListOfClinicsADoctorWorksin();
-       // Task<GeneralResponse<List<DoctorDto>>> ListOfDoctorsinClinic();
         Task<GeneralResponse<List<DoctorDto>>> GetDoctorByName(string FullName);
         Task<GeneralResponse<List<DoctorDto>>> GetDoctorInSpecificHospitalByName(string FullName);
         Task<GeneralResponse<AddDoctorResponseDto>> AddDoctor([FromForm]DoctorRequestDto dto);
@@ -30,8 +29,7 @@ namespace HealthCare.Services.IServices
         Task<GeneralResponse<string>> AddDoctorToHospital(int doctorId, int hospitalAdminId);
         Task<GeneralResponse<string>> DeleteDoctorFromHospital(int doctorId, int hospitalAdminId);
         Task<GeneralResponse<string>> RateTheDoctor(int doctorId, int PatientId, [FromForm] RateRequestDto dto);
-        //Task<GeneralResponse<string>> AddDoctorToClinic(int doctorId, int clinicId);
-        // Task<GeneralResponse<string>> DeleteDoctorFromClinic(int doctorId, int clinicId);
+
 
     }
 }

@@ -13,7 +13,8 @@ namespace HealthCare.Core.Models.ClinicModule
         public int Id { get; set; }
         public int SpecializationId { get; set; }
         public Specialization Specialization { get; set; }
-        public HospitalClinicLab HospitalClinicLab { get; set; }
+        public int HospitalId { get; set; }
+        public Hospital Hospital { get; set; }
         public List<ClinicLabDoctor> clinicLabDoctors { get; set; }
 
 

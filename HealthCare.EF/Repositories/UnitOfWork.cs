@@ -57,7 +57,6 @@ namespace HealthCare.EF.Repositories
         public IXrayRepository XrayRepository { get; }
         public IXrayDoctorRepository XrayDoctorRepository { get; }
         public IXraySpecializationRepository XraySpecializationRepository { get; }
-        public IHospitalXrayRepository HospitalXrayRepository { get; }
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
@@ -85,7 +84,6 @@ namespace HealthCare.EF.Repositories
             UploadedFileRepository = new UploadedFileRepository(context);
             GovernorateRepository = new GovernorateRepository(context);
             HospitalGovernorateRepository = new HospitalGovernorateRepository(context);
-            HospitalXrayRepository = new HospitalXrayRepository(context);
             XrayRepository = new XrayRepository(context);
             XrayDoctorRepository = new XrayDoctorRepository(context);
             XraySpecializationRepository = new XraySpecializationRepository(context);

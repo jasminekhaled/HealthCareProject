@@ -25,10 +25,11 @@ namespace HealthCare.Core.Models.HospitalModule
         public string Description { get; set; }
         public int UploadedFileId { get; set; }
         public UploadedFile UploadedFile { get; set; }
+        public List<Xray> Xrays { get; set; }
+        public List<ClinicLab> ClinicLabs { get; set; }
         public List<HospitalDoctor> hospitalDoctors { get; set; }
         public List<AdminOfHospital> AdminOfHospitals { get; set; }
         public HospitalGovernorate HospitalGovernorate { get; set; }
-        public List<HospitalClinicLab> HospitalClinicLabs { get; set; }
-        public List<HospitalXray> HospitalXrays { get; set; }
+        
     }
 }

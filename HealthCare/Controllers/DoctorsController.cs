@@ -1,4 +1,5 @@
-﻿using HealthCare.Core.DTOS.DoctorModule.RequestDtos;
+﻿using HealthCare.Core.DTOS.ClinicModule.RequestDto;
+using HealthCare.Core.DTOS.DoctorModule.RequestDtos;
 using HealthCare.Core.DTOS.HospitalModule.RequestDto;
 using HealthCare.Services.IServices;
 using HealthCare.Services.Services;
@@ -20,9 +21,9 @@ namespace HealthCare.Controllers
 
 
         [HttpPost("AddSpecialization")]
-        public async Task<IActionResult> AddSpecialization(string Name)
+        public async Task<IActionResult> AddSpecialization([FromForm] SpecializationRequestDto dto)
         {
-            var result = await _doctorServices.AddSpecialization(Name);
+            var result = await _doctorServices.AddSpecialization(dto);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);

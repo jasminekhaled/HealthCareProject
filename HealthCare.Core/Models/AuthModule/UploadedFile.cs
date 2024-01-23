@@ -1,4 +1,5 @@
-﻿using HealthCare.Core.Models.HospitalModule;
+﻿using HealthCare.Core.Models.ClinicModule;
+using HealthCare.Core.Models.HospitalModule;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,5 +18,7 @@ namespace HealthCare.Core.Models.AuthModule
         public Hospital Hospital { get; set; }
         public HospitalAdmin HospitalAdmin { get; set; }
         public User User { get; set; }
+        public Specialization Specialization { get; set; }
+        public XraySpecialization XraySpecialization { get; set; }
     }
 }

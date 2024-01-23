@@ -26,6 +26,8 @@
     <Folder Include="Uploads\HospitalImages\" />
     <Folder Include="Uploads\HospitalAdminImages\" />
     <Folder Include="Uploads\DoctorImages\" />
+    <Folder Include="Uploads\SpecializationImages\" />
+    <Folder Include="Uploads\XraySpecializationImages\" />
   </ItemGroup>
 
 </Project>
