@@ -15,13 +15,13 @@ namespace HealthCare.Services.IServices
     {
         Task<GeneralResponse<string>> AddXraySpecialization([FromForm]SpecializationRequestDto dto);
         Task<GeneralResponse<string>> DeleteXraySpecialization(int xraySpecializationId);
-        Task<GeneralResponse<AddDoctorResponseDto>> AddClinic(int hospitalAdminId, AddClinicDto dto);
-        Task<GeneralResponse<AddDoctorResponseDto>> AddXrayLab(int hospitalAdminId, AddClinicDto dto);
-        Task<GeneralResponse<string>> DeleteClinic(int clinicId);
-        Task<GeneralResponse<string>> DeleteXrayLab(int xrayLabId);
+        Task<GeneralResponse<AddClinicResponseDto>> AddClinic(int hospitalAdminId, [FromForm]AddClinicDto dto);
+        Task<GeneralResponse<AddClinicResponseDto>> AddXrayLab(int hospitalAdminId, [FromForm]AddClinicDto dto);
+        Task<GeneralResponse<string>> DeleteClinic(int clinicId); // donot forget to delete the appointments and reservations of this clinic
+        Task<GeneralResponse<string>> DeleteXrayLab(int xrayLabId); // donot forget to delete the appointments and reservations of this clinic
         Task<GeneralResponse<List<AddClinicResponseDto>>> ListOfClinicsInHospital(int hospitalId);
         Task<GeneralResponse<List<AddClinicResponseDto>>> ListOfXrayLabsInHospital(int hospitalId);
-        Task<GeneralResponse<List<AddClinicResponseDto>>> ListOfClinicsADoctorWorksin(int doctorId);
-        Task<GeneralResponse<List<AddClinicResponseDto>>> ListOfXrayLabsADoctorWorksin(int doctorId);
+        Task<GeneralResponse<List<AddClinicResponseDto>>> ListOfClinicsADoctorWorksin(int doctorId, int hospitalId);
+        Task<GeneralResponse<List<AddClinicResponseDto>>> ListOfXrayLabsADoctorWorksin(int doctorId, int hospitalId);
     }
 }

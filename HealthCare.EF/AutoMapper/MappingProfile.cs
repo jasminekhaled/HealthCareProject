@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using HealthCare.Core.DTOS.AuthModule.RequestDtos;
 using HealthCare.Core.DTOS.AuthModule.ResponseDtos;
+using HealthCare.Core.DTOS.ClinicModule.ResponseDto;
 using HealthCare.Core.DTOS.DoctorModule.RequestDtos;
 using HealthCare.Core.DTOS.DoctorModule.ResponseDtos;
 using HealthCare.Core.DTOS.HospitalModule.RequestDto;
@@ -71,6 +72,16 @@ namespace HealthCare.EF.AutoMapper
             CreateMap<Doctor, EditDoctorResponseDto>()
                 .ForMember(src => src.ImagePath, opt => opt.Ignore())
                 .ForMember(src => src.specializations, opt => opt.Ignore());
+            CreateMap<Specialization, AddClinicResponseDto>()
+                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath));
+            CreateMap<XraySpecialization, AddClinicResponseDto>()
+                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath));
+            CreateMap<ClinicLab, AddClinicResponseDto>()
+                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.Specialization.UploadedFile.FilePath))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Specialization.Name));
+            CreateMap<Xray, AddClinicResponseDto>()
+                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.XraySpecialization.UploadedFile.FilePath))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.XraySpecialization.Name));
         }
     }
 }

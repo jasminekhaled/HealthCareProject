@@ -504,14 +504,14 @@ namespace HealthCare.Services.Services
                     data.ImagePath = path;
 
                 }
-                await _unitOfWork.HospitalAdminRepository.AddAsync(admin);
-                await _unitOfWork.CompleteAsync();
                 
                 var adminOfHospital = new AdminOfHospital()
                 {
-                    HospitalId = hospitalId,
-                    HospitalAdminId = admin.Id
+                    Hospital = hospital,
+                    HospitalAdmin = admin
                 };
+                admin.AdminOfHospital = adminOfHospital;
+                await _unitOfWork.HospitalAdminRepository.AddAsync(admin);
                 await _unitOfWork.AdminOfHospitalRepository.AddAsync(adminOfHospital);
                 await _unitOfWork.CompleteAsync();
 
