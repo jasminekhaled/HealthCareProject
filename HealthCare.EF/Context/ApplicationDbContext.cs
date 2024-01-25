@@ -49,6 +49,10 @@ namespace HealthCare.EF.Context
         public DbSet<Xray> Xrays { get; set; }
         public DbSet<XrayDoctor> XrayDoctors { get; set; }
         public DbSet<XraySpecialization> XraySpecializations { get; set; }
+        public DbSet<Lab> Labs { get; set; }
+        public DbSet<LabDoctor> LabDoctors { get; set; }
+        public DbSet<LabSpecialization> LabSpecializations { get; set; }
+        public DbSet<SpecializationsOfLab> SpecializationsOfLabs { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RefreshToken>()
@@ -71,6 +75,11 @@ namespace HealthCare.EF.Context
                 .HasOne(a => a.XraySpecialization)
                 .WithOne(r => r.UploadedFile)
                 .HasForeignKey<XraySpecialization>(b => b.UploadedFileId);
+
+            modelBuilder.Entity<UploadedFile>()
+                .HasOne(a => a.LabSpecialization)
+                .WithOne(r => r.UploadedFile)
+                .HasForeignKey<LabSpecialization>(b => b.UploadedFileId);
 
             modelBuilder.Entity<UploadedFile>()
                 .HasOne(a => a.User)
@@ -104,6 +113,12 @@ namespace HealthCare.EF.Context
                 .WithMany(r => r.Xrays)
                 .HasForeignKey(b => b.XraySpecializationId)
                 .OnDelete(DeleteBehavior.NoAction); ;
+
+            modelBuilder.Entity<SpecializationsOfLab>()
+                .HasOne(a => a.LabSpecialization)
+                .WithMany(r => r.SpecializationsOfLab)
+                .HasForeignKey(b => b.LabSpecializationId)
+                .OnDelete(DeleteBehavior.NoAction);
 
         }
     }

@@ -36,6 +36,42 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
+        [HttpPost("AddLabSpecialization")]
+        public async Task<IActionResult> AddLabSpecialization([FromForm] LabSpecializationRequestDto dto)
+        {
+            var result = await _clinicServices.AddLabSpecialization(dto);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpDelete("DeleteLabSpecialization")]
+        public async Task<IActionResult> DeleteLabSpecialization(int labSpecializationId)
+        {
+            var result = await _clinicServices.DeleteLabSpecialization(labSpecializationId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpGet("ListOfXraySpecialization")]
+        public async Task<IActionResult> ListOfXraySpecialization()
+        {
+            var result = await _clinicServices.ListOfXraySpecialization();
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpGet("ListOfLabSpecialization")]
+        public async Task<IActionResult> ListOfLabSpecialization()
+        {
+            var result = await _clinicServices.ListOfLabSpecialization();
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
         [HttpPost("AddClinic")]
         public async Task<IActionResult> AddClinic(int hospitalAdminId, [FromForm] AddClinicDto dto)
         {
@@ -49,6 +85,15 @@ namespace HealthCare.Controllers
         public async Task<IActionResult> AddXrayLab(int hospitalAdminId, [FromForm] AddClinicDto dto)
         {
             var result = await _clinicServices.AddXrayLab(hospitalAdminId, dto);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpPost("AddLab")]
+        public async Task<IActionResult> AddLab(int hospitalAdminId, [FromForm] AddLabDto dto)
+        {
+            var result = await _clinicServices.AddLab(hospitalAdminId, dto);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
@@ -72,6 +117,15 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
+        [HttpDelete("DeleteLab")]
+        public async Task<IActionResult> DeleteLab(int labId)
+        {
+            var result = await _clinicServices.DeleteLab(labId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
         [HttpGet("ListOfClinicsADoctorWorksin")]
         public async Task<IActionResult> ListOfClinicsADoctorWorksin(int doctorId, int hospitalId)
         {
@@ -85,6 +139,15 @@ namespace HealthCare.Controllers
         public async Task<IActionResult> ListOfXrayLabsADoctorWorksin(int doctorId, int hospitalId)
         {
             var result = await _clinicServices.ListOfXrayLabsADoctorWorksin(doctorId, hospitalId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpGet("ListOfLabsADoctorWorksin")]
+        public async Task<IActionResult> ListOfLabsADoctorWorksin(int doctorId, int hospitalId)
+        {
+            var result = await _clinicServices.ListOfLabsADoctorWorksin(doctorId, hospitalId);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
@@ -108,7 +171,16 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-      
+        [HttpGet("ListOfLabsInHospital")]
+        public async Task<IActionResult> ListOfLabsInHospital(int hospitalId)
+        {
+            var result = await _clinicServices.ListOfLabsInHospital(hospitalId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+
 
     }
 }

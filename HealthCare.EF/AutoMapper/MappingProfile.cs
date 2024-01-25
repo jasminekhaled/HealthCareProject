@@ -76,12 +76,17 @@ namespace HealthCare.EF.AutoMapper
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath));
             CreateMap<XraySpecialization, AddClinicResponseDto>()
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath));
+            CreateMap<LabSpecialization, AddClinicResponseDto>()
+                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath));
             CreateMap<ClinicLab, AddClinicResponseDto>()
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.Specialization.UploadedFile.FilePath))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Specialization.Name));
             CreateMap<Xray, AddClinicResponseDto>()
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.XraySpecialization.UploadedFile.FilePath))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.XraySpecialization.Name));
+            CreateMap<Lab, AddLabResponseDto>();
+            CreateMap<LabSpecialization, SpecializationDto>();
+
         }
     }
 }

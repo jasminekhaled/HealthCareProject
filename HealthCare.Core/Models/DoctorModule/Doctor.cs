@@ -19,6 +19,8 @@ namespace HealthCare.Core.Models.DoctorModule
         public List<DoctorSpecialization> DoctorSpecialization { get; set; }
         public List<HospitalDoctor> hospitalDoctors { get; set; }
         public List<ClinicLabDoctor> clinicLabDoctors { get; set; }
+        public List<LabDoctor> LabDoctors { get; set; }
+        public List<XrayDoctor> XrayDoctors { get; set; }
         public List<RateDoctor> RateDoctor { get; set; }
 
 

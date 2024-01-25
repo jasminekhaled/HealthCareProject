@@ -15,13 +15,21 @@ namespace HealthCare.Services.IServices
     {
         Task<GeneralResponse<string>> AddXraySpecialization([FromForm]SpecializationRequestDto dto);
         Task<GeneralResponse<string>> DeleteXraySpecialization(int xraySpecializationId);
+        Task<GeneralResponse<string>> AddLabSpecialization([FromForm] LabSpecializationRequestDto dto);
+        Task<GeneralResponse<string>> DeleteLabSpecialization(int LabSpecializationId);
+        Task<GeneralResponse<List<AddClinicResponseDto>>> ListOfXraySpecialization();
+        Task<GeneralResponse<List<AddClinicResponseDto>>> ListOfLabSpecialization();
         Task<GeneralResponse<AddClinicResponseDto>> AddClinic(int hospitalAdminId, [FromForm]AddClinicDto dto);
         Task<GeneralResponse<AddClinicResponseDto>> AddXrayLab(int hospitalAdminId, [FromForm]AddClinicDto dto);
+        Task<GeneralResponse<AddLabResponseDto>> AddLab(int hospitalAdminId, [FromForm] AddLabDto dto);
         Task<GeneralResponse<string>> DeleteClinic(int clinicId); // donot forget to delete the appointments and reservations of this clinic
         Task<GeneralResponse<string>> DeleteXrayLab(int xrayLabId); // donot forget to delete the appointments and reservations of this clinic
+        Task<GeneralResponse<string>> DeleteLab(int labId); // donot forget to delete the appointments and reservations of this clinic
         Task<GeneralResponse<List<AddClinicResponseDto>>> ListOfClinicsInHospital(int hospitalId);
         Task<GeneralResponse<List<AddClinicResponseDto>>> ListOfXrayLabsInHospital(int hospitalId);
+        Task<GeneralResponse<List<AddLabResponseDto>>> ListOfLabsInHospital(int hospitalId);
         Task<GeneralResponse<List<AddClinicResponseDto>>> ListOfClinicsADoctorWorksin(int doctorId, int hospitalId);
         Task<GeneralResponse<List<AddClinicResponseDto>>> ListOfXrayLabsADoctorWorksin(int doctorId, int hospitalId);
+        Task<GeneralResponse<List<AddLabResponseDto>>> ListOfLabsADoctorWorksin(int doctorId, int hospitalId);//check that itis working
     }
 }

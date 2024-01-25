@@ -20,5 +20,6 @@ namespace HealthCare.Core.Models.AuthModule
         public User User { get; set; }
         public Specialization Specialization { get; set; }
         public XraySpecialization XraySpecialization { get; set; }
+        public LabSpecialization LabSpecialization { get; set; }
     }
 }

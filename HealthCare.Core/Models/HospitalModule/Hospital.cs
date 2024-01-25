@@ -27,6 +27,7 @@ namespace HealthCare.Core.Models.HospitalModule
         public UploadedFile UploadedFile { get; set; }
         public List<Xray> Xrays { get; set; }
         public List<ClinicLab> ClinicLabs { get; set; }
+        public List<Lab> Labs { get; set; }
         public List<HospitalDoctor> hospitalDoctors { get; set; }
         public List<AdminOfHospital> AdminOfHospitals { get; set; }
         public HospitalGovernorate HospitalGovernorate { get; set; }
