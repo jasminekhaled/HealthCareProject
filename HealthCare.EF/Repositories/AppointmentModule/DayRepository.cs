@@ -1,6 +1,5 @@
 ﻿using HealthCare.Core.IRepositories.AppointmentModule;
 using HealthCare.Core.Models.AppointmentModule;
-using HealthCare.Core.Models.BandModule;
 using HealthCare.EF.Context;
 using System;
 using System.Collections.Generic;
@@ -8,12 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HealthCare.EF.Repositories.AppointmentRepositories
+namespace HealthCare.EF.Repositories.AppointmentModule
 {
-    public class AppointmentRepository : BaseRepository<Appointment>, IAppointmentRepository
+    public class DayRepository : BaseRepository<Day>, IDayRepository
     {
 
-        public AppointmentRepository(ApplicationDbContext context) : base(context)
+        public DayRepository(ApplicationDbContext context) : base(context)
         {
         }
 

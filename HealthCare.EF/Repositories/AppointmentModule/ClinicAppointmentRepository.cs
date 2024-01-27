@@ -1,6 +1,6 @@
 ﻿using HealthCare.Core.IRepositories.AppointmentModule;
 using HealthCare.Core.Models.AppointmentModule;
-using HealthCare.Core.Models.AuthModule;
+using HealthCare.Core.Models.BandModule;
 using HealthCare.EF.Context;
 using System;
 using System.Collections.Generic;
@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace HealthCare.EF.Repositories.AppointmentRepositories
 {
-    public class ReservationRepository : BaseRepository<Reservation>, IReservationRepository
+    public class ClinicAppointmentRepository : BaseRepository<ClinicAppointment>, IClinicAppointmentRepository
     {
 
-        public ReservationRepository(ApplicationDbContext context) : base(context)
+        public ClinicAppointmentRepository(ApplicationDbContext context) : base(context)
         {
         }
 

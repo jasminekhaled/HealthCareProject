@@ -7,6 +7,7 @@ using HealthCare.Core.IRepositories.DoctorModule;
 using HealthCare.Core.IRepositories.HospitalModule;
 using HealthCare.Core.IRepositories.PatientModule;
 using HealthCare.EF.Context;
+using HealthCare.EF.Repositories.AppointmentModule;
 using HealthCare.EF.Repositories.AppointmentRepositories;
 using HealthCare.EF.Repositories.AuthModule;
 using HealthCare.EF.Repositories.AuthRepositories;
@@ -47,8 +48,6 @@ namespace HealthCare.EF.Repositories
         public IHospitalAdminRepository HospitalAdminRepository { get; set; }
         public IClinicLabRepository ClinicLabRepository { get; }
         public IClinicLabDoctorRepository ClinicLabDoctorRepository { get; set; }
-        public IReservationRepository ReservationRepository { get; set; }
-        public IAppointmentRepository AppointmentRepository { get; set; }
         public IBandRepository BandRepository { get; set; }
         public ICurrentStateRepository CurrentStateRepository { get; set; }
         public ICivilRegestrationRepository CivilRegestrationRepository { get; set; }
@@ -61,6 +60,27 @@ namespace HealthCare.EF.Repositories
         public ILabDoctorRepository LabDoctorRepository { get; }
         public ILabSpecializationRepository LabSpecializationRepository { get; }
         public ISpecializationsOfLabRepository SpecializationsOfLabRepository { get; }
+
+        public IClinicReservationRepository ClinicReservationRepository { get; }
+
+        public IClinicAppointmentRepository ClinicAppointmentRepository { get; }
+
+        public ILabReservationRepository LabReservationRepository { get; }
+
+        public IXrayAppointmentRepository XrayAppointmentRepository { get; }
+
+        public IXrayReservationRepository XrayReservationRepository { get; }
+
+        public ILabAppointmentRepository LabAppointmentRepository { get; }
+
+        public IClinicAppointmentDateRepository ClinicAppointmentDateRepository { get; }
+
+        public IXrayAppointmentDateRepository XrayAppointmentDateRepository { get; }
+
+        public ILabAppointmentDateRepository LabAppointmentDateRepository { get; }
+
+        public IDayRepository DayRepository { get; }
+
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
@@ -78,8 +98,6 @@ namespace HealthCare.EF.Repositories
             HospitalDoctorRepository = new HospitalDoctorRepository(context);
             HospitalAdminRepository = new HospitalAdminRepository(context);
             ClinicLabDoctorRepository = new ClinicLabDoctorRepository(context);
-            AppointmentRepository = new AppointmentRepository(context);
-            ReservationRepository = new ReservationRepository(context);
             BandRepository = new BandRepository(context);
             CurrentStateRepository = new CurrentStateRepository(context);
             MedicalHistoryRepository = new MedicalHistoryRepository(context);
@@ -95,6 +113,16 @@ namespace HealthCare.EF.Repositories
             LabDoctorRepository = new LabDoctorRepository(context);
             LabSpecializationRepository = new LabSpecializationRepository(context);
             SpecializationsOfLabRepository = new SpecializationsOfLabRepository(context);
+            LabAppointmentRepository = new LabAppointmentRepository(context);
+            ClinicAppointmentRepository = new ClinicAppointmentRepository(context);
+            XrayAppointmentRepository = new XrayAppointmentRepository(context);
+            ClinicReservationRepository = new ClinicReservationRepository(context);
+            XrayReservationRepository = new XrayReservationRepository(context);
+            LabReservationRepository = new LabReservationRepository(context);
+            LabAppointmentDateRepository = new LabAppointmentDateRepository(context);
+            ClinicAppointmentDateRepository = new ClinicAppointmentDateRepository(context);
+            XrayAppointmentDateRepository = new XrayAppointmentDateRepository(context);
+            DayRepository = new DayRepository(context);
         }
 
 

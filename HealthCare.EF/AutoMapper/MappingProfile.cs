@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using HealthCare.Core.DTOS.AppointmentModule.RequestDto;
+using HealthCare.Core.DTOS.AppointmentModule.ResponseDto;
 using HealthCare.Core.DTOS.AuthModule.RequestDtos;
 using HealthCare.Core.DTOS.AuthModule.ResponseDtos;
 using HealthCare.Core.DTOS.ClinicModule.ResponseDto;
@@ -8,6 +10,7 @@ using HealthCare.Core.DTOS.HospitalModule.RequestDto;
 using HealthCare.Core.DTOS.HospitalModule.ResponseDto;
 using HealthCare.Core.DTOS.PatientModule.ResponseDto;
 using HealthCare.Core.Models;
+using HealthCare.Core.Models.AppointmentModule;
 using HealthCare.Core.Models.AuthModule;
 using HealthCare.Core.Models.ClinicModule;
 using HealthCare.Core.Models.DoctorModule;
@@ -86,7 +89,12 @@ namespace HealthCare.EF.AutoMapper
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.XraySpecialization.Name));
             CreateMap<Lab, AddLabResponseDto>();
             CreateMap<LabSpecialization, SpecializationDto>();
-
+            CreateMap<ClinicAppointment, AppointmentResponseDto>()
+                .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor.FullName))
+                .ForMember(dest => dest.DoctorRate, opt => opt.MapFrom(src => src.Doctor.Rate))
+                .ForMember(dest => dest.DoctorDiscription, opt => opt.MapFrom(src => src.Doctor.Description));
+            CreateMap<ClinicAppointmentDate, AppointmentDateResponseDto>()
+                .ForMember(dest => dest.DayName, opt => opt.MapFrom(src => src.Day.DayName));
         }
     }
 }

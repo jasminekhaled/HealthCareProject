@@ -32,8 +32,12 @@ namespace HealthCare.Core.IRepositories
         public IHospitalDoctorRepository HospitalDoctorRepository { get; }
         public IClinicLabRepository ClinicLabRepository { get; }
         public IClinicLabDoctorRepository ClinicLabDoctorRepository { get; }
-        public IReservationRepository ReservationRepository { get; }
-        public IAppointmentRepository AppointmentRepository { get; }
+        public IClinicReservationRepository ClinicReservationRepository { get; }
+        public IClinicAppointmentRepository ClinicAppointmentRepository { get; }
+        public ILabReservationRepository LabReservationRepository { get; }
+        public IXrayAppointmentRepository XrayAppointmentRepository { get; }
+        public IXrayReservationRepository XrayReservationRepository { get; }
+        public ILabAppointmentRepository LabAppointmentRepository { get; }
         public IBandRepository BandRepository { get; }
         public ICurrentStateRepository CurrentStateRepository { get; }
         public ICivilRegestrationRepository CivilRegestrationRepository { get; }
@@ -46,6 +50,10 @@ namespace HealthCare.Core.IRepositories
         public ILabDoctorRepository LabDoctorRepository { get; }
         public ILabSpecializationRepository LabSpecializationRepository { get; }
         public ISpecializationsOfLabRepository SpecializationsOfLabRepository { get; }
+        public IClinicAppointmentDateRepository ClinicAppointmentDateRepository { get; }
+        public IXrayAppointmentDateRepository XrayAppointmentDateRepository { get; }
+        public ILabAppointmentDateRepository LabAppointmentDateRepository { get; }
+        public IDayRepository DayRepository { get; }
         Task<int> CompleteAsync();
         void Dispose();
     }

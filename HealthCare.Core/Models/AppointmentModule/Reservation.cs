@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -15,8 +15,7 @@ namespace HealthCare.Core.Models.AppointmentModule
         public DateTime Date { get; set; }
         public int PatientId { get; set; }
         public Patient Patient { get; set; }
-        public int AppointmentId { get; set; }
-        public Appointment Appointment { get; set; }
+        
 
     }
 }

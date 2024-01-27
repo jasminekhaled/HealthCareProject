@@ -1,4 +1,5 @@
-﻿using HealthCare.Core.Models.AuthModule;
+﻿using HealthCare.Core.Models.AppointmentModule;
+using HealthCare.Core.Models.AuthModule;
 using HealthCare.Core.Models.ClinicModule;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,9 @@ namespace HealthCare.Core.Models.DoctorModule
         public List<LabDoctor> LabDoctors { get; set; }
         public List<XrayDoctor> XrayDoctors { get; set; }
         public List<RateDoctor> RateDoctor { get; set; }
+        public ClinicAppointment ClinicAppointment { get; set; }
+        public XrayAppointment XrayAppointment { get; set; }
+        public LabAppointment LabAppointment { get; set; }
 
 
     }

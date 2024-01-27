@@ -22,7 +22,7 @@ namespace HealthCare.EF.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.Appointment", b =>
+            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.ClinicAppointment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -33,17 +33,10 @@ namespace HealthCare.EF.Migrations
                     b.Property<int>("ClinicLabId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Day")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("DoctorId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Price")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Time")
+                    b.Property<string>("Price")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -51,12 +44,13 @@ namespace HealthCare.EF.Migrations
 
                     b.HasIndex("ClinicLabId");
 
-                    b.HasIndex("DoctorId");
+                    b.HasIndex("DoctorId")
+                        .IsUnique();
 
-                    b.ToTable("Appointments");
+                    b.ToTable("ClinicAppointments");
                 });
 
-            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.Reservation", b =>
+            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.ClinicAppointmentDate", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -64,7 +58,39 @@ namespace HealthCare.EF.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("AppointmentId")
+                    b.Property<int>("ClinicAppointmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DayId")
+                        .HasColumnType("int");
+
+                    b.Property<TimeSpan>("FromTime")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan>("ToTime")
+                        .HasColumnType("time");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClinicAppointmentId");
+
+                    b.HasIndex("DayId");
+
+                    b.ToTable("ClinicAppointmentDates");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.ClinicReservation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ClinicAppointmentDateId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ClinicAppointmentId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
@@ -75,11 +101,206 @@ namespace HealthCare.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AppointmentId");
+                    b.HasIndex("ClinicAppointmentDateId");
+
+                    b.HasIndex("ClinicAppointmentId");
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Reservations");
+                    b.ToTable("ClinicReservations");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.Day", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("DayName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Days");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.LabAppointment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LabId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Price")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId")
+                        .IsUnique();
+
+                    b.HasIndex("LabId");
+
+                    b.ToTable("LabAppointments");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.LabAppointmentDate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("DayId")
+                        .HasColumnType("int");
+
+                    b.Property<TimeSpan>("FromTime")
+                        .HasColumnType("time");
+
+                    b.Property<int>("LabAppointmentId")
+                        .HasColumnType("int");
+
+                    b.Property<TimeSpan>("ToTime")
+                        .HasColumnType("time");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DayId");
+
+                    b.HasIndex("LabAppointmentId");
+
+                    b.ToTable("LabAppointmentDates");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.LabReservation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("LabAppointmentDateId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LabAppointmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LabAppointmentDateId");
+
+                    b.HasIndex("LabAppointmentId");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("LabReservations");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.XrayAppointment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Price")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("XrayId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId")
+                        .IsUnique();
+
+                    b.HasIndex("XrayId");
+
+                    b.ToTable("XrayAppointments");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.XrayAppointmentDate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("DayId")
+                        .HasColumnType("int");
+
+                    b.Property<TimeSpan>("FromTime")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan>("ToTime")
+                        .HasColumnType("time");
+
+                    b.Property<int>("XrayAppointmentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DayId");
+
+                    b.HasIndex("XrayAppointmentId");
+
+                    b.ToTable("XrayAppointmentDates");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.XrayReservation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("XrayAppointmentDateId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("XrayAppointmentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
+
+                    b.HasIndex("XrayAppointmentDateId");
+
+                    b.HasIndex("XrayAppointmentId");
+
+                    b.ToTable("XrayReservations");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.AuthModule.CivilRegestration", b =>
@@ -839,17 +1060,17 @@ namespace HealthCare.EF.Migrations
                     b.ToTable("Patients");
                 });
 
-            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.Appointment", b =>
+            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.ClinicAppointment", b =>
                 {
                     b.HasOne("HealthCare.Core.Models.ClinicModule.ClinicLab", "ClinicLab")
-                        .WithMany()
+                        .WithMany("ClinicAppointments")
                         .HasForeignKey("ClinicLabId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("HealthCare.Core.Models.DoctorModule.Doctor", "Doctor")
-                        .WithMany()
-                        .HasForeignKey("DoctorId")
+                        .WithOne("ClinicAppointment")
+                        .HasForeignKey("HealthCare.Core.Models.AppointmentModule.ClinicAppointment", "DoctorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -858,23 +1079,180 @@ namespace HealthCare.EF.Migrations
                     b.Navigation("Doctor");
                 });
 
-            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.Reservation", b =>
+            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.ClinicAppointmentDate", b =>
                 {
-                    b.HasOne("HealthCare.Core.Models.AppointmentModule.Appointment", "Appointment")
-                        .WithMany()
-                        .HasForeignKey("AppointmentId")
+                    b.HasOne("HealthCare.Core.Models.AppointmentModule.ClinicAppointment", "ClinicAppointment")
+                        .WithMany("ClinicAppointmentDates")
+                        .HasForeignKey("ClinicAppointmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("HealthCare.Core.Models.AppointmentModule.Day", "Day")
+                        .WithMany("ClinicAppointmentDates")
+                        .HasForeignKey("DayId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ClinicAppointment");
+
+                    b.Navigation("Day");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.ClinicReservation", b =>
+                {
+                    b.HasOne("HealthCare.Core.Models.AppointmentModule.ClinicAppointmentDate", "ClinicAppointmentDate")
+                        .WithMany("ClinicReservations")
+                        .HasForeignKey("ClinicAppointmentDateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HealthCare.Core.Models.AppointmentModule.ClinicAppointment", "ClinicAppointment")
+                        .WithMany("ClinicReservations")
+                        .HasForeignKey("ClinicAppointmentId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("HealthCare.Core.Models.PatientModule.Patient", "Patient")
-                        .WithMany()
+                        .WithMany("ClinicReservations")
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Appointment");
+                    b.Navigation("ClinicAppointment");
+
+                    b.Navigation("ClinicAppointmentDate");
 
                     b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.LabAppointment", b =>
+                {
+                    b.HasOne("HealthCare.Core.Models.DoctorModule.Doctor", "Doctor")
+                        .WithOne("LabAppointment")
+                        .HasForeignKey("HealthCare.Core.Models.AppointmentModule.LabAppointment", "DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HealthCare.Core.Models.ClinicModule.Lab", "Lab")
+                        .WithMany("LabAppointments")
+                        .HasForeignKey("LabId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Lab");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.LabAppointmentDate", b =>
+                {
+                    b.HasOne("HealthCare.Core.Models.AppointmentModule.Day", "Day")
+                        .WithMany("LabAppointmentDates")
+                        .HasForeignKey("DayId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HealthCare.Core.Models.AppointmentModule.LabAppointment", "LabAppointment")
+                        .WithMany("LabAppointmentDates")
+                        .HasForeignKey("LabAppointmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Day");
+
+                    b.Navigation("LabAppointment");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.LabReservation", b =>
+                {
+                    b.HasOne("HealthCare.Core.Models.AppointmentModule.LabAppointmentDate", "LabAppointmentDate")
+                        .WithMany("LabReservations")
+                        .HasForeignKey("LabAppointmentDateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HealthCare.Core.Models.AppointmentModule.LabAppointment", "LabAppointment")
+                        .WithMany("LabReservations")
+                        .HasForeignKey("LabAppointmentId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("HealthCare.Core.Models.PatientModule.Patient", "Patient")
+                        .WithMany("LabReservations")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("LabAppointment");
+
+                    b.Navigation("LabAppointmentDate");
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.XrayAppointment", b =>
+                {
+                    b.HasOne("HealthCare.Core.Models.DoctorModule.Doctor", "Doctor")
+                        .WithOne("XrayAppointment")
+                        .HasForeignKey("HealthCare.Core.Models.AppointmentModule.XrayAppointment", "DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HealthCare.Core.Models.ClinicModule.Xray", "Xray")
+                        .WithMany("XrayAppointments")
+                        .HasForeignKey("XrayId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Xray");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.XrayAppointmentDate", b =>
+                {
+                    b.HasOne("HealthCare.Core.Models.AppointmentModule.Day", "Day")
+                        .WithMany("XrayAppointmentDates")
+                        .HasForeignKey("DayId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HealthCare.Core.Models.AppointmentModule.XrayAppointment", "XrayAppointment")
+                        .WithMany("XrayAppointmentDates")
+                        .HasForeignKey("XrayAppointmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Day");
+
+                    b.Navigation("XrayAppointment");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.XrayReservation", b =>
+                {
+                    b.HasOne("HealthCare.Core.Models.PatientModule.Patient", "Patient")
+                        .WithMany("XrayReservations")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HealthCare.Core.Models.AppointmentModule.XrayAppointmentDate", "XrayAppointmentDate")
+                        .WithMany("XrayReservations")
+                        .HasForeignKey("XrayAppointmentDateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HealthCare.Core.Models.AppointmentModule.XrayAppointment", "XrayAppointment")
+                        .WithMany("XrayReservations")
+                        .HasForeignKey("XrayAppointmentId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
+
+                    b.Navigation("XrayAppointment");
+
+                    b.Navigation("XrayAppointmentDate");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.AuthModule.RefreshToken", b =>
@@ -1231,6 +1609,51 @@ namespace HealthCare.EF.Migrations
                     b.Navigation("Patient");
                 });
 
+            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.ClinicAppointment", b =>
+                {
+                    b.Navigation("ClinicAppointmentDates");
+
+                    b.Navigation("ClinicReservations");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.ClinicAppointmentDate", b =>
+                {
+                    b.Navigation("ClinicReservations");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.Day", b =>
+                {
+                    b.Navigation("ClinicAppointmentDates");
+
+                    b.Navigation("LabAppointmentDates");
+
+                    b.Navigation("XrayAppointmentDates");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.LabAppointment", b =>
+                {
+                    b.Navigation("LabAppointmentDates");
+
+                    b.Navigation("LabReservations");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.LabAppointmentDate", b =>
+                {
+                    b.Navigation("LabReservations");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.XrayAppointment", b =>
+                {
+                    b.Navigation("XrayAppointmentDates");
+
+                    b.Navigation("XrayReservations");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.XrayAppointmentDate", b =>
+                {
+                    b.Navigation("XrayReservations");
+                });
+
             modelBuilder.Entity("HealthCare.Core.Models.AuthModule.Role", b =>
                 {
                     b.Navigation("UserRole");
@@ -1267,11 +1690,15 @@ namespace HealthCare.EF.Migrations
 
             modelBuilder.Entity("HealthCare.Core.Models.ClinicModule.ClinicLab", b =>
                 {
+                    b.Navigation("ClinicAppointments");
+
                     b.Navigation("clinicLabDoctors");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.ClinicModule.Lab", b =>
                 {
+                    b.Navigation("LabAppointments");
+
                     b.Navigation("LabDoctors");
 
                     b.Navigation("SpecializationsOfLab");
@@ -1284,6 +1711,8 @@ namespace HealthCare.EF.Migrations
 
             modelBuilder.Entity("HealthCare.Core.Models.ClinicModule.Xray", b =>
                 {
+                    b.Navigation("XrayAppointments");
+
                     b.Navigation("XrayDoctors");
                 });
 
@@ -1294,11 +1723,20 @@ namespace HealthCare.EF.Migrations
 
             modelBuilder.Entity("HealthCare.Core.Models.DoctorModule.Doctor", b =>
                 {
+                    b.Navigation("ClinicAppointment")
+                        .IsRequired();
+
                     b.Navigation("DoctorSpecialization");
+
+                    b.Navigation("LabAppointment")
+                        .IsRequired();
 
                     b.Navigation("LabDoctors");
 
                     b.Navigation("RateDoctor");
+
+                    b.Navigation("XrayAppointment")
+                        .IsRequired();
 
                     b.Navigation("XrayDoctors");
 
@@ -1343,7 +1781,13 @@ namespace HealthCare.EF.Migrations
 
             modelBuilder.Entity("HealthCare.Core.Models.PatientModule.Patient", b =>
                 {
+                    b.Navigation("ClinicReservations");
+
+                    b.Navigation("LabReservations");
+
                     b.Navigation("RateDoctor");
+
+                    b.Navigation("XrayReservations");
                 });
 #pragma warning restore 612, 618
         }

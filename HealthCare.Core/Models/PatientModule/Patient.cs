@@ -1,4 +1,5 @@
-﻿using HealthCare.Core.Models.DoctorModule;
+﻿using HealthCare.Core.Models.AppointmentModule;
+using HealthCare.Core.Models.DoctorModule;
 using HealthCare.Core.Models.HospitalModule;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,9 @@ namespace HealthCare.Core.Models.PatientModule
         public string PhoneNumber { get; set; }
         public string? VerificationCode { get; set; }
         public List<RateDoctor> RateDoctor { get; set; }
+        public List<ClinicReservation> ClinicReservations { get; set; }
+        public List<XrayReservation> XrayReservations { get; set; }
+        public List<LabReservation> LabReservations { get; set; }
 
     }
 }

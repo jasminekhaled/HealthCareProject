@@ -37,8 +37,8 @@ namespace HealthCare.EF.Context
         public DbSet<HospitalDoctor> HospitalDoctors { get; set; }
         public DbSet<ClinicLab> ClinicLabs { get; set; }
         public DbSet<ClinicLabDoctor> ClinicLabDoctors { get; set; }
-        public DbSet<Appointment> Appointments { get; set; }
-        public DbSet<Reservation> Reservations { get; set; }
+        public DbSet<ClinicAppointment> ClinicAppointments { get; set; }
+        public DbSet<ClinicReservation> ClinicReservations { get; set; }
         public DbSet<Band> Bands { get; set; }
         public DbSet<CurrentState> CurrentStates { get; set; }
         public DbSet<CivilRegestration> CivilRegestrations { get; set; }
@@ -53,6 +53,14 @@ namespace HealthCare.EF.Context
         public DbSet<LabDoctor> LabDoctors { get; set; }
         public DbSet<LabSpecialization> LabSpecializations { get; set; }
         public DbSet<SpecializationsOfLab> SpecializationsOfLabs { get; set; }
+        public DbSet<XrayAppointment> XrayAppointments { get; set; }
+        public DbSet<XrayReservation> XrayReservations { get; set; }
+        public DbSet<LabAppointment> LabAppointments { get; set; }
+        public DbSet<LabReservation> LabReservations { get; set; }
+        public DbSet<LabAppointmentDate> LabAppointmentDates { get; set; }
+        public DbSet<ClinicAppointmentDate> ClinicAppointmentDates { get; set; }
+        public DbSet<XrayAppointmentDate> XrayAppointmentDates { get; set; }
+        public DbSet<Day> Days { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RefreshToken>()
@@ -112,13 +120,31 @@ namespace HealthCare.EF.Context
                 .HasOne(a => a.XraySpecialization)
                 .WithMany(r => r.Xrays)
                 .HasForeignKey(b => b.XraySpecializationId)
-                .OnDelete(DeleteBehavior.NoAction); ;
+                .OnDelete(DeleteBehavior.NoAction); 
 
             modelBuilder.Entity<SpecializationsOfLab>()
                 .HasOne(a => a.LabSpecialization)
                 .WithMany(r => r.SpecializationsOfLab)
                 .HasForeignKey(b => b.LabSpecializationId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<ClinicReservation>()
+               .HasOne(a => a.ClinicAppointment)
+               .WithMany(r => r.ClinicReservations)
+               .HasForeignKey(b => b.ClinicAppointmentId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<XrayReservation>()
+               .HasOne(a => a.XrayAppointment)
+               .WithMany(r => r.XrayReservations)
+               .HasForeignKey(b => b.XrayAppointmentId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<LabReservation>()
+               .HasOne(a => a.LabAppointment)
+               .WithMany(r => r.LabReservations)
+               .HasForeignKey(b => b.LabAppointmentId)
+               .OnDelete(DeleteBehavior.NoAction);
 
         }
     }

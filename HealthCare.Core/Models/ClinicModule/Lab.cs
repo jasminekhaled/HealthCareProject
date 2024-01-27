@@ -1,4 +1,5 @@
-﻿using HealthCare.Core.Models.HospitalModule;
+﻿using HealthCare.Core.Models.AppointmentModule;
+using HealthCare.Core.Models.HospitalModule;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,6 @@ namespace HealthCare.Core.Models.ClinicModule
         public int HospitalId { get; set; }
         public Hospital Hospital { get; set; }
         public List<LabDoctor> LabDoctors { get; set; }
+        public List<LabAppointment> LabAppointments { get; set; }
     }
 }
