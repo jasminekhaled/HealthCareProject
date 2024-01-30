@@ -9,6 +9,7 @@ using HealthCare.Core.Models.AppointmentModule;
 using HealthCare.Core.Models.AuthModule;
 using HealthCare.Core.Models.ClinicModule;
 using HealthCare.Core.Models.HospitalModule;
+using HealthCare.Core.Models.PatientModule;
 using HealthCare.Services.IServices;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -574,66 +575,6 @@ namespace HealthCare.Services.Services
         }
 
         
-
-        public Task<GeneralResponse<string>> DeleteClinicAppointment(int clinicAppointmentId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<GeneralResponse<string>> DeleteClinicAppointmentDateOfAnAppointment(int clinicAppointmentDateId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<GeneralResponse<string>> DeleteLabAppointment(int labAppointmentId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<GeneralResponse<string>> DeleteLabAppointmentDateOfAnAppointment(int labAppointmentDateId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<GeneralResponse<string>> DeleteXrayAppointment(int xrayAppointmentId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<GeneralResponse<string>> DeleteXrayAppointmentDateOfAnAppointment(int xrayAppointmentDateId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<GeneralResponse<string>> DoneReservation(int reservationId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<GeneralResponse<List<AppointmentResponseDto>>> ListOfAppointmentOfClinic(int clinicId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<GeneralResponse<List<AppointmentResponseDto>>> ListOfAppointmentOfLab(int labId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<GeneralResponse<List<AppointmentResponseDto>>> ListOfAppointmentOfXray(int xrayId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<GeneralResponse<List<ReservationResponseDto>>> ListOfReservationsOfDoctor(int hospitalId, int doctorId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<GeneralResponse<List<PatientReservationDto>>> ListOfReservationsOfPatient(int patientId)
-        {
-            throw new NotImplementedException();
-        }
         public async Task<GeneralResponse<PatientReservationDto>> BookAnAppointmentOfClinic(int patientId, int clinicAppointmentDateId, string date)
         {
             try 
@@ -902,19 +843,282 @@ namespace HealthCare.Services.Services
 
         }
 
-        public Task<GeneralResponse<string>> CancelClinicReservation(int patientId, int clinicReservationId)
+        public async Task<GeneralResponse<string>> CancelClinicReservation(int patientId, int clinicReservationId)
+        {
+            try
+            {
+                var patient = await _unitOfWork.PatientRepository.GetByIdAsync(patientId);
+                if (patient == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No Patient Found!"
+                    };
+                }
+                var clinicReservation = await _unitOfWork.ClinicReservationRepository.GetByIdAsync(clinicReservationId);
+                if (clinicReservation == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No clinicReservation Found!"
+                    };
+                }
+                _unitOfWork.ClinicReservationRepository.Remove(clinicReservation);
+                await _unitOfWork.CompleteAsync();
+                
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = true,
+                    Message = "The Reservation is Canceled sucessfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+        public async Task<GeneralResponse<string>> CancelLabReservation(int patientId, int labReservationId)
+        {
+            try
+            {
+                var patient = await _unitOfWork.PatientRepository.GetByIdAsync(patientId);
+                if (patient == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No Patient Found!"
+                    };
+                }
+                var labReservation = await _unitOfWork.LabReservationRepository.GetByIdAsync(labReservationId);
+                if (labReservation == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No labReservation Found!"
+                    };
+                }
+                _unitOfWork.LabReservationRepository.Remove(labReservation);
+                await _unitOfWork.CompleteAsync();
+
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = true,
+                    Message = "The Reservation is Canceled sucessfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+        public async Task<GeneralResponse<string>> CancelXrayReservation(int patientId, int xrayReservationId)
+        {
+            try
+            {
+                var patient = await _unitOfWork.PatientRepository.GetByIdAsync(patientId);
+                if (patient == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No Patient Found!"
+                    };
+                }
+                var xrayReservation = await _unitOfWork.XrayReservationRepository.GetByIdAsync(xrayReservationId);
+                if (xrayReservation == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No xrayReservation Found!"
+                    };
+                }
+                _unitOfWork.XrayReservationRepository.Remove(xrayReservation);
+                await _unitOfWork.CompleteAsync();
+
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = true,
+                    Message = "The Reservation is Canceled sucessfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+
+        public async Task<GeneralResponse<string>> DeleteClinicAppointment(int clinicAppointmentId)
+        {
+            try
+            {
+                var clinicAppointment = await _unitOfWork.ClinicAppointmentRepository.GetSingleWithIncludesAsync(s=>s.Id == clinicAppointmentId, a=>a.ClinicReservations);
+                if (clinicAppointment == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No clinicAppointment Found!"
+                    };
+                }
+                _unitOfWork.ClinicReservationRepository.RemoveRange(clinicAppointment.ClinicReservations);
+                _unitOfWork.ClinicAppointmentRepository.Remove(clinicAppointment);
+                await _unitOfWork.CompleteAsync();
+
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = true,
+                    Message = "The ClinicAppointment is deleted sucessfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+        
+        public async Task<GeneralResponse<string>> DeleteLabAppointment(int labAppointmentId)
+        {
+            try
+            {
+                var labAppointment = await _unitOfWork.LabAppointmentRepository.GetSingleWithIncludesAsync(s => s.Id == labAppointmentId, a => a.LabReservations);
+                if (labAppointment == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No labAppointment Found!"
+                    };
+                }
+                _unitOfWork.LabReservationRepository.RemoveRange(labAppointment.LabReservations);
+                _unitOfWork.LabAppointmentRepository.Remove(labAppointment);
+                await _unitOfWork.CompleteAsync();
+
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = true,
+                    Message = "The LabAppointment is deleted sucessfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+        public async Task<GeneralResponse<string>> DeleteXrayAppointment(int xrayAppointmentId)
+        {
+            try
+            {
+                var xrayAppointment = await _unitOfWork.XrayAppointmentRepository.GetSingleWithIncludesAsync(s => s.Id == xrayAppointmentId, a => a.XrayReservations);
+                if (xrayAppointment == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No xxrayAppointment Found!"
+                    };
+                }
+                _unitOfWork.XrayReservationRepository.RemoveRange(xrayAppointment.XrayReservations);
+                _unitOfWork.XrayAppointmentRepository.Remove(xrayAppointment);
+                await _unitOfWork.CompleteAsync();
+
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = true,
+                    Message = "The XrayAppointment is deleted sucessfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+        public Task<GeneralResponse<string>> DeleteClinicAppointmentDateOfAnAppointment(int clinicAppointmentDateId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<GeneralResponse<string>> CancelLabReservation(int patientId, int labReservationId)
+        
+
+        public Task<GeneralResponse<string>> DeleteLabAppointmentDateOfAnAppointment(int labAppointmentDateId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<GeneralResponse<string>> CancelXrayReservation(int patientId, int xrayReservationId)
+        
+
+        public Task<GeneralResponse<string>> DeleteXrayAppointmentDateOfAnAppointment(int xrayAppointmentDateId)
         {
             throw new NotImplementedException();
         }
+
+        public Task<GeneralResponse<string>> DoneReservation(int reservationId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GeneralResponse<List<AppointmentResponseDto>>> ListOfAppointmentOfClinic(int clinicId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GeneralResponse<List<AppointmentResponseDto>>> ListOfAppointmentOfLab(int labId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GeneralResponse<List<AppointmentResponseDto>>> ListOfAppointmentOfXray(int xrayId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GeneralResponse<List<ReservationResponseDto>>> ListOfReservationsOfDoctor(int hospitalId, int doctorId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GeneralResponse<List<PatientReservationDto>>> ListOfReservationsOfPatient(int patientId)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

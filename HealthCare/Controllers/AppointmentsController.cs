@@ -100,5 +100,60 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
+
+        [HttpDelete("CancelClinicReservation")]
+        public async Task<IActionResult> CancelClinicReservation(int patientId, int clinicReservationId)
+        {
+            var result = await _appointmentServices.CancelClinicReservation(patientId, clinicReservationId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpDelete("CancelLabReservation")]
+        public async Task<IActionResult> CancelLabReservation(int patientId, int labReservationId)
+        {
+            var result = await _appointmentServices.CancelLabReservation(patientId, labReservationId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpDelete("CancelXrayReservation")]
+        public async Task<IActionResult> CancelXrayReservation(int patientId, int xrayReservationId)
+        {
+            var result = await _appointmentServices.CancelXrayReservation(patientId, xrayReservationId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpDelete("DeleteClinicAppointment")]
+        public async Task<IActionResult> DeleteClinicAppointment(int clinicAppointmentId)
+        {
+            var result = await _appointmentServices.DeleteClinicAppointment(clinicAppointmentId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpDelete("DeleteXrayAppointment")]
+        public async Task<IActionResult> DeleteXrayAppointment(int xrayAppointmentId)
+        {
+            var result = await _appointmentServices.DeleteXrayAppointment(xrayAppointmentId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpDelete("DeleteLabAppointment")]
+        public async Task<IActionResult> DeleteLabAppointment(int labAppointmentId)
+        {
+            var result = await _appointmentServices.DeleteLabAppointment(labAppointmentId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
     }
 }
