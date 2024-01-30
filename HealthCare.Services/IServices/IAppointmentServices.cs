@@ -12,7 +12,7 @@ namespace HealthCare.Services.IServices
 {
     public interface IAppointmentServices
     {
-        Task<GeneralResponse<List<AppointmentResponseDto>>> ListOfAppointmentOfClinic(int clinicId);
+        Task<GeneralResponse<List<ListAppointmentDto>>> ListOfAppointmentOfClinic(int clinicId);
         Task<GeneralResponse<List<AppointmentResponseDto>>> ListOfAppointmentOfLab(int labId);
         Task<GeneralResponse<List<AppointmentResponseDto>>> ListOfAppointmentOfXray(int xrayId);
         Task<GeneralResponse<List<ReservationResponseDto>>> ListOfReservationsOfDoctor(int hospitalId, int doctorId);

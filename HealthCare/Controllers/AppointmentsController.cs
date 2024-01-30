@@ -155,5 +155,61 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
+
+        [HttpDelete("DeleteClinicAppointmentDateOfAnAppointment")]
+        public async Task<IActionResult> DeleteClinicAppointmentDateOfAnAppointment(int clinicAppointmentDateId)
+        {
+            var result = await _appointmentServices.DeleteClinicAppointmentDateOfAnAppointment(clinicAppointmentDateId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpDelete("DeleteLabAppointmentDateOfAnAppointment")]
+        public async Task<IActionResult> DeleteLabAppointmentDateOfAnAppointment(int labAppointmentDateId)
+        {
+            var result = await _appointmentServices.DeleteLabAppointmentDateOfAnAppointment(labAppointmentDateId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+
+        [HttpDelete("DeleteXrayAppointmentDateOfAnAppointment")]
+        public async Task<IActionResult> DeleteXrayAppointmentDateOfAnAppointment(int xrayAppointmentDateId)
+        {
+            var result = await _appointmentServices.DeleteXrayAppointmentDateOfAnAppointment(xrayAppointmentDateId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpGet("ListOfAppointmentOfClinic")]
+        public async Task<IActionResult> ListOfAppointmentOfClinic(int clinicId)
+        {
+            var result = await _appointmentServices.ListOfAppointmentOfClinic(clinicId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpGet("ListOfAppointmentOfLab")]
+        public async Task<IActionResult> ListOfAppointmentOfLab(int labId)
+        {
+            var result = await _appointmentServices.ListOfAppointmentOfLab(labId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpGet("ListOfAppointmentOfXray")]
+        public async Task<IActionResult> ListOfAppointmentOfXray(int xrayId)
+        {
+            var result = await _appointmentServices.ListOfAppointmentOfXray(xrayId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
     }
 }

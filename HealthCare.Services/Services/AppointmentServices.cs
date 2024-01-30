@@ -1071,43 +1071,252 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public Task<GeneralResponse<string>> DeleteClinicAppointmentDateOfAnAppointment(int clinicAppointmentDateId)
+        public async Task<GeneralResponse<string>> DeleteClinicAppointmentDateOfAnAppointment(int clinicAppointmentDateId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var clinicAppointmentDate = await _unitOfWork.ClinicAppointmentDateRepository.GetSingleWithIncludesAsync(s => s.Id == clinicAppointmentDateId, a => a.ClinicReservations);
+                if (clinicAppointmentDate == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No clinicAppointmentDate Found!"
+                    };
+                }
+                _unitOfWork.ClinicReservationRepository.RemoveRange(clinicAppointmentDate.ClinicReservations);
+                _unitOfWork.ClinicAppointmentDateRepository.Remove(clinicAppointmentDate);
+                await _unitOfWork.CompleteAsync();
+
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = true,
+                    Message = "The ClinicAppointmentDate is deleted sucessfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
         }
 
         
 
-        public Task<GeneralResponse<string>> DeleteLabAppointmentDateOfAnAppointment(int labAppointmentDateId)
+        public async Task<GeneralResponse<string>> DeleteLabAppointmentDateOfAnAppointment(int labAppointmentDateId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var labAppointmentDate = await _unitOfWork.LabAppointmentDateRepository.GetSingleWithIncludesAsync(s => s.Id == labAppointmentDateId, a => a.LabReservations);
+                if (labAppointmentDate == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No labAppointmentDate Found!"
+                    };
+                }
+                _unitOfWork.LabReservationRepository.RemoveRange(labAppointmentDate.LabReservations);
+                _unitOfWork.LabAppointmentDateRepository.Remove(labAppointmentDate);
+                await _unitOfWork.CompleteAsync();
+
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = true,
+                    Message = "The LabAppointmentDate is deleted sucessfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
         }
 
         
 
-        public Task<GeneralResponse<string>> DeleteXrayAppointmentDateOfAnAppointment(int xrayAppointmentDateId)
+        public async Task<GeneralResponse<string>> DeleteXrayAppointmentDateOfAnAppointment(int xrayAppointmentDateId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var xrayAppointmentDate = await _unitOfWork.XrayAppointmentDateRepository.GetSingleWithIncludesAsync(s => s.Id == xrayAppointmentDateId, a => a.XrayReservations);
+                if (xrayAppointmentDate == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No xrayAppointmentDate Found!"
+                    };
+                }
+                _unitOfWork.XrayReservationRepository.RemoveRange(xrayAppointmentDate.XrayReservations);
+                _unitOfWork.XrayAppointmentDateRepository.Remove(xrayAppointmentDate);
+                await _unitOfWork.CompleteAsync();
+
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = true,
+                    Message = "The XrayAppointmentDate is deleted sucessfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
         }
 
-        public Task<GeneralResponse<string>> DoneReservation(int reservationId)
+        
+        public async Task<GeneralResponse<List<ListAppointmentDto>>> ListOfAppointmentOfClinic(int clinicId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var clinic = await _unitOfWork.ClinicLabRepository.GetSingleWithIncludesAsync(s => s.Id == clinicId, a => a.ClinicAppointments);
+                if (clinic == null)
+                {
+                    return new GeneralResponse<List<ListAppointmentDto>>
+                    {
+                        IsSuccess = false,
+                        Message = "No clinic Found!"
+                    };
+                }
+                var appointments = await _unitOfWork.ClinicAppointmentRepository.WhereIncludeAsync(w => w.ClinicLabId == clinicId,
+                     a => a.ClinicAppointmentDates, a=>a.Doctor);
+                var data = _mapper.Map<List<ListAppointmentDto>>(appointments);
+                
+
+                 foreach(var a in data)
+                {
+                    var appointmentDate = await _unitOfWork.ClinicAppointmentDateRepository.WhereIncludeAsync
+                        (w => w.ClinicAppointmentId == a.Id, a => a.Day);
+                    var ordered = appointmentDate.OrderBy(a => a.DayId);
+                    a.AppointmentDates = _mapper.Map<List<AppointmentDateResponseDto>>(ordered);
+                    var doctor = await _unitOfWork.ClinicAppointmentRepository.GetSingleWithIncludesAsync(s => s.Id == a.Id, w => w.Doctor);
+                    var user = await _unitOfWork.UserRepository.GetSingleWithIncludesAsync(s => s.UserName == doctor.Doctor.UserName, a => a.UploadedFile);
+                    a.DoctorImagePath = user.UploadedFile.FilePath;
+                }
+
+                return new GeneralResponse<List<ListAppointmentDto>>
+                {
+                    IsSuccess = true,
+                    Message = "The ClinicAppointmentDate is deleted sucessfully.",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<List<ListAppointmentDto>>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
         }
 
-        public Task<GeneralResponse<List<AppointmentResponseDto>>> ListOfAppointmentOfClinic(int clinicId)
+        public async Task<GeneralResponse<List<ListAppointmentDto>>> ListOfAppointmentOfLab(int labId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var lab = await _unitOfWork.LabRepository.GetSingleWithIncludesAsync(s => s.Id == labId, a => a.LabAppointments);
+                if (lab == null)
+                {
+                    return new GeneralResponse<List<ListAppointmentDto>>
+                    {
+                        IsSuccess = false,
+                        Message = "No lab Found!"
+                    };
+                }
+                var appointments = await _unitOfWork.LabAppointmentRepository.WhereIncludeAsync(w => w.LabId == labId,
+                     a => a.LabAppointmentDates, a => a.Doctor);
+                var data = _mapper.Map<List<ListAppointmentDto>>(appointments);
+
+
+                foreach (var a in data)
+                {
+                    var appointmentDate = await _unitOfWork.LabAppointmentDateRepository.WhereIncludeAsync
+                        (w => w.LabAppointmentId == a.Id, a => a.Day);
+                    var ordered = appointmentDate.OrderBy(a => a.DayId);
+                    a.AppointmentDates = _mapper.Map<List<AppointmentDateResponseDto>>(ordered);
+                    var doctor = await _unitOfWork.LabAppointmentRepository.GetSingleWithIncludesAsync(s => s.Id == a.Id, w => w.Doctor);
+                    var user = await _unitOfWork.UserRepository.GetSingleWithIncludesAsync(s => s.UserName == doctor.Doctor.UserName, a => a.UploadedFile);
+                    a.DoctorImagePath = user.UploadedFile.FilePath;
+                }
+
+                return new GeneralResponse<List<ListAppointmentDto>>
+                {
+                    IsSuccess = true,
+                    Message = "The LabAppointmentDate is deleted sucessfully.",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<List<ListAppointmentDto>>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
         }
 
-        public Task<GeneralResponse<List<AppointmentResponseDto>>> ListOfAppointmentOfLab(int labId)
+        public async Task<GeneralResponse<List<ListAppointmentDto>>> ListOfAppointmentOfXray(int xrayId)
         {
-            throw new NotImplementedException();
-        }
+            try
+            {
+                var xray = await _unitOfWork.XrayRepository.GetSingleWithIncludesAsync(s => s.Id == xrayId, a => a.XrayAppointments);
+                if (xray == null)
+                {
+                    return new GeneralResponse<List<ListAppointmentDto>>
+                    {
+                        IsSuccess = false,
+                        Message = "No xray Found!"
+                    };
+                }
+                var appointments = await _unitOfWork.XrayAppointmentRepository.WhereIncludeAsync(w => w.XrayId == xrayId,
+                     a => a.XrayAppointmentDates, a => a.Doctor);
+                var data = _mapper.Map<List<ListAppointmentDto>>(appointments);
 
-        public Task<GeneralResponse<List<AppointmentResponseDto>>> ListOfAppointmentOfXray(int xrayId)
-        {
-            throw new NotImplementedException();
+
+                foreach (var a in data)
+                {
+                    var appointmentDate = await _unitOfWork.XrayAppointmentDateRepository.WhereIncludeAsync
+                        (w => w.XrayAppointmentId == a.Id, a => a.Day);
+                    var ordered = appointmentDate.OrderBy(a => a.DayId);
+                    a.AppointmentDates = _mapper.Map<List<AppointmentDateResponseDto>>(ordered);
+                    var doctor = await _unitOfWork.XrayAppointmentRepository.GetSingleWithIncludesAsync(s => s.Id == a.Id, w => w.Doctor);
+                    var user = await _unitOfWork.UserRepository.GetSingleWithIncludesAsync(s => s.UserName == doctor.Doctor.UserName, a => a.UploadedFile);
+                    a.DoctorImagePath = user.UploadedFile.FilePath;
+                }
+
+                return new GeneralResponse<List<ListAppointmentDto>>
+                {
+                    IsSuccess = true,
+                    Message = "The XrayAppointmentDate is deleted sucessfully.",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<List<ListAppointmentDto>>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
         }
 
         public Task<GeneralResponse<List<ReservationResponseDto>>> ListOfReservationsOfDoctor(int hospitalId, int doctorId)
@@ -1119,6 +1328,12 @@ namespace HealthCare.Services.Services
         {
             throw new NotImplementedException();
         }
+        
+        public async Task<GeneralResponse<string>> DoneReservation(int reservationId)
+        {
+            throw new NotImplementedException();
+        }
+
 
     }
 }
