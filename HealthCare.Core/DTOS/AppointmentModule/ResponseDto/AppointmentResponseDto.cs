@@ -14,7 +14,7 @@ namespace HealthCare.Core.DTOS.AppointmentModule.ResponseDto
         public string DoctorImagePath { get; set; }
         public float DoctorRate { get; set; }
         public string DoctorDiscription { get; set; }
-        public List<AppointmentDateResponseDto> AppointmentDates { get; set; }
+        public AppointmentDateResponseDto AppointmentDates { get; set; }
 
     }
 }

@@ -12,7 +12,7 @@ namespace HealthCare.Core.Models.AppointmentModule
     public class Reservation
     {
         public int Id { get; set; }
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
         public int PatientId { get; set; }
         public Patient Patient { get; set; }
         

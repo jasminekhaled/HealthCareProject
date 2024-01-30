@@ -30,71 +30,159 @@ namespace HealthCare.EF.AutoMapper
         public MappingProfile()
         {
             CreateMap<User ,UserTokenDto>();
+
             CreateMap<SignUpRequestDto, Patient>()
                 .ForMember(src => src.PassWord, opt => opt.Ignore());
+
             CreateMap<Patient, SignUpResponse>();
+
             CreateMap<Patient, User>()
                 .ForMember(src => src.Id, opt => opt.Ignore());
+
             CreateMap<Patient, VerifyResponse>();
+
             CreateMap<Doctor, LogInResponse>();
+
             CreateMap<User, LogInResponse>();
+
             CreateMap<Patient, PatientDto>();
+
             CreateMap<HospitalRequestDto, Hospital>();
+
             CreateMap<Hospital, HospitalDto>()
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath))
                 .ForMember(dest => dest.Governorate, opt => opt.MapFrom(src => src.HospitalGovernorate.Governorate.Name));
+
             CreateMap<Hospital, ListOfHospitalDto>()
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath))
                 .ForMember(dest => dest.Governorate, opt => opt.MapFrom(src => src.HospitalGovernorate.Governorate.Name));
+
             CreateMap<HospitalAdmin, HospitalAdminDto>()
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath));
+
             CreateMap<HospitalAdminRequestDto, HospitalAdmin>();
+
             CreateMap<HospitalAdmin, User>()
                 .ForMember(src => src.Id, opt => opt.Ignore());
+
             CreateMap<HospitalAdmin, EditHospitalAdminResponse>()
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath));
+
             CreateMap<HospitalAdmin, ListOfHospitalAdminDto>()
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath));
+
             CreateMap<Specialization, SpecializationDto>();
+
             CreateMap<Governorate, GovernorateDto>();
+
             CreateMap<DoctorRequestDto, Doctor>()
                 .ForMember(src => src.Id, opt => opt.Ignore())
                 .ForMember(src => src.hospitalDoctors, opt => opt.Ignore())
                 .ForMember(src => src.RateDoctor, opt => opt.Ignore())
                 .ForMember(src => src.clinicLabDoctors, opt => opt.Ignore())
                 .ForMember(src => src.DoctorSpecialization, opt => opt.Ignore());
+
             CreateMap<Doctor, User>()
                 .ForMember(src => src.Id, opt => opt.Ignore());
+
             CreateMap<Doctor, AddDoctorResponseDto>();
+
             CreateMap<Hospital, HospitalIdDto>();
+
             CreateMap<ClinicLab, ClinicIdDto>();
+
             CreateMap<Doctor, DoctorDto>()
                 .ForMember(src => src.Hospitals, opt => opt.Ignore())
                 .ForMember(src => src.Specializations, opt => opt.Ignore())
                 .ForMember(src => src.Rate, opt => opt.Ignore());
+
             CreateMap<Doctor, EditDoctorResponseDto>()
                 .ForMember(src => src.ImagePath, opt => opt.Ignore())
                 .ForMember(src => src.specializations, opt => opt.Ignore());
+
             CreateMap<Specialization, AddClinicResponseDto>()
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath));
+
             CreateMap<XraySpecialization, AddClinicResponseDto>()
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath));
+
             CreateMap<LabSpecialization, AddClinicResponseDto>()
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath));
+
             CreateMap<ClinicLab, AddClinicResponseDto>()
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.Specialization.UploadedFile.FilePath))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Specialization.Name));
+
             CreateMap<Xray, AddClinicResponseDto>()
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.XraySpecialization.UploadedFile.FilePath))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.XraySpecialization.Name));
+
             CreateMap<Lab, AddLabResponseDto>();
+
             CreateMap<LabSpecialization, SpecializationDto>();
+
             CreateMap<ClinicAppointment, AppointmentResponseDto>()
                 .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor.FullName))
                 .ForMember(dest => dest.DoctorRate, opt => opt.MapFrom(src => src.Doctor.Rate))
                 .ForMember(dest => dest.DoctorDiscription, opt => opt.MapFrom(src => src.Doctor.Description));
+
+            CreateMap<XrayAppointment, AppointmentResponseDto>()
+                .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor.FullName))
+                .ForMember(dest => dest.DoctorRate, opt => opt.MapFrom(src => src.Doctor.Rate))
+                .ForMember(dest => dest.DoctorDiscription, opt => opt.MapFrom(src => src.Doctor.Description));
+
+            CreateMap<LabAppointment, AppointmentResponseDto>()
+                .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor.FullName))
+                .ForMember(dest => dest.DoctorRate, opt => opt.MapFrom(src => src.Doctor.Rate))
+                .ForMember(dest => dest.DoctorDiscription, opt => opt.MapFrom(src => src.Doctor.Description));
+
             CreateMap<ClinicAppointmentDate, AppointmentDateResponseDto>()
                 .ForMember(dest => dest.DayName, opt => opt.MapFrom(src => src.Day.DayName));
+
+            CreateMap<LabAppointmentDate, AppointmentDateResponseDto>()
+                .ForMember(dest => dest.DayName, opt => opt.MapFrom(src => src.Day.DayName));
+
+            CreateMap<XrayAppointmentDate, AppointmentDateResponseDto>()
+                .ForMember(dest => dest.DayName, opt => opt.MapFrom(src => src.Day.DayName));
+
+            CreateMap<ClinicAppointment, ListAppointmentDto>()
+                .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor.FullName))
+                .ForMember(dest => dest.DoctorRate, opt => opt.MapFrom(src => src.Doctor.Rate))
+                .ForMember(dest => dest.DoctorDiscription, opt => opt.MapFrom(src => src.Doctor.Description));
+
+            CreateMap<XrayAppointment, ListAppointmentDto>()
+                .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor.FullName))
+                .ForMember(dest => dest.DoctorRate, opt => opt.MapFrom(src => src.Doctor.Rate))
+                .ForMember(dest => dest.DoctorDiscription, opt => opt.MapFrom(src => src.Doctor.Description));
+
+            CreateMap<LabAppointment, ListAppointmentDto>()
+                .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor.FullName))
+                .ForMember(dest => dest.DoctorRate, opt => opt.MapFrom(src => src.Doctor.Rate))
+                .ForMember(dest => dest.DoctorDiscription, opt => opt.MapFrom(src => src.Doctor.Description));
+
+            CreateMap<ClinicReservation, PatientReservationDto>()
+                .ForMember(dest => dest.FromTime, opt => opt.MapFrom(src => src.ClinicAppointmentDate.FromTime))
+                .ForMember(dest => dest.ToTime, opt => opt.MapFrom(src => src.ClinicAppointmentDate.ToTime))
+                .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.ClinicAppointment.Doctor.FullName))
+                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.ClinicAppointment.Price))
+                .ForMember(dest => dest.HospitalName, opt => opt.MapFrom(src => src.ClinicAppointment.ClinicLab.Hospital.Name))
+                .ForMember(dest => dest.ClinicName, opt => opt.MapFrom(src => src.ClinicAppointment.ClinicLab.Specialization.Name));
+
+            CreateMap<LabReservation, PatientReservationDto>()
+                .ForMember(dest => dest.FromTime, opt => opt.MapFrom(src => src.LabAppointmentDate.FromTime))
+                .ForMember(dest => dest.ToTime, opt => opt.MapFrom(src => src.LabAppointmentDate.ToTime))
+                .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.LabAppointment.Doctor.FullName))
+                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.LabAppointment.Price))
+                .ForMember(dest => dest.HospitalName, opt => opt.MapFrom(src => src.LabAppointment.Lab.Hospital.Name))
+                .ForMember(dest => dest.ClinicName, opt => opt.MapFrom(src => src.LabAppointment.Lab.Name));
+
+            CreateMap<XrayReservation, PatientReservationDto>()
+                .ForMember(dest => dest.FromTime, opt => opt.MapFrom(src => src.XrayAppointmentDate.FromTime))
+                .ForMember(dest => dest.ToTime, opt => opt.MapFrom(src => src.XrayAppointmentDate.ToTime))
+                .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.XrayAppointment.Doctor.FullName))
+                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.XrayAppointment.Price))
+                .ForMember(dest => dest.HospitalName, opt => opt.MapFrom(src => src.XrayAppointment.Xray.Hospital.Name))
+                .ForMember(dest => dest.ClinicName, opt => opt.MapFrom(src => src.XrayAppointment.Xray.XraySpecialization.Name));
         }
     }
 }

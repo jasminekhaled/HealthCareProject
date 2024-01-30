@@ -44,8 +44,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasIndex("ClinicLabId");
 
-                    b.HasIndex("DoctorId")
-                        .IsUnique();
+                    b.HasIndex("DoctorId");
 
                     b.ToTable("ClinicAppointments");
                 });
@@ -64,11 +63,13 @@ namespace HealthCare.EF.Migrations
                     b.Property<int>("DayId")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan>("FromTime")
-                        .HasColumnType("time");
+                    b.Property<string>("FromTime")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<TimeSpan>("ToTime")
-                        .HasColumnType("time");
+                    b.Property<string>("ToTime")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -93,8 +94,9 @@ namespace HealthCare.EF.Migrations
                     b.Property<int>("ClinicAppointmentId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Date")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PatientId")
                         .HasColumnType("int");
@@ -125,6 +127,43 @@ namespace HealthCare.EF.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Days");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 10,
+                            DayName = "Saturday"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            DayName = "Sunday"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            DayName = "Monday"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            DayName = "Tuesday"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            DayName = "Wednesday"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            DayName = "Thursday"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            DayName = "Friday"
+                        });
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.LabAppointment", b =>
@@ -147,8 +186,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DoctorId")
-                        .IsUnique();
+                    b.HasIndex("DoctorId");
 
                     b.HasIndex("LabId");
 
@@ -166,14 +204,16 @@ namespace HealthCare.EF.Migrations
                     b.Property<int>("DayId")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan>("FromTime")
-                        .HasColumnType("time");
+                    b.Property<string>("FromTime")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("LabAppointmentId")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan>("ToTime")
-                        .HasColumnType("time");
+                    b.Property<string>("ToTime")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -192,8 +232,9 @@ namespace HealthCare.EF.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Date")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("LabAppointmentDateId")
                         .HasColumnType("int");
@@ -235,8 +276,7 @@ namespace HealthCare.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DoctorId")
-                        .IsUnique();
+                    b.HasIndex("DoctorId");
 
                     b.HasIndex("XrayId");
 
@@ -254,11 +294,13 @@ namespace HealthCare.EF.Migrations
                     b.Property<int>("DayId")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan>("FromTime")
-                        .HasColumnType("time");
+                    b.Property<string>("FromTime")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<TimeSpan>("ToTime")
-                        .HasColumnType("time");
+                    b.Property<string>("ToTime")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("XrayAppointmentId")
                         .HasColumnType("int");
@@ -280,8 +322,9 @@ namespace HealthCare.EF.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Date")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PatientId")
                         .HasColumnType("int");
@@ -1069,8 +1112,8 @@ namespace HealthCare.EF.Migrations
                         .IsRequired();
 
                     b.HasOne("HealthCare.Core.Models.DoctorModule.Doctor", "Doctor")
-                        .WithOne("ClinicAppointment")
-                        .HasForeignKey("HealthCare.Core.Models.AppointmentModule.ClinicAppointment", "DoctorId")
+                        .WithMany("ClinicAppointments")
+                        .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1128,8 +1171,8 @@ namespace HealthCare.EF.Migrations
             modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.LabAppointment", b =>
                 {
                     b.HasOne("HealthCare.Core.Models.DoctorModule.Doctor", "Doctor")
-                        .WithOne("LabAppointment")
-                        .HasForeignKey("HealthCare.Core.Models.AppointmentModule.LabAppointment", "DoctorId")
+                        .WithMany("LabAppointments")
+                        .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1193,8 +1236,8 @@ namespace HealthCare.EF.Migrations
             modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.XrayAppointment", b =>
                 {
                     b.HasOne("HealthCare.Core.Models.DoctorModule.Doctor", "Doctor")
-                        .WithOne("XrayAppointment")
-                        .HasForeignKey("HealthCare.Core.Models.AppointmentModule.XrayAppointment", "DoctorId")
+                        .WithMany("XrayAppointments")
+                        .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1723,20 +1766,17 @@ namespace HealthCare.EF.Migrations
 
             modelBuilder.Entity("HealthCare.Core.Models.DoctorModule.Doctor", b =>
                 {
-                    b.Navigation("ClinicAppointment")
-                        .IsRequired();
+                    b.Navigation("ClinicAppointments");
 
                     b.Navigation("DoctorSpecialization");
 
-                    b.Navigation("LabAppointment")
-                        .IsRequired();
+                    b.Navigation("LabAppointments");
 
                     b.Navigation("LabDoctors");
 
                     b.Navigation("RateDoctor");
 
-                    b.Navigation("XrayAppointment")
-                        .IsRequired();
+                    b.Navigation("XrayAppointments");
 
                     b.Navigation("XrayDoctors");
 

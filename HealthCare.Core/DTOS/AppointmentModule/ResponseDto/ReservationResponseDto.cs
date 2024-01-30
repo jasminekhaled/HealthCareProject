@@ -8,9 +8,9 @@ namespace HealthCare.Core.DTOS.AppointmentModule.ResponseDto
 {
     public class ReservationResponseDto
     {
-        public DateOnly Date { get; set; }
-        public TimeSpan FromTime { get; set; }
-        public TimeSpan ToTime { get; set; }
+        public string Date { get; set; }
+        public string FromTime { get; set; }
+        public string ToTime { get; set; }
         public string PatientName { get; set; }
         public string PatientPhoneNum { get; set; }
     }

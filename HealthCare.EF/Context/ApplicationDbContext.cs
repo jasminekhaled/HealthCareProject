@@ -146,6 +146,33 @@ namespace HealthCare.EF.Context
                .HasForeignKey(b => b.LabAppointmentId)
                .OnDelete(DeleteBehavior.NoAction);
 
+           /* modelBuilder.Entity<ClinicAppointment>()
+               .HasOne(a => a.Doctor)
+               .WithMany(r => r.ClinicAppointment)
+               .HasForeignKey(b => b.DoctorId);
+
+            modelBuilder.Entity<XrayAppointment>()
+               .HasOne(a => a.Doctor)
+               .WithMany(r => r.XrayAppointment)
+               .HasForeignKey(b => b.DoctorId);
+
+            modelBuilder.Entity<LabAppointment>()
+               .HasOne(a => a.Doctor)
+               .WithMany(r => r.LabAppointment)
+               .HasForeignKey(b => b.DoctorId);*/
+
+            modelBuilder.Entity<Day>()
+                .HasData(new Day[]
+                {
+                new Day { Id = 10, DayName = "Saturday" },
+                new Day { Id = 11, DayName = "Sunday" },
+                new Day { Id = 12, DayName = "Monday" },
+                new Day { Id = 13, DayName = "Tuesday" },
+                new Day { Id = 14, DayName = "Wednesday" },
+                new Day { Id = 15, DayName = "Thursday" },
+                new Day { Id = 16, DayName = "Friday" }
+                });
+
         }
     }
 }

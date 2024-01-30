@@ -23,9 +23,9 @@ namespace HealthCare.Core.Models.DoctorModule
         public List<LabDoctor> LabDoctors { get; set; }
         public List<XrayDoctor> XrayDoctors { get; set; }
         public List<RateDoctor> RateDoctor { get; set; }
-        public ClinicAppointment ClinicAppointment { get; set; }
-        public XrayAppointment XrayAppointment { get; set; }
-        public LabAppointment LabAppointment { get; set; }
+        public List<ClinicAppointment> ClinicAppointments { get; set; }
+        public List<XrayAppointment> XrayAppointments { get; set; }
+        public List<LabAppointment> LabAppointments { get; set; }
 
 
     }

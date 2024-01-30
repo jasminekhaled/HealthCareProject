@@ -11,8 +11,9 @@ namespace HealthCare.Core.DTOS.AppointmentModule.RequestDto
         public string Price { get; set; }
         public int DoctorId { get; set; } 
         public int DayId { get; set; }
-        public TimeSpan FromTime { get; set; }
-        public TimeSpan ToTime { get; set; }
+        public string FromTime { get; set; }
+        public string ToTime { get; set; }
+       // public DateTime Date { get; set; }
 
     }
 }
