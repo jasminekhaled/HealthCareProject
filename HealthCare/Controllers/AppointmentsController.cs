@@ -211,5 +211,32 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
+        [HttpGet("ListOfReservationsOfDoctor")]
+        public async Task<IActionResult> ListOfReservationsOfDoctor(int hospitalId, int doctorId)
+        {
+            var result = await _appointmentServices.ListOfReservationsOfDoctor(hospitalId, doctorId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpGet("ListOfReservationsOfPatient")]
+        public async Task<IActionResult> ListOfReservationsOfPatient(int patientId)
+        {
+            var result = await _appointmentServices.ListOfReservationsOfPatient(patientId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpDelete("DoneReservation")]
+        public async Task<IActionResult> DoneReservation(int reservationId)
+        {
+            var result = await _appointmentServices.DoneReservation(reservationId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
     }
 }

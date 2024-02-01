@@ -80,6 +80,7 @@ namespace HealthCare.EF.Repositories
         public ILabAppointmentDateRepository LabAppointmentDateRepository { get; }
 
         public IDayRepository DayRepository { get; }
+        public IAllReservationsRepository AllReservationsRepository { get; }
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -123,6 +124,7 @@ namespace HealthCare.EF.Repositories
             ClinicAppointmentDateRepository = new ClinicAppointmentDateRepository(context);
             XrayAppointmentDateRepository = new XrayAppointmentDateRepository(context);
             DayRepository = new DayRepository(context);
+            AllReservationsRepository = new AllReservationsRepository(context);
         }
 
 

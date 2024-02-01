@@ -26,6 +26,7 @@ namespace HealthCare.Core.Models.DoctorModule
         public List<ClinicAppointment> ClinicAppointments { get; set; }
         public List<XrayAppointment> XrayAppointments { get; set; }
         public List<LabAppointment> LabAppointments { get; set; }
+        public List<AllReservations> AllReservations { get; set; }
 
 
     }

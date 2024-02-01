@@ -13,8 +13,8 @@ namespace HealthCare.Services.IServices
     public interface IAppointmentServices
     {
         Task<GeneralResponse<List<ListAppointmentDto>>> ListOfAppointmentOfClinic(int clinicId);
-        Task<GeneralResponse<List<AppointmentResponseDto>>> ListOfAppointmentOfLab(int labId);
-        Task<GeneralResponse<List<AppointmentResponseDto>>> ListOfAppointmentOfXray(int xrayId);
+        Task<GeneralResponse<List<ListAppointmentDto>>> ListOfAppointmentOfLab(int labId);
+        Task<GeneralResponse<List<ListAppointmentDto>>> ListOfAppointmentOfXray(int xrayId);
         Task<GeneralResponse<List<ReservationResponseDto>>> ListOfReservationsOfDoctor(int hospitalId, int doctorId);
         Task<GeneralResponse<List<PatientReservationDto>>> ListOfReservationsOfPatient(int patientId);// donot forget to delete a reservation after a 24 hours
     //  سؤال اعمله ولا لا // Task<GeneralResponse<List<ReservationResponseDto>>> ListOfReservationsOfAnAppointmentForSpecificDay(int hospitalId, int doctorId, DateOnly date);// donot forget to delete a reservation after a 24 hours

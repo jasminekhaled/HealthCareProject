@@ -183,6 +183,64 @@ namespace HealthCare.EF.AutoMapper
                 .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.XrayAppointment.Price))
                 .ForMember(dest => dest.HospitalName, opt => opt.MapFrom(src => src.XrayAppointment.Xray.Hospital.Name))
                 .ForMember(dest => dest.ClinicName, opt => opt.MapFrom(src => src.XrayAppointment.Xray.XraySpecialization.Name));
+
+            CreateMap<LabReservation, ReservationResponseDto>()
+                .ForMember(dest => dest.FromTime, opt => opt.MapFrom(src => src.LabAppointmentDate.FromTime))
+                .ForMember(dest => dest.ToTime, opt => opt.MapFrom(src => src.LabAppointmentDate.ToTime))
+                .ForMember(dest => dest.PatientPhoneNum, opt => opt.MapFrom(src => src.Patient.PhoneNumber))
+                .ForMember(dest => dest.PatientName, opt => opt.MapFrom(src => src.Patient.FullName));
+
+            CreateMap<ClinicReservation, ReservationResponseDto>()
+                .ForMember(dest => dest.FromTime, opt => opt.MapFrom(src => src.ClinicAppointmentDate.FromTime))
+                .ForMember(dest => dest.ToTime, opt => opt.MapFrom(src => src.ClinicAppointmentDate.ToTime))
+                .ForMember(dest => dest.PatientPhoneNum, opt => opt.MapFrom(src => src.Patient.PhoneNumber))
+                .ForMember(dest => dest.PatientName, opt => opt.MapFrom(src => src.Patient.FullName));
+
+            CreateMap<XrayReservation, ReservationResponseDto>()
+               .ForMember(dest => dest.FromTime, opt => opt.MapFrom(src => src.XrayAppointmentDate.FromTime))
+               .ForMember(dest => dest.ToTime, opt => opt.MapFrom(src => src.XrayAppointmentDate.ToTime))
+               .ForMember(dest => dest.PatientPhoneNum, opt => opt.MapFrom(src => src.Patient.PhoneNumber))
+               .ForMember(dest => dest.PatientName, opt => opt.MapFrom(src => src.Patient.FullName));
+
+            CreateMap<ClinicReservation, AllReservations>()
+                .ForMember(dest => dest.RoomId, opt => opt.MapFrom(src => src.ClinicAppointment.ClinicLabId))
+                .ForMember(dest => dest.Doctor, opt => opt.MapFrom(src => src.ClinicAppointment.Doctor))
+                .ForMember(dest => dest.DoctorId, opt => opt.MapFrom(src => src.ClinicAppointment.DoctorId))
+                .ForMember(dest => dest.RoomReservationId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.ToTime, opt => opt.MapFrom(src => src.ClinicAppointmentDate.ToTime))
+                .ForMember(dest => dest.FromTime, opt => opt.MapFrom(src => src.ClinicAppointmentDate.FromTime))
+                .ForMember(dest => dest.RoomAppointmentDateId, opt => opt.MapFrom(src => src.ClinicAppointmentDateId))
+                .ForMember(dest => dest.price, opt => opt.MapFrom(src => src.ClinicAppointment.Price))
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+
+            CreateMap<LabReservation, AllReservations>()
+                .ForMember(dest => dest.RoomId, opt => opt.MapFrom(src => src.LabAppointment.LabId))
+                .ForMember(dest => dest.Doctor, opt => opt.MapFrom(src => src.LabAppointment.Doctor))
+                .ForMember(dest => dest.DoctorId, opt => opt.MapFrom(src => src.LabAppointment.DoctorId))
+                .ForMember(dest => dest.RoomReservationId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.ToTime, opt => opt.MapFrom(src => src.LabAppointmentDate.ToTime))
+                .ForMember(dest => dest.FromTime, opt => opt.MapFrom(src => src.LabAppointmentDate.FromTime))
+                .ForMember(dest => dest.RoomAppointmentDateId, opt => opt.MapFrom(src => src.LabAppointmentDateId))
+                .ForMember(dest => dest.price, opt => opt.MapFrom(src => src.LabAppointment.Price))
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+
+            CreateMap<XrayReservation, AllReservations>()
+                .ForMember(dest => dest.RoomId, opt => opt.MapFrom(src => src.XrayAppointment.XrayId))
+                .ForMember(dest => dest.Doctor, opt => opt.MapFrom(src => src.XrayAppointment.Doctor))
+                .ForMember(dest => dest.DoctorId, opt => opt.MapFrom(src => src.XrayAppointment.DoctorId))
+                .ForMember(dest => dest.RoomReservationId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.ToTime, opt => opt.MapFrom(src => src.XrayAppointmentDate.ToTime))
+                .ForMember(dest => dest.FromTime, opt => opt.MapFrom(src => src.XrayAppointmentDate.FromTime))
+                .ForMember(dest => dest.RoomAppointmentDateId, opt => opt.MapFrom(src => src.XrayAppointmentDateId))
+                .ForMember(dest => dest.price, opt => opt.MapFrom(src => src.XrayAppointment.Price))
+                .ForMember(dest => dest.Id, opt => opt.Ignore()); 
+
+            CreateMap<AllReservations, ReservationResponseDto>()
+               .ForMember(dest => dest.PatientPhoneNum, opt => opt.MapFrom(src => src.Patient.PhoneNumber))
+               .ForMember(dest => dest.PatientName, opt => opt.MapFrom(src => src.Patient.FullName));
+
+            CreateMap<AllReservations, PatientReservationDto>()
+               .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor.FullName));
         }
     }
 }

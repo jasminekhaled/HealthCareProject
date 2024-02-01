@@ -54,6 +54,7 @@ namespace HealthCare.Core.IRepositories
         public IXrayAppointmentDateRepository XrayAppointmentDateRepository { get; }
         public ILabAppointmentDateRepository LabAppointmentDateRepository { get; }
         public IDayRepository DayRepository { get; }
+        public IAllReservationsRepository AllReservationsRepository { get; }
         Task<int> CompleteAsync();
         void Dispose();
     }

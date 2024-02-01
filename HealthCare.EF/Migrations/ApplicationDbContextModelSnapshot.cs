@@ -22,6 +22,58 @@ namespace HealthCare.EF.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.AllReservations", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Date")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FromTime")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoomAppointmentDateId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoomReservationId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ToTime")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("price")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("AllReservations");
+                });
+
             modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.ClinicAppointment", b =>
                 {
                     b.Property<int>("Id")
@@ -1073,6 +1125,10 @@ namespace HealthCare.EF.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsEmailConfirmed")
                         .HasColumnType("bit");
 
@@ -1101,6 +1157,25 @@ namespace HealthCare.EF.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Patients");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.AllReservations", b =>
+                {
+                    b.HasOne("HealthCare.Core.Models.DoctorModule.Doctor", "Doctor")
+                        .WithMany("AllReservations")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HealthCare.Core.Models.PatientModule.Patient", "Patient")
+                        .WithMany("AllReservations")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.ClinicAppointment", b =>
@@ -1766,6 +1841,8 @@ namespace HealthCare.EF.Migrations
 
             modelBuilder.Entity("HealthCare.Core.Models.DoctorModule.Doctor", b =>
                 {
+                    b.Navigation("AllReservations");
+
                     b.Navigation("ClinicAppointments");
 
                     b.Navigation("DoctorSpecialization");
@@ -1821,6 +1898,8 @@ namespace HealthCare.EF.Migrations
 
             modelBuilder.Entity("HealthCare.Core.Models.PatientModule.Patient", b =>
                 {
+                    b.Navigation("AllReservations");
+
                     b.Navigation("ClinicReservations");
 
                     b.Navigation("LabReservations");

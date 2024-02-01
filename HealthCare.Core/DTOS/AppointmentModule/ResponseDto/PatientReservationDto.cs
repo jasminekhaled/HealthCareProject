@@ -17,6 +17,8 @@ namespace HealthCare.Core.DTOS.AppointmentModule.ResponseDto
         public string DoctorName { get; set; }
         public string DoctorImagePath { get; set; }
         public string Price { get; set; }
+        public string Type { get; set; }
+        public int RoomId { get; set; }
 
     }
 }

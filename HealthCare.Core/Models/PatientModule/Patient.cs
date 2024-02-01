@@ -17,11 +17,13 @@ namespace HealthCare.Core.Models.PatientModule
         public bool IsEmailConfirmed { get; set; }
         [StringLength(11)]
         public string PhoneNumber { get; set; }
+        public string FullName { get; set; }
         public string? VerificationCode { get; set; }
         public List<RateDoctor> RateDoctor { get; set; }
         public List<ClinicReservation> ClinicReservations { get; set; }
         public List<XrayReservation> XrayReservations { get; set; }
         public List<LabReservation> LabReservations { get; set; }
+        public List<AllReservations> AllReservations { get; set; }
 
     }
 }

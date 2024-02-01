@@ -61,6 +61,7 @@ namespace HealthCare.EF.Context
         public DbSet<ClinicAppointmentDate> ClinicAppointmentDates { get; set; }
         public DbSet<XrayAppointmentDate> XrayAppointmentDates { get; set; }
         public DbSet<Day> Days { get; set; }
+        public DbSet<AllReservations> AllReservations { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RefreshToken>()

@@ -39,7 +39,8 @@ namespace HealthCare.Services.Services
         {
             try
             {
-                if (!await _unitOfWork.CivilRegestrationRepository.AnyAsync(check: c => c.NationalId == dto.NationalId))
+                var nationalId = await _unitOfWork.CivilRegestrationRepository.SingleOrDefaultAsync(c => c.NationalId == dto.NationalId);
+                if (nationalId == null)
                 {
                     return new GeneralResponse<SignUpResponse>
                     {
@@ -97,6 +98,7 @@ namespace HealthCare.Services.Services
 
                 var patient = _mapper.Map<Patient>(dto);
                 patient.PassWord = HashingService.GetHash(dto.PassWord);
+                patient.FullName = nationalId.Name;
                 var verificationCode = MailServices.RandomString(6);
                 if (!await MailServices.SendEmailAsync(dto.Email, "Verification Code", verificationCode))
                 {
