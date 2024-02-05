@@ -12,6 +12,9 @@ namespace HealthCare.Core.Models.BandModule
     public class Band
     {
         public int Id { get; set; }
+        public string UniqueId { get; set; }
+        public string Type { get; set; }
+        public int? RoomNum { get; set; }
         public bool IsActive { get; set; }
         public int PatientId { get; set; }
         public Patient Patient { get; set; }
@@ -19,5 +22,7 @@ namespace HealthCare.Core.Models.BandModule
         public Hospital Hospital { get; set; }
         public int CurrentStateId { get; set; }
         public CurrentState CurrentState { get; set; }
+        public List<SavedBand> SavedBands { get; set; }
+        
     }
 }

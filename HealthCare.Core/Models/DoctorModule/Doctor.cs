@@ -1,5 +1,6 @@
 ﻿using HealthCare.Core.Models.AppointmentModule;
 using HealthCare.Core.Models.AuthModule;
+using HealthCare.Core.Models.BandModule;
 using HealthCare.Core.Models.ClinicModule;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,7 @@ namespace HealthCare.Core.Models.DoctorModule
         public List<XrayAppointment> XrayAppointments { get; set; }
         public List<LabAppointment> LabAppointments { get; set; }
         public List<AllReservations> AllReservations { get; set; }
+        public List<SavedBand> SavedBands { get; set; }
 
 
     }

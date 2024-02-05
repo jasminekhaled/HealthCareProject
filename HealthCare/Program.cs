@@ -28,6 +28,7 @@ builder.Services.AddScoped<IHospitalServices, HospitalServices>();
 builder.Services.AddScoped<IDoctorServices, DoctorServices>();
 builder.Services.AddScoped<IClinicServices, ClinicServices>();
 builder.Services.AddScoped<IAppointmentServices, AppointmentServices>();
+builder.Services.AddScoped<IBandServices, BandServices>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

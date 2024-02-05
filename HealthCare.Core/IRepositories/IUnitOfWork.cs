@@ -39,6 +39,7 @@ namespace HealthCare.Core.IRepositories
         public IXrayReservationRepository XrayReservationRepository { get; }
         public ILabAppointmentRepository LabAppointmentRepository { get; }
         public IBandRepository BandRepository { get; }
+        public ISavedBandRepository SavedBandRepository { get; }
         public ICurrentStateRepository CurrentStateRepository { get; }
         public ICivilRegestrationRepository CivilRegestrationRepository { get; }
         public IRefreshTokenRepository RefreshTokenRepository { get; }

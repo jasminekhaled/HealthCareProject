@@ -1,4 +1,5 @@
 ﻿using HealthCare.Core.Models.AppointmentModule;
+using HealthCare.Core.Models.BandModule;
 using HealthCare.Core.Models.DoctorModule;
 using HealthCare.Core.Models.HospitalModule;
 using System;
@@ -24,6 +25,7 @@ namespace HealthCare.Core.Models.PatientModule
         public List<XrayReservation> XrayReservations { get; set; }
         public List<LabReservation> LabReservations { get; set; }
         public List<AllReservations> AllReservations { get; set; }
+        public List<Band> Bands { get; set; }
 
     }
 }

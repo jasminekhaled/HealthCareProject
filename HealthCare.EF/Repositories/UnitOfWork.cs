@@ -11,6 +11,7 @@ using HealthCare.EF.Repositories.AppointmentModule;
 using HealthCare.EF.Repositories.AppointmentRepositories;
 using HealthCare.EF.Repositories.AuthModule;
 using HealthCare.EF.Repositories.AuthRepositories;
+using HealthCare.EF.Repositories.BandModule;
 using HealthCare.EF.Repositories.BandRepostiories;
 using HealthCare.EF.Repositories.ClinicModule;
 using HealthCare.EF.Repositories.DoctorModule;
@@ -49,6 +50,7 @@ namespace HealthCare.EF.Repositories
         public IClinicLabRepository ClinicLabRepository { get; }
         public IClinicLabDoctorRepository ClinicLabDoctorRepository { get; set; }
         public IBandRepository BandRepository { get; set; }
+        public ISavedBandRepository SavedBandRepository { get; set; }
         public ICurrentStateRepository CurrentStateRepository { get; set; }
         public ICivilRegestrationRepository CivilRegestrationRepository { get; set; }
         public IRefreshTokenRepository RefreshTokenRepository { get; }
@@ -100,6 +102,7 @@ namespace HealthCare.EF.Repositories
             HospitalAdminRepository = new HospitalAdminRepository(context);
             ClinicLabDoctorRepository = new ClinicLabDoctorRepository(context);
             BandRepository = new BandRepository(context);
+            SavedBandRepository = new SavedBandRepository(context);
             CurrentStateRepository = new CurrentStateRepository(context);
             MedicalHistoryRepository = new MedicalHistoryRepository(context);
             CivilRegestrationRepository = new CivilRegestrationRepository(context);

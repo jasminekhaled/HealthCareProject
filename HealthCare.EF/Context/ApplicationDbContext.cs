@@ -40,6 +40,7 @@ namespace HealthCare.EF.Context
         public DbSet<ClinicAppointment> ClinicAppointments { get; set; }
         public DbSet<ClinicReservation> ClinicReservations { get; set; }
         public DbSet<Band> Bands { get; set; }
+        public DbSet<SavedBand> SavedBands { get; set; }
         public DbSet<CurrentState> CurrentStates { get; set; }
         public DbSet<CivilRegestration> CivilRegestrations { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
