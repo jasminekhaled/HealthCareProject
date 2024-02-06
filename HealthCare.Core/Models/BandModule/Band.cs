@@ -16,13 +16,16 @@ namespace HealthCare.Core.Models.BandModule
         public string Type { get; set; }
         public int? RoomNum { get; set; }
         public bool IsActive { get; set; }
-        public int PatientId { get; set; }
+        public int? PatientId { get; set; }
         public Patient Patient { get; set; }
         public int HospitalId { get; set; }
         public Hospital Hospital { get; set; }
         public int CurrentStateId { get; set; }
         public CurrentState CurrentState { get; set; }
         public List<SavedBand> SavedBands { get; set; }
-        
+
+
+        public static string Private = "Private";
+        public static string Public = "Public";
     }
 }

@@ -30,6 +30,5 @@ namespace HealthCare.Core.DTOS.DoctorModule.RequestDtos
         public IFormFile? Image { get; set; }
         public List<int> SpecializationId { get; set; }
         public List<int> HospitalId { get; set; }
-        public List<int>? ClinicLabsId { get; set; }
     }
 }

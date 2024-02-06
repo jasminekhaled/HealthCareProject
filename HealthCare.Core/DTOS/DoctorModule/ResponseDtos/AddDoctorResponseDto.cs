@@ -21,7 +21,6 @@ namespace HealthCare.Core.DTOS.DoctorModule.ResponseDtos
         public string ImagePath { get; set; }
         public List<SpecializationDto> SpecializationNames { get; set; }
         public List<HospitalIdDto> HospitalNames { get; set; }
-        public List<ClinicIdDto> ClinicLabsNames { get; set; }
         public string Token { get; set; }
         public DateTime ExpiresOn { get; set; }
 

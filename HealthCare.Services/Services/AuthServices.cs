@@ -157,11 +157,7 @@ namespace HealthCare.Services.Services
                     };
                 }
                 patient.IsEmailConfirmed = true;
-                _unitOfWork.PatientRepository.Update(patient);
-                await _unitOfWork.CompleteAsync();
 
-                var user = _mapper.Map<User>(patient);
-                user.RoleId = 3;
                 var DefaultFile = new UploadedFile()
                 {
                     FileName = "DefaultImage.png",
@@ -171,7 +167,15 @@ namespace HealthCare.Services.Services
 
                 };
                 await _unitOfWork.UploadedFileRepository.AddAsync(DefaultFile);
-                user.UploadedFile = DefaultFile;
+                patient.UploadedFile = DefaultFile;
+                _unitOfWork.PatientRepository.Update(patient);
+                await _unitOfWork.CompleteAsync();
+
+                var user = _mapper.Map<User>(patient);
+                user.RoleId = 3;
+                
+                //await _unitOfWork.UploadedFileRepository.AddAsync(DefaultFile);
+                //user.UploadedFile = DefaultFile;
                 await _unitOfWork.UserRepository.AddAsync(user);
                 await _unitOfWork.CompleteAsync();
 

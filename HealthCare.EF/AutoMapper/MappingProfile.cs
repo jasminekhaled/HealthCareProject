@@ -3,6 +3,7 @@ using HealthCare.Core.DTOS.AppointmentModule.RequestDto;
 using HealthCare.Core.DTOS.AppointmentModule.ResponseDto;
 using HealthCare.Core.DTOS.AuthModule.RequestDtos;
 using HealthCare.Core.DTOS.AuthModule.ResponseDtos;
+using HealthCare.Core.DTOS.BandModule.ResponseDtos;
 using HealthCare.Core.DTOS.ClinicModule.ResponseDto;
 using HealthCare.Core.DTOS.DoctorModule.RequestDtos;
 using HealthCare.Core.DTOS.DoctorModule.ResponseDtos;
@@ -12,6 +13,7 @@ using HealthCare.Core.DTOS.PatientModule.ResponseDto;
 using HealthCare.Core.Models;
 using HealthCare.Core.Models.AppointmentModule;
 using HealthCare.Core.Models.AuthModule;
+using HealthCare.Core.Models.BandModule;
 using HealthCare.Core.Models.ClinicModule;
 using HealthCare.Core.Models.DoctorModule;
 using HealthCare.Core.Models.HospitalModule;
@@ -29,7 +31,8 @@ namespace HealthCare.EF.AutoMapper
 
         public MappingProfile()
         {
-            CreateMap<User ,UserTokenDto>();
+            CreateMap<User ,UserTokenDto>()
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Id));
 
             CreateMap<SignUpRequestDto, Patient>()
                 .ForMember(src => src.PassWord, opt => opt.Ignore());
@@ -92,6 +95,7 @@ namespace HealthCare.EF.AutoMapper
             CreateMap<ClinicLab, ClinicIdDto>();
 
             CreateMap<Doctor, DoctorDto>()
+                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath))
                 .ForMember(src => src.Hospitals, opt => opt.Ignore())
                 .ForMember(src => src.Specializations, opt => opt.Ignore())
                 .ForMember(src => src.Rate, opt => opt.Ignore());
@@ -241,6 +245,14 @@ namespace HealthCare.EF.AutoMapper
 
             CreateMap<AllReservations, PatientReservationDto>()
                .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor.FullName));
+
+            CreateMap<Band, AddPrivateBandDto>()
+               .ForMember(dest => dest.HospitalName, opt => opt.MapFrom(src => src.Hospital.Name));
+
+            CreateMap<Band, AddPublicBandDto>()
+               .ForMember(dest => dest.PatientName, opt => opt.MapFrom(src => src.Patient.FullName))
+               .ForMember(dest => dest.PatientNationalId, opt => opt.MapFrom(src => src.Patient.NationalId))
+               .ForMember(dest => dest.PatientImagePath, opt => opt.MapFrom(src => src.Patient.UploadedFile.FilePath));
         }
     }
 }

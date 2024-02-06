@@ -229,24 +229,6 @@ namespace HealthCare.Services.Services
                     hospitals.Add(hospital);
                 }
 
-                var clinics = new List<ClinicLab>();
-                if (dto.ClinicLabsId != null)
-                {
-                    foreach (var id in dto.ClinicLabsId)
-                    {
-                        var clinic = await _unitOfWork.ClinicLabRepository.GetByIdAsync(id);
-                        if (clinic == null)
-                        {
-                            return new GeneralResponse<AddDoctorResponseDto>
-                            {
-                                IsSuccess = false,
-                                Message = "Clinic or Lab not found!"
-                            };
-                        }
-                        clinics.Add(clinic); 
-                    }
-                }
-
                 if (dto.Image != null)
                 {
                     var MaxAllowedPosterSize = _configuration.GetValue<long>("MaxAllowedPosterSize");
@@ -270,13 +252,49 @@ namespace HealthCare.Services.Services
                         };
                     }
                 }
+
                 var doctor = _mapper.Map<Doctor>(dto);
                 doctor.FullName = dto.FirstName + " " + dto.LastName;
                 doctor.PassWord = HashingService.GetHash(dto.PassWord);
+                var data = _mapper.Map<AddDoctorResponseDto>(doctor);
+
+                if (dto.Image != null)
+                {
+                    var fakeFileName = Path.GetRandomFileName();
+                    var uploadedFile = new UploadedFile()
+                    {
+                        FileName = dto.Image.FileName,
+                        ContentType = dto.Image.ContentType,
+                        StoredFileName = fakeFileName
+                    };
+                    var directoryPath = Path.Combine(_webHostEnvironment.ContentRootPath, "Uploads", "DoctorImages");
+                    var path = Path.Combine(directoryPath, fakeFileName);
+                    using FileStream fileStream = new(path, FileMode.Create);
+                    dto.Image.CopyTo(fileStream);
+                    uploadedFile.FilePath = path;
+                    await _unitOfWork.UploadedFileRepository.AddAsync(uploadedFile);
+                    await _unitOfWork.CompleteAsync();
+                    doctor.UploadedFile = uploadedFile;
+                    data.ImagePath = uploadedFile.FilePath;
+                }
+                else
+                {
+                    var DefaultFile = new UploadedFile()
+                    {
+                        FileName = "DefaultImage.png",
+                        StoredFileName = "DefaultImage",
+                        ContentType = "image/png",
+                        FilePath = "G:\\WEB DEVELOPMENT\\HealthCareProject\\HealthCareAPIs\\HealthCare\\Uploads\\DefaultImage"
+
+                    };
+                    await _unitOfWork.UploadedFileRepository.AddAsync(DefaultFile);
+                    doctor.UploadedFile = DefaultFile;
+                    await _unitOfWork.CompleteAsync();
+                    data.ImagePath = DefaultFile.FilePath;
+                }
+                
                 await _unitOfWork.DoctorRepository.AddAsync(doctor);
                 await _unitOfWork.CompleteAsync();
-
-                var data = _mapper.Map<AddDoctorResponseDto>(doctor);
 
                 var doctorSpecialization = dto.SpecializationId.Select(s => new DoctorSpecialization
                 {
@@ -293,67 +311,18 @@ namespace HealthCare.Services.Services
                 });
                 var h = _mapper.Map<List<HospitalIdDto>>(hospitals);
                 data.HospitalNames = h;
-
-                if(dto.ClinicLabsId != null)
-                {
-                    var clinicDoctor = dto.ClinicLabsId.Select(s => new ClinicLabDoctor
-                    {
-                        ClinicLabId = s,
-                        DoctorId = doctor.Id
-                    });
-                    var c = _mapper.Map<List<ClinicIdDto>>(clinics);
-                    data.ClinicLabsNames = c;
-                    await _unitOfWork.ClinicLabDoctorRepository.AddRangeAsync(clinicDoctor);
-                    await _unitOfWork.CompleteAsync();
-                }
-                
-
+               
                 await _unitOfWork.DoctorSpecializationRepository.AddRangeAsync(doctorSpecialization);
                 await _unitOfWork.HospitalDoctorRepository.AddRangeAsync(hospitalDoctors);
                 await _unitOfWork.CompleteAsync();
 
                 var user = _mapper.Map<User>(doctor);
                 user.RoleId = 4;
-
+                user.UploadedFile = doctor.UploadedFile;
                 var userToken = _mapper.Map<UserTokenDto>(user);
                 userToken.Role = "Doctor";
                 var Token = TokenServices.CreateJwtToken(userToken);
                 var refreshToken = TokenServices.CreateRefreshToken();
-
-                if (dto.Image == null)
-                {
-                    var DefaultFile = new UploadedFile()
-                    {
-                        FileName = "DefaultImage.png",
-                        StoredFileName = "DefaultImage",
-                        ContentType = "image/png",
-                        FilePath = "G:\\WEB DEVELOPMENT\\HealthCareProject\\HealthCareAPIs\\HealthCare\\Uploads\\DefaultImage"
-
-                    };
-                    await _unitOfWork.UploadedFileRepository.AddAsync(DefaultFile);
-                    user.UploadedFile = DefaultFile;
-                    await _unitOfWork.CompleteAsync();
-                    data.ImagePath = DefaultFile.FilePath;
-                }
-                else
-                {
-                    var fakeFileName = Path.GetRandomFileName();
-                    var uploadedFile = new UploadedFile()
-                    {
-                        FileName = dto.Image.FileName,
-                        ContentType = dto.Image.ContentType,
-                        StoredFileName = fakeFileName
-                    };
-                    var directoryPath = Path.Combine(_webHostEnvironment.ContentRootPath, "Uploads", "DoctorImages");
-                    var path = Path.Combine(directoryPath, fakeFileName);
-                    using FileStream fileStream = new(path, FileMode.Create);
-                    dto.Image.CopyTo(fileStream);
-                    uploadedFile.FilePath = path;
-                    await _unitOfWork.UploadedFileRepository.AddAsync(uploadedFile);
-                    user.UploadedFile = uploadedFile;
-
-                    data.ImagePath = path;
-                }
 
                 await _unitOfWork.UserRepository.AddAsync(user);
                 await _unitOfWork.CompleteAsync();
@@ -496,7 +465,7 @@ namespace HealthCare.Services.Services
         {
             try
             {
-                var doctor = await _unitOfWork.DoctorRepository.GetSingleWithIncludesAsync(single: a => a.Id == doctorId, i => i.DoctorSpecialization, s => s.hospitalDoctors);
+                var doctor = await _unitOfWork.DoctorRepository.GetSingleWithIncludesAsync(single: a => a.Id == doctorId, i => i.DoctorSpecialization, s => s.hospitalDoctors, s => s.UploadedFile);
                 if (doctor == null)
                 {
                     return new GeneralResponse<DoctorDto>
@@ -509,8 +478,8 @@ namespace HealthCare.Services.Services
                 var data = _mapper.Map<DoctorDto>(doctor);
 
 
-                    var user = await _unitOfWork.UserRepository.WhereSelectTheFirstAsync(filter: s => s.UserName == doctor.UserName, select: i => i.UploadedFile);
-                    data.ImagePath = user.FilePath;
+                   // var user = await _unitOfWork.UserRepository.WhereSelectTheFirstAsync(filter: s => s.UserName == doctor.UserName, select: i => i.UploadedFile);
+                    //data.ImagePath = user.FilePath;
 
                     var specializationIds = doctor.DoctorSpecialization.Select(ds => ds.SpecializationId);
                     var specia = await _unitOfWork.SpecializationRepository
@@ -680,7 +649,6 @@ namespace HealthCare.Services.Services
                         DoctorId = doctorId
                     }).ToList();
                     await _unitOfWork.DoctorSpecializationRepository.AddRangeAsync(doctorSpecialization);
-                    //await _unitOfWork.CompleteAsync();
                     var s = _mapper.Map<List<SpecializationDto>>(specializations);
                     data.specializations = s;
                 }
@@ -773,10 +741,7 @@ namespace HealthCare.Services.Services
                 };
             }
         }
-        public Task<GeneralResponse<List<DoctorDto>>> GetDoctorInSpecificHospitalByName(string FullName)
-        {
-            throw new NotImplementedException();
-        }
+        
 
         public async Task<GeneralResponse<List<DoctorDto>>> ListOfDoctorsinHospital(int hospitalId)
         {
@@ -1067,8 +1032,13 @@ namespace HealthCare.Services.Services
             }
         }
 
+        public Task<GeneralResponse<List<DoctorDto>>> GetDoctorInSpecificHospitalByName(string FullName)
+        {
+            throw new NotImplementedException();
+        }
 
-        
+
+
     }
 }
 

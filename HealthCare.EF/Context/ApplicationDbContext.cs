@@ -103,6 +103,18 @@ namespace HealthCare.EF.Context
                 .HasForeignKey<HospitalAdmin>(b => b.UploadedFileId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<UploadedFile>()
+                .HasOne(a => a.Doctor)
+                .WithOne(r => r.UploadedFile)
+                .HasForeignKey<Doctor>(b => b.UploadedFileId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<UploadedFile>()
+                .HasOne(a => a.Patient)
+                .WithOne(r => r.UploadedFile)
+                .HasForeignKey<Patient>(b => b.UploadedFileId)
+                .OnDelete(DeleteBehavior.NoAction);
+
             modelBuilder.Entity<ClinicLab>()
                 .HasOne(a => a.Hospital)
                 .WithMany(r => r.ClinicLabs)

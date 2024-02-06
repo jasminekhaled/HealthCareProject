@@ -10,10 +10,10 @@ namespace HealthCare.Services.IServices
 {
     public interface IBandServices
     {
-        Task<GeneralResponse<BandResponseDto>> AddPublicBand(int hospitalAdminId, string patientNationalId);
-        Task<GeneralResponse<AddPrivateBandDto>> AddPrivateBand(int hospitalAdminId);
-        Task<GeneralResponse<string>> DeletePrivateBand(int hospitalAdminId, int BandId);
-        Task<GeneralResponse<string>> DeletePuplicBand(int patientId, int BandId);
+        Task<GeneralResponse<AddPublicBandDto>> AddPublicBand(string token, string patientNationalId);
+        Task<GeneralResponse<AddPrivateBandDto>> AddPrivateBand(string token);
+        Task<GeneralResponse<string>> DeletePrivateBand(string token , int bandId);
+        Task<GeneralResponse<string>> DeletePublicBand(string token, int bandId);
         Task<GeneralResponse<string>> BandActivation(int bandId);
         Task<GeneralResponse<string>> BandDeactivation(int bandId);
         Task<GeneralResponse<BandResponseDto>> ChangePatientOfPrivateBand(int bandId, int patientNatinalId);

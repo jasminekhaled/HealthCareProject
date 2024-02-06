@@ -1,4 +1,5 @@
 ﻿using HealthCare.Core.Models.AppointmentModule;
+using HealthCare.Core.Models.AuthModule;
 using HealthCare.Core.Models.BandModule;
 using HealthCare.Core.Models.DoctorModule;
 using HealthCare.Core.Models.HospitalModule;
@@ -20,6 +21,8 @@ namespace HealthCare.Core.Models.PatientModule
         public string PhoneNumber { get; set; }
         public string FullName { get; set; }
         public string? VerificationCode { get; set; }
+        public int? UploadedFileId { get; set; }
+        public UploadedFile? UploadedFile { get; set; }
         public List<RateDoctor> RateDoctor { get; set; }
         public List<ClinicReservation> ClinicReservations { get; set; }
         public List<XrayReservation> XrayReservations { get; set; }

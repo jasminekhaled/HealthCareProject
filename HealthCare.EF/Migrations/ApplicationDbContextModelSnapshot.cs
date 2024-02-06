@@ -573,12 +573,24 @@ namespace HealthCare.EF.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<int>("PatientId")
+                    b.Property<int?>("PatientId")
                         .HasColumnType("int");
+
+                    b.Property<int?>("RoomNum")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UniqueId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CurrentStateId");
+                    b.HasIndex("CurrentStateId")
+                        .IsUnique();
 
                     b.HasIndex("HospitalId");
 
@@ -595,18 +607,44 @@ namespace HealthCare.EF.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("BodyTemperature")
+                    b.Property<int?>("BloodPressure")
                         .HasColumnType("int");
 
-                    b.Property<int>("HeartBeat")
+                    b.Property<int?>("BodyTemperature")
                         .HasColumnType("int");
 
-                    b.Property<int>("OxygenLevel")
+                    b.Property<int?>("HeartRate")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("OxygenLevel")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.ToTable("CurrentStates");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.BandModule.SavedBand", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("BandId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BandId");
+
+                    b.HasIndex("DoctorId");
+
+                    b.ToTable("SavedBands");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.ClinicModule.ClinicLab", b =>
@@ -847,12 +885,18 @@ namespace HealthCare.EF.Migrations
                     b.Property<float>("Rate")
                         .HasColumnType("real");
 
+                    b.Property<int>("UploadedFileId")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UploadedFileId")
+                        .IsUnique();
 
                     b.ToTable("Doctors");
                 });
@@ -1146,6 +1190,9 @@ namespace HealthCare.EF.Migrations
                         .HasMaxLength(11)
                         .HasColumnType("nvarchar(11)");
 
+                    b.Property<int?>("UploadedFileId")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -1155,6 +1202,10 @@ namespace HealthCare.EF.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UploadedFileId")
+                        .IsUnique()
+                        .HasFilter("[UploadedFileId] IS NOT NULL");
 
                     b.ToTable("Patients");
                 });
@@ -1417,28 +1468,45 @@ namespace HealthCare.EF.Migrations
             modelBuilder.Entity("HealthCare.Core.Models.BandModule.Band", b =>
                 {
                     b.HasOne("HealthCare.Core.Models.BandModule.CurrentState", "CurrentState")
-                        .WithMany()
-                        .HasForeignKey("CurrentStateId")
+                        .WithOne("Band")
+                        .HasForeignKey("HealthCare.Core.Models.BandModule.Band", "CurrentStateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("HealthCare.Core.Models.HospitalModule.Hospital", "Hospital")
-                        .WithMany()
+                        .WithMany("Bands")
                         .HasForeignKey("HospitalId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("HealthCare.Core.Models.PatientModule.Patient", "Patient")
-                        .WithMany()
-                        .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Bands")
+                        .HasForeignKey("PatientId");
 
                     b.Navigation("CurrentState");
 
                     b.Navigation("Hospital");
 
                     b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.BandModule.SavedBand", b =>
+                {
+                    b.HasOne("HealthCare.Core.Models.BandModule.Band", "Band")
+                        .WithMany("SavedBands")
+                        .HasForeignKey("BandId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HealthCare.Core.Models.DoctorModule.Doctor", "Doctor")
+                        .WithMany("SavedBands")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Band");
+
+                    b.Navigation("Doctor");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.ClinicModule.ClinicLab", b =>
@@ -1588,6 +1656,17 @@ namespace HealthCare.EF.Migrations
                     b.Navigation("UploadedFile");
                 });
 
+            modelBuilder.Entity("HealthCare.Core.Models.DoctorModule.Doctor", b =>
+                {
+                    b.HasOne("HealthCare.Core.Models.AuthModule.UploadedFile", "UploadedFile")
+                        .WithOne("Doctor")
+                        .HasForeignKey("HealthCare.Core.Models.DoctorModule.Doctor", "UploadedFileId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("UploadedFile");
+                });
+
             modelBuilder.Entity("HealthCare.Core.Models.DoctorModule.DoctorSpecialization", b =>
                 {
                     b.HasOne("HealthCare.Core.Models.DoctorModule.Doctor", "Doctor")
@@ -1727,6 +1806,16 @@ namespace HealthCare.EF.Migrations
                     b.Navigation("Patient");
                 });
 
+            modelBuilder.Entity("HealthCare.Core.Models.PatientModule.Patient", b =>
+                {
+                    b.HasOne("HealthCare.Core.Models.AuthModule.UploadedFile", "UploadedFile")
+                        .WithOne("Patient")
+                        .HasForeignKey("HealthCare.Core.Models.PatientModule.Patient", "UploadedFileId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("UploadedFile");
+                });
+
             modelBuilder.Entity("HealthCare.Core.Models.AppointmentModule.ClinicAppointment", b =>
                 {
                     b.Navigation("ClinicAppointmentDates");
@@ -1779,6 +1868,9 @@ namespace HealthCare.EF.Migrations
 
             modelBuilder.Entity("HealthCare.Core.Models.AuthModule.UploadedFile", b =>
                 {
+                    b.Navigation("Doctor")
+                        .IsRequired();
+
                     b.Navigation("Hospital")
                         .IsRequired();
 
@@ -1787,6 +1879,8 @@ namespace HealthCare.EF.Migrations
 
                     b.Navigation("LabSpecialization")
                         .IsRequired();
+
+                    b.Navigation("Patient");
 
                     b.Navigation("Specialization")
                         .IsRequired();
@@ -1803,6 +1897,17 @@ namespace HealthCare.EF.Migrations
                     b.Navigation("RefreshTokens");
 
                     b.Navigation("UserRole")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.BandModule.Band", b =>
+                {
+                    b.Navigation("SavedBands");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.BandModule.CurrentState", b =>
+                {
+                    b.Navigation("Band")
                         .IsRequired();
                 });
 
@@ -1853,6 +1958,8 @@ namespace HealthCare.EF.Migrations
 
                     b.Navigation("RateDoctor");
 
+                    b.Navigation("SavedBands");
+
                     b.Navigation("XrayAppointments");
 
                     b.Navigation("XrayDoctors");
@@ -1870,6 +1977,8 @@ namespace HealthCare.EF.Migrations
             modelBuilder.Entity("HealthCare.Core.Models.HospitalModule.Hospital", b =>
                 {
                     b.Navigation("AdminOfHospitals");
+
+                    b.Navigation("Bands");
 
                     b.Navigation("ClinicLabs");
 
@@ -1899,6 +2008,8 @@ namespace HealthCare.EF.Migrations
             modelBuilder.Entity("HealthCare.Core.Models.PatientModule.Patient", b =>
                 {
                     b.Navigation("AllReservations");
+
+                    b.Navigation("Bands");
 
                     b.Navigation("ClinicReservations");
 

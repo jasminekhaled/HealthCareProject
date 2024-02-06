@@ -1,4 +1,6 @@
-﻿ using HealthCare.Core.DTOS.AuthModule.RequestDtos;
+﻿using HealthCare.Core.DTOS;
+using HealthCare.Core.DTOS.AuthModule.RequestDtos;
+using HealthCare.Core.DTOS.DoctorModule.ResponseDtos;
 using HealthCare.Core.Models.AuthModule;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -52,6 +54,60 @@ namespace HealthCare.Core.Helpers
                 ExpiresOn = DateTime.Now.AddMinutes(120),
                 CreatedOn = DateTime.Now
             };
+        }
+
+        public static GeneralResponse<TokenDto> ExtractUserIdFromToken(string jwtToken)
+        {
+            try
+            {
+                var handler = new JwtSecurityTokenHandler();
+                var validationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey)), // Replace with your secret key
+                    ValidIssuer = "SecureApi",
+                    ValidateIssuer = true, // You may want to validate issuer if needed
+                    ValidAudience = "SecureApi",
+                    ValidateAudience = true, // You may want to validate audience if needed
+                    ClockSkew = TimeSpan.Zero // Optional: Set clock skew to zero for better precision
+                };
+                SecurityToken validatedToken;
+                var principal = handler.ValidateToken(jwtToken, validationParameters, out validatedToken);
+                var userIdClaim = principal.FindFirst("userId");
+
+                if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
+                {
+                    var tokenDto = new TokenDto() { userId = userId };
+                    return new GeneralResponse<TokenDto>
+                    {
+                        Data = tokenDto
+                    };
+                }
+                return new GeneralResponse<TokenDto>
+                {
+                    IsSuccess = false,
+                    Message = "someThing went wrong with the Token"
+                };
+
+            }
+            catch (SecurityTokenException ex)
+            {
+                return new GeneralResponse<TokenDto>
+                {
+                    IsSuccess = false,
+                    Message = "Token validation failed",
+                    Error = ex
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<TokenDto>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
         }
     }
 }
