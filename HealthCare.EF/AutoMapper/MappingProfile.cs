@@ -253,6 +253,13 @@ namespace HealthCare.EF.AutoMapper
                .ForMember(dest => dest.PatientName, opt => opt.MapFrom(src => src.Patient.FullName))
                .ForMember(dest => dest.PatientNationalId, opt => opt.MapFrom(src => src.Patient.NationalId))
                .ForMember(dest => dest.PatientImagePath, opt => opt.MapFrom(src => src.Patient.UploadedFile.FilePath));
+
+            CreateMap<Band, BandResponseDto>()
+               .ForMember(dest => dest.PatientName, opt => opt.MapFrom(src => src.Patient.FullName))
+               .ForMember(dest => dest.PatientNationalId, opt => opt.MapFrom(src => src.Patient.NationalId))
+               .ForMember(dest => dest.PatientImagePath, opt => opt.MapFrom(src => src.Patient.UploadedFile.FilePath));
+
+            CreateMap<CurrentState, CurrentStateDto>();
         }
     }
 }

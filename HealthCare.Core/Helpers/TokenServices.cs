@@ -111,3 +111,66 @@ namespace HealthCare.Core.Helpers
         }
     }
 }
+/*
+ using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Shared.MiddleWares
+{
+    public class TokenValidationMiddleware
+    {
+        private readonly RequestDelegate _next;
+
+        public TokenValidationMiddleware(RequestDelegate next)
+        {
+            _next = next;
+        }
+
+        public async Task Invoke(HttpContext context)
+        {
+            // Extract token from the request header
+            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+
+            if (token != null)
+            {
+                try
+                {
+                    var tokenHandler = new JwtSecurityTokenHandler();
+                    var jwtToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
+
+                    // Your custom validation logic goes here
+                    // For example, you can check the token's expiration, issuer, or other claims
+                    if (jwtToken != null && jwtToken.ValidTo > DateTime.UtcNow)
+                    {
+                        // If the token is valid, set the user on the HttpContext
+                        var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(jwtToken.Claims, "Bearer"));
+                        context.User = claimsPrincipal;
+                    }
+                    else
+                    {
+                        // Token is not valid
+                        context.Response.StatusCode = 401; // Unauthorized
+                        await context.Response.WriteAsync("Invalid token");
+                        return;
+                    }
+                }
+                catch (Exception)
+                {
+                    // Token parsing failed
+                    context.Response.StatusCode = 401; // Unauthorized
+                    await context.Response.WriteAsync("Invalid token format");
+                    return;
+                }
+            }
+
+            await _next(context);
+        }
+    }
+}
+ */
