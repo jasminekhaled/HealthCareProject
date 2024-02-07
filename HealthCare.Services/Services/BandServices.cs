@@ -12,6 +12,7 @@ using HealthCare.Core.Models.HospitalModule;
 using HealthCare.Core.Models.PatientModule;
 using HealthCare.Services.IServices;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -165,17 +166,21 @@ namespace HealthCare.Services.Services
                 var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(
                     a => a.UserName == user.UserName, i => i.AdminOfHospital.Hospital);
 
-                var band = await _unitOfWork.BandRepository.SingleOrDefaultAsync(a => a.Id == bandId && a.Type==Band.Private && a.HospitalId == hospitalAdmin.AdminOfHospital.HospitalId);
+                var band = await _unitOfWork.BandRepository
+                    .GetSingleWithIncludesAsync(a => a.Id == bandId &&
+                    a.Type==Band.Private &&
+                    a.HospitalId == hospitalAdmin.AdminOfHospital.HospitalId,
+                    i => i.CurrentState);
                 if (band == null)
                 {
                     return new GeneralResponse<string>
                     {
                         IsSuccess = false,
-                        Message = "No Private band belong to your hospital Found!"
+                        Message = "No Private band belong to your hospital Found with this Id!"
                     };
                 }
-                _unitOfWork.CurrentStateRepository.Remove(band.CurrentState);
                 _unitOfWork.BandRepository.Remove(band);
+                _unitOfWork.CurrentStateRepository.Remove(band.CurrentState);
                 await _unitOfWork.CompleteAsync();
                 return new GeneralResponse<string>
                 {
@@ -205,19 +210,23 @@ namespace HealthCare.Services.Services
                     return new GeneralResponse<string>
                     {
                         IsSuccess = false,
-                        Message = "No user Found!"
+                        Message = "No patient Found!"
                     };
                 }
                 var patient = await _unitOfWork.PatientRepository.GetSingleWithIncludesAsync(
                     a => a.UserName == user.UserName);
 
-                var band = await _unitOfWork.BandRepository.SingleOrDefaultAsync(a => a.Id == bandId && a.Type == Band.Public && a.Patient == patient);
+                var band = await _unitOfWork.BandRepository
+                    .GetSingleWithIncludesAsync(a => a.Id == bandId &&
+                    a.Type == Band.Public &&
+                    a.Patient == patient,
+                    i => i.CurrentState);
                 if (band == null)
                 {
                     return new GeneralResponse<string>
                     {
                         IsSuccess = false,
-                        Message = "No Band belongs to you had been Found!"
+                        Message = "No Band belongs to you had been Found with this Id!"
                     };
                 }
                 _unitOfWork.CurrentStateRepository.Remove(band.CurrentState);
@@ -353,6 +362,8 @@ namespace HealthCare.Services.Services
                 }
                 var doctor = await _unitOfWork.DoctorRepository.GetSingleWithIncludesAsync(
                     a => a.UserName == user.UserName);
+                var doctorHospitals = await _unitOfWork.HospitalDoctorRepository.GetSpecificItems(a => a.DoctorId == doctor.Id, s => s.HospitalId);
+                var hospitalIds = doctorHospitals.ToList();
 
                 var band = await _unitOfWork.BandRepository.SingleOrDefaultAsync(a => a.Id == bandId);
                 if (band == null)
@@ -360,9 +371,18 @@ namespace HealthCare.Services.Services
                     return new GeneralResponse<string>
                     {
                         IsSuccess = false,
-                        Message = "No Band Found!"
+                        Message = "No band exist with this id!"
                     };
                 }
+                if (band.Type == Band.Private && !hospitalIds.Contains(band.HospitalId))
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No Private band in the hospitals that you are working in had been found with this id!"
+                    };
+                }
+                
                 var savedBand = await _unitOfWork.SavedBandRepository.GetSingleWithIncludesAsync(s => s.BandId == bandId && s.DoctorId == doctor.Id);
                 string data ;
                 if(savedBand == null)
@@ -400,7 +420,7 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public async Task<GeneralResponse<BandResponseDto>> ChangePatientOfPrivateBand(string token, int bandId, ChangeBandPatientDto dto)
+        public async Task<GeneralResponse<BandResponseDto>> ChangePatientOfPrivateBand(string token, int bandId, [FromForm]ChangeBandPatientDto dto)
         {
             try
             {
@@ -433,6 +453,17 @@ namespace HealthCare.Services.Services
                     {
                         IsSuccess = false,
                         Message = "No patient Found with this nationalId!"
+                    };
+                }
+                if(await _unitOfWork.BandRepository.AnyAsync(
+                    a=>a.Type == Band.Private &&
+                    a.PatientId == patient.Id &&
+                    a.HospitalId == band.HospitalId)) 
+                {
+                    return new GeneralResponse<BandResponseDto>
+                    {
+                        IsSuccess = false,
+                        Message = "This patient is already have another private band from this hospital!"
                     };
                 }
                 band.Patient = patient;
@@ -494,7 +525,7 @@ namespace HealthCare.Services.Services
                 }
                 var bands = await _unitOfWork.BandRepository.WhereIncludeAsync(
                     w => w.HospitalId == hospitalId && w.Type == Band.Private,
-                    i => i.Patient);
+                    i => i.Patient.UploadedFile);
                 var data = _mapper.Map<List<BandResponseDto>>(bands);
 
                 return new GeneralResponse<List<BandResponseDto>>
@@ -532,8 +563,9 @@ namespace HealthCare.Services.Services
                 var patient = await _unitOfWork.PatientRepository.GetSingleWithIncludesAsync(
                     a => a.UserName == user.UserName);
 
-                var band = await _unitOfWork.BandRepository.SingleOrDefaultAsync(
-                    a => a.PatientId == patient.Id && a.Type == Band.Public);
+                var band = await _unitOfWork.BandRepository.GetSingleWithIncludesAsync(
+                    a => a.PatientId == patient.Id && a.Type == Band.Public,
+                    i => i.Patient.UploadedFile);
                 if (band == null)
                 {
                     return new GeneralResponse<BandResponseDto>
@@ -567,7 +599,8 @@ namespace HealthCare.Services.Services
             {
                 var bands = await _unitOfWork.BandRepository.WhereIncludeAsync(
                     w => w.Type == Band.Public,
-                    i => i.Patient);
+                    i => i.Patient,
+                    i => i.Patient.UploadedFile);
                 var data = _mapper.Map<List<BandResponseDto>>(bands);
 
                 return new GeneralResponse<List<BandResponseDto>>
@@ -626,7 +659,7 @@ namespace HealthCare.Services.Services
                     w => w.DoctorId == doctor.Id &&
                     w.Band.Type == Band.Private &&
                     w.Band.HospitalId == hospitalId,
-                    a => a.Band.Patient);
+                    a => a.Band.Patient.UploadedFile);
 
                 var bands = savedBands.Select(s => s.Band);
                 var data = _mapper.Map<List<BandResponseDto>>(bands);
@@ -669,7 +702,7 @@ namespace HealthCare.Services.Services
                 var savedBands = await _unitOfWork.SavedBandRepository.WhereIncludeAsync(
                     w => w.DoctorId == doctor.Id &&
                     w.Band.Type == Band.Public,
-                    a => a.Band.Patient);
+                    a => a.Band.Patient.UploadedFile);
 
                 var bands = savedBands.Select(s => s.Band);
                 var data = _mapper.Map<List<BandResponseDto>>(bands);
@@ -712,7 +745,7 @@ namespace HealthCare.Services.Services
                 {
                     var patient = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(s => s.UserName == user.UserName);
                     var band = await _unitOfWork.BandRepository.GetSingleWithIncludesAsync(
-                        s => s.Id == bandId && s.Type == Band.Public && s.PatientId == patient.Id);
+                        s => s.Id == bandId && s.Type == Band.Public && s.PatientId == patient.Id, i => i.CurrentState);
                     if(band == null)
                     {
                         return new GeneralResponse<CurrentStateDto>
@@ -729,7 +762,7 @@ namespace HealthCare.Services.Services
                     var doctor = await _unitOfWork.DoctorRepository.SingleOrDefaultAsync(s => s.UserName == user.UserName);
                     var doctorHospitals = await _unitOfWork.HospitalDoctorRepository.GetSpecificItems(a => a.DoctorId == doctor.Id, s=>s.HospitalId);
                     var hospitalIds = doctorHospitals.ToList();
-                    var band = await _unitOfWork.BandRepository.SingleOrDefaultAsync(a => a.Id == bandId);
+                    var band = await _unitOfWork.BandRepository.GetSingleWithIncludesAsync(a => a.Id == bandId, i => i.CurrentState);
                     if(band==null)
                     {
                         return new GeneralResponse<CurrentStateDto>
@@ -752,7 +785,7 @@ namespace HealthCare.Services.Services
                 if(user.RoleId == 2)
                 {
                     var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(s => s.UserName == user.UserName, a=>a.AdminOfHospital);
-                    var band = await _unitOfWork.BandRepository.SingleOrDefaultAsync(a => a.Id == bandId);
+                    var band = await _unitOfWork.BandRepository.GetSingleWithIncludesAsync(a => a.Id == bandId, i => i.CurrentState);
                     if (band == null)
                     {
                         return new GeneralResponse<CurrentStateDto>
@@ -776,7 +809,7 @@ namespace HealthCare.Services.Services
                 return new GeneralResponse<CurrentStateDto>
                 {
                     IsSuccess = true,
-                    Message = "Saved Private Bands Listed successfully",
+                    Message = "Current State has been displayed successfully",
                     Data = data
                 };
             }
@@ -796,7 +829,7 @@ namespace HealthCare.Services.Services
             try
             {
                 var band = await _unitOfWork.BandRepository.GetSingleWithIncludesAsync
-                    (s => s.UniqueId == uniqueId && s.Type == Band.Public, a => a.Patient);
+                    (s => s.UniqueId == uniqueId && s.Type == Band.Public, a => a.Patient.UploadedFile);
                 if(band == null)
                 {
                     return new GeneralResponse<BandResponseDto>
@@ -840,7 +873,7 @@ namespace HealthCare.Services.Services
                 }
 
                 var band = await _unitOfWork.BandRepository.GetSingleWithIncludesAsync
-                    (s => s.UniqueId == uniqueId && s.Type == Band.Private, a => a.Patient);
+                    (s => s.UniqueId == uniqueId && s.Type == Band.Private, a => a.Patient.UploadedFile);
                 if (band == null)
                 {
                     return new GeneralResponse<BandResponseDto>

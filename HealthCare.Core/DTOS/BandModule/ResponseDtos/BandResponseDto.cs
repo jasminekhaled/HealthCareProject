@@ -18,5 +18,6 @@ namespace HealthCare.Core.DTOS.BandModule.ResponseDtos
         public string PatientName { get; set; }
         public string PatientNationalId { get; set; }
         public string PatientImagePath { get; set; }
+        public int? RoomNum { get; set; }
     }
 }

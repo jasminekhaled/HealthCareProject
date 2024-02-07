@@ -82,7 +82,7 @@ namespace HealthCare.Controllers
         }
 
         [HttpPut("ChangePatientOfPrivateBand")]
-        public async Task<IActionResult> ChangePatientOfPrivateBand(string token, int bandId, ChangeBandPatientDto dto)
+        public async Task<IActionResult> ChangePatientOfPrivateBand(string token, int bandId, [FromForm]ChangeBandPatientDto dto)
         {
             var result = await _bandServices.ChangePatientOfPrivateBand(token, bandId, dto);
             if (result.IsSuccess)
