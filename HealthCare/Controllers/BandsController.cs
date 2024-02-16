@@ -2,8 +2,10 @@
 using HealthCare.Core.DTOS.BandModule.RequestDtos;
 using HealthCare.Services.IServices;
 using HealthCare.Services.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace HealthCare.Controllers
 {
@@ -18,96 +20,107 @@ namespace HealthCare.Controllers
             _bandServices = bandServices;
         }
 
+        [Authorize(Roles = "HospitalAdmin")]
         [HttpPost("AddPrivateBand")]
-        public async Task<IActionResult> AddPrivateBand(string token)
+        public async Task<IActionResult> AddPrivateBand()
         {
-            var result = await _bandServices.AddPrivateBand(token);
+            var result = await _bandServices.AddPrivateBand();
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "HospitalAdmin")]
         [HttpPost("AddPublicBand")]
-        public async Task<IActionResult> AddPublicBand(string token, string patientNationalId)
+        public async Task<IActionResult> AddPublicBand(string patientNationalId)
         {
-            var result = await _bandServices.AddPublicBand(token, patientNationalId);
+            var result = await _bandServices.AddPublicBand(patientNationalId);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "HospitalAdmin")]
         [HttpDelete("DeletePrivateBand")]
-        public async Task<IActionResult> DeletePrivateBand(string token, int bandId)
+        public async Task<IActionResult> DeletePrivateBand(int bandId)
         {
-            var result = await _bandServices.DeletePrivateBand(token, bandId);
+            var result = await _bandServices.DeletePrivateBand(bandId);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "Patient")]
         [HttpDelete("DeletePublicBand")]
-        public async Task<IActionResult> DeletePublicBand(string token, int bandId)
+        public async Task<IActionResult> DeletePublicBand(int bandId)
         {
-            var result = await _bandServices.DeletePublicBand(token, bandId);
+            var result = await _bandServices.DeletePublicBand(bandId);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "HospitalAdmin")]
         [HttpPut("PrivateBandActivation")]
-        public async Task<IActionResult> PrivateBandActivation(string token, int bandId)
+        public async Task<IActionResult> PrivateBandActivation(int bandId)
         {
-            var result = await _bandServices.PrivateBandActivation(token, bandId);
+            var result = await _bandServices.PrivateBandActivation(bandId);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "Patient")]
         [HttpPut("PublicBandActivation")]
-        public async Task<IActionResult> PublicBandActivation(string token, int bandId)
+        public async Task<IActionResult> PublicBandActivation(int bandId)
         {
-            var result = await _bandServices.PublicBandActivation(token, bandId);
+            var result = await _bandServices.PublicBandActivation(bandId);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "Doctor")]
         [HttpPost("BandSaved")]
-        public async Task<IActionResult> BandSaved(string token, int bandId)
+        public async Task<IActionResult> BandSaved(int bandId)
         {
-            var result = await _bandServices.BandSaved(token, bandId);
+            var result = await _bandServices.BandSaved(bandId);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "HospitalAdmin")]
         [HttpPut("ChangePatientOfPrivateBand")]
-        public async Task<IActionResult> ChangePatientOfPrivateBand(string token, int bandId, [FromForm]ChangeBandPatientDto dto)
+        public async Task<IActionResult> ChangePatientOfPrivateBand(int bandId, [FromForm]ChangeBandPatientDto dto)
         {
-            var result = await _bandServices.ChangePatientOfPrivateBand(token, bandId, dto);
+            var result = await _bandServices.ChangePatientOfPrivateBand(bandId, dto);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "Doctor")]
         [HttpGet("GetHospitalPrivateBands")]
-        public async Task<IActionResult> GetHospitalPrivateBands(string token, int hospitalId)
+        public async Task<IActionResult> GetHospitalPrivateBands(int hospitalId)
         {
-            var result = await _bandServices.GetHospitalPrivateBands(token, hospitalId);
+            var result = await _bandServices.GetHospitalPrivateBands(hospitalId);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "Patient")]
         [HttpGet("GetPatientBand")]
-        public async Task<IActionResult> GetPatientBand(string token)
+        public async Task<IActionResult> GetPatientBand()
         {
-            var result = await _bandServices.GetPatientBand(token);
+            var result = await _bandServices.GetPatientBand();
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "HospitalAdmin, Doctor, SuperAdmin")]
         [HttpGet("GetPublicBands")]
         public async Task<IActionResult> GetPublicBands()
         {
@@ -117,33 +130,37 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "Doctor")]
         [HttpGet("GetSavedPrivateBands")]
-        public async Task<IActionResult> GetSavedPrivateBands(string token, int hospitalId)
+        public async Task<IActionResult> GetSavedPrivateBands(int hospitalId)
         {
-            var result = await _bandServices.GetSavedPrivateBands(token, hospitalId);
+            var result = await _bandServices.GetSavedPrivateBands(hospitalId);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "Doctor")]
         [HttpGet("GetSavedPublicBands")]
-        public async Task<IActionResult> GetSavedPublicBands(string token)
+        public async Task<IActionResult> GetSavedPublicBands()
         {
-            var result = await _bandServices.GetSavedPublicBands(token);
+            var result = await _bandServices.GetSavedPublicBands();
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "HospitalAdmin, Doctor, Patient")]
         [HttpGet("BandCurrentState")]
-        public async Task<IActionResult> BandCurrentState(string token, int bandId)
+        public async Task<IActionResult> BandCurrentState(int bandId)
         {
-            var result = await _bandServices.BandCurrentState(token, bandId);
+            var result = await _bandServices.BandCurrentState(bandId);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "HospitalAdmin, Doctor, SuperAdmin")]
         [HttpGet("GetPublicBandByUniqueId")]
         public async Task<IActionResult> GetPublicBandByUniqueId(string uniqueId)
         {
@@ -153,10 +170,11 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "HospitalAdmin, Doctor")]
         [HttpGet("GetPrivateBandByUniqueId")]
-        public async Task<IActionResult> GetPrivateBandByUniqueId(string token, string uniqueId)
+        public async Task<IActionResult> GetPrivateBandByUniqueId(string uniqueId)
         {
-            var result = await _bandServices.GetPrivateBandByUniqueId(token, uniqueId);
+            var result = await _bandServices.GetPrivateBandByUniqueId(uniqueId);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);

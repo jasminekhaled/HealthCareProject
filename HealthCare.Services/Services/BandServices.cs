@@ -6,17 +6,20 @@ using HealthCare.Core.DTOS.BandModule.ResponseDtos;
 using HealthCare.Core.Helpers;
 using HealthCare.Core.IRepositories;
 using HealthCare.Core.Models.AppointmentModule;
+using HealthCare.Core.Models.AuthModule;
 using HealthCare.Core.Models.BandModule;
 using HealthCare.Core.Models.DoctorModule;
 using HealthCare.Core.Models.HospitalModule;
 using HealthCare.Core.Models.PatientModule;
 using HealthCare.Services.IServices;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,18 +29,21 @@ namespace HealthCare.Services.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public BandServices(IUnitOfWork unitOfWork, IMapper mapper)
+        public BandServices(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<GeneralResponse<AddPrivateBandDto>> AddPrivateBand(string token)
+        public async Task<GeneralResponse<AddPrivateBandDto>> AddPrivateBand()
         {
             try
             {
-                var userId = TokenServices.ExtractUserIdFromToken(token).Data.userId;
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst(); 
                 var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.RoleId == 2);
                 if (user == null)
                 {
@@ -82,11 +88,12 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public async Task<GeneralResponse<AddPublicBandDto>> AddPublicBand(string token, string patientNationalId)
+        public async Task<GeneralResponse<AddPublicBandDto>> AddPublicBand(string patientNationalId)
         {
             try
             {
-                var userId = TokenServices.ExtractUserIdFromToken(token).Data.userId;
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
                 var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.RoleId == 2);
                 if (user == null)
                 {
@@ -149,11 +156,12 @@ namespace HealthCare.Services.Services
                 };
             }
         }
-        public async Task<GeneralResponse<string>> DeletePrivateBand(string token, int bandId)
+        public async Task<GeneralResponse<string>> DeletePrivateBand(int bandId)
         {
             try
             {
-                var userId = TokenServices.ExtractUserIdFromToken(token).Data.userId;
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
                 var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.RoleId == 2);
                 if (user == null)
                 {
@@ -199,11 +207,12 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public async Task<GeneralResponse<string>> DeletePublicBand(string token, int bandId)
+        public async Task<GeneralResponse<string>> DeletePublicBand(int bandId)
         {
             try
             {
-                var userId = TokenServices.ExtractUserIdFromToken(token).Data.userId;
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
                 var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.RoleId == 3);
                 if (user == null)
                 {
@@ -250,11 +259,12 @@ namespace HealthCare.Services.Services
         }
 
 
-        public async Task<GeneralResponse<string>> PrivateBandActivation(string token, int bandId)
+        public async Task<GeneralResponse<string>> PrivateBandActivation(int bandId)
         {
             try
             {
-                var userId = TokenServices.ExtractUserIdFromToken(token).Data.userId;
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
                 var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.RoleId == 2);
                 if (user == null)
                 {
@@ -298,11 +308,12 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public async Task<GeneralResponse<string>> PublicBandActivation(string token, int bandId)
+        public async Task<GeneralResponse<string>> PublicBandActivation(int bandId)
         {
             try
             {
-                var userId = TokenServices.ExtractUserIdFromToken(token).Data.userId;
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
                 var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.RoleId == 3);
                 if (user == null)
                 {
@@ -346,11 +357,12 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public async Task<GeneralResponse<string>> BandSaved(string token, int bandId)
+        public async Task<GeneralResponse<string>> BandSaved(int bandId)
         {
             try
             {
-                var userId = TokenServices.ExtractUserIdFromToken(token).Data.userId;
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
                 var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.RoleId == 4);
                 if (user == null)
                 {
@@ -420,11 +432,12 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public async Task<GeneralResponse<BandResponseDto>> ChangePatientOfPrivateBand(string token, int bandId, [FromForm]ChangeBandPatientDto dto)
+        public async Task<GeneralResponse<BandResponseDto>> ChangePatientOfPrivateBand(int bandId, [FromForm]ChangeBandPatientDto dto)
         {
             try
             {
-                var userId = TokenServices.ExtractUserIdFromToken(token).Data.userId;
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
                 var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.RoleId == 2);
                 if (user == null)
                 {
@@ -489,11 +502,12 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public async Task<GeneralResponse<List<BandResponseDto>>> GetHospitalPrivateBands(string token, int hospitalId)
+        public async Task<GeneralResponse<List<BandResponseDto>>> GetHospitalPrivateBands(int hospitalId)
         {
             try
             {
-                var userId = TokenServices.ExtractUserIdFromToken(token).Data.userId;
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
                 var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.RoleId == 4);
                 if (user == null)
                 {
@@ -546,11 +560,12 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public async Task<GeneralResponse<BandResponseDto>> GetPatientBand(string token)
+        public async Task<GeneralResponse<BandResponseDto>> GetPatientBand()
         {
             try
             {
-                var userId = TokenServices.ExtractUserIdFromToken(token).Data.userId;
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
                 var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.RoleId == 3);
                 if (user == null)
                 {
@@ -621,11 +636,12 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public async Task<GeneralResponse<List<BandResponseDto>>> GetSavedPrivateBands(string token, int hospitalId)
+        public async Task<GeneralResponse<List<BandResponseDto>>> GetSavedPrivateBands(int hospitalId)
         {
             try
             {
-                var userId = TokenServices.ExtractUserIdFromToken(token).Data.userId;
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
                 var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.RoleId == 4);
                 if (user == null)
                 {
@@ -682,11 +698,12 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public async Task<GeneralResponse<List<BandResponseDto>>> GetSavedPublicBands(string token)
+        public async Task<GeneralResponse<List<BandResponseDto>>> GetSavedPublicBands()
         {
             try
             {
-                var userId = TokenServices.ExtractUserIdFromToken(token).Data.userId;
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
                 var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.RoleId == 4);
                 if (user == null)
                 {
@@ -726,11 +743,12 @@ namespace HealthCare.Services.Services
 
         }
         
-        public async Task<GeneralResponse<CurrentStateDto>> BandCurrentState(string token, int bandId)
+        public async Task<GeneralResponse<CurrentStateDto>> BandCurrentState(int bandId)
         {
             try
             {
-                var userId = TokenServices.ExtractUserIdFromToken(token).Data.userId;
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
                 var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId);
                 if (user == null)
                 {
@@ -857,11 +875,12 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public async Task<GeneralResponse<BandResponseDto>> GetPrivateBandByUniqueId(string token, string uniqueId)
+        public async Task<GeneralResponse<BandResponseDto>> GetPrivateBandByUniqueId(string uniqueId)
         {
             try
             {
-                var userId = TokenServices.ExtractUserIdFromToken(token).Data.userId;
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
                 var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId);
                 if (user == null)
                 {
