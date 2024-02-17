@@ -13,7 +13,7 @@ namespace HealthCare.Services.IServices
     public interface IAuthServices
     {
         Task<GeneralResponse<SignUpResponse>> SignUp([FromForm]SignUpRequestDto dto);
-        Task<GeneralResponse<VerifyResponse>> VerifyEmail(string email ,string verificationCode); 
+        Task<GeneralResponse<SignUpResponse>> VerifyEmail(string email ,string verificationCode); 
         Task<GeneralResponse<RefreshTokenResponse>> RefreshToken(string? RefreshToken);
         Task<GeneralResponse<LogInResponse>> Login([FromForm] LoginRequest dto);
         Task<GeneralResponse<string>> ResetPassword([FromForm] ResetPasswordRequestDto dto);

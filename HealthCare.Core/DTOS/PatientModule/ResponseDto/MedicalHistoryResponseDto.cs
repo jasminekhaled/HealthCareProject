@@ -1,0 +1,39 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace HealthCare.Core.DTOS.PatientModule.ResponseDto
+{
+    public class MedicalHistoryResponseDto
+    {
+        public int MedicalHistoryId { get; set; }
+        public string FullName { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Email { get; set; }
+        public string ImagePath { get; set; }
+        public string Address { get; set; }
+        public string GenderType { get; set; }
+        public bool Gender { get; set; }
+        public string BirthDate { get; set; }
+        public string FriendName { get; set; }
+        public string FriendPhoneNum { get; set; }
+        public string FriendAddress { get; set; }
+        public bool AnyDiseases { get; set; }
+        public string? DiseasesDescribtion { get; set; }
+        public bool AnySurgery { get; set; }
+        public string? SurgeryDescribtion { get; set; }
+        public bool AnyAllergy { get; set; }
+        public string? AllergyDescribtion { get; set; }
+        public bool AnyMedicine { get; set; }
+        public string? MedicineDescribtion { get; set; }
+        public bool MedicalInsurance { get; set; }
+        public string? MedicalInsuranceDescribtion { get; set; }
+        public List<FileResponseDto> XrayFiles { get; set; }
+        public List<FileResponseDto> TestFiles { get; set; }
+
+
+
+    }
+}

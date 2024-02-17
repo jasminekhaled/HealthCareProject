@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "25VJqIUFttPP9TU4cRhv2atvVVgjEbE6vZLf9wLGNzLsnRN7MyhsgW7PEMllLtEUF1h7BhpJKezCJk02yFticQ==",
+  "dgSpecHash": "oiHo40IMets18lUMghYwZTQJ1A4JaVlYbYQWccCAWqN3pEoMHWJFj9/bozhNTjt9H9ASRHVN9kKApsYwgzY3fg==",
   "success": true,
   "projectFilePath": "G:\\WEB DEVELOPMENT\\HealthCareProject\\HealthCareAPIs\\HealthCare.EF\\HealthCare.EF.csproj",
   "expectedPackageFiles": [
@@ -12,6 +12,7 @@
     "C:\\Users\\com\\.nuget\\packages\\microsoft.aspnetcore\\2.1.7\\microsoft.aspnetcore.2.1.7.nupkg.sha512",
     "C:\\Users\\com\\.nuget\\packages\\microsoft.aspnetcore.authentication.abstractions\\2.1.1\\microsoft.aspnetcore.authentication.abstractions.2.1.1.nupkg.sha512",
     "C:\\Users\\com\\.nuget\\packages\\microsoft.aspnetcore.authentication.core\\2.1.1\\microsoft.aspnetcore.authentication.core.2.1.1.nupkg.sha512",
+    "C:\\Users\\com\\.nuget\\packages\\microsoft.aspnetcore.authentication.google\\6.0.23\\microsoft.aspnetcore.authentication.google.6.0.23.nupkg.sha512",
     "C:\\Users\\com\\.nuget\\packages\\microsoft.aspnetcore.connections.abstractions\\2.1.3\\microsoft.aspnetcore.connections.abstractions.2.1.3.nupkg.sha512",
     "C:\\Users\\com\\.nuget\\packages\\microsoft.aspnetcore.diagnostics\\2.1.1\\microsoft.aspnetcore.diagnostics.2.1.1.nupkg.sha512",
     "C:\\Users\\com\\.nuget\\packages\\microsoft.aspnetcore.diagnostics.abstractions\\2.1.1\\microsoft.aspnetcore.diagnostics.abstractions.2.1.1.nupkg.sha512",

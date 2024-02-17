@@ -20,6 +20,7 @@ namespace HealthCare.Core.IRepositories
         public IUserRoleRepository UserRoleRepository { get; }
         public IPatientRepository PatientRepository { get; }
         public IMedicalHistoryRepository MedicalHistoryRepository { get; }
+        public IMedicalHistoryFileRepository MedicalHistoryFileRepository { get; }
         public IHospitalRepository HospitalRepository { get; }
         public IHospitalAdminRepository HospitalAdminRepository { get; }
         public IAdminOfHospitalRepository AdminOfHospitalRepository { get; }

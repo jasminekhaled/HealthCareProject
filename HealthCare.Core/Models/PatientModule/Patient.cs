@@ -29,6 +29,8 @@ namespace HealthCare.Core.Models.PatientModule
         public List<LabReservation> LabReservations { get; set; }
         public List<AllReservations> AllReservations { get; set; }
         public List<Band> Bands { get; set; }
+        public int? MedicalHistoryId { get; set; }
+        public MedicalHistory? MedicalHistory { get; set; }
 
     }
 }

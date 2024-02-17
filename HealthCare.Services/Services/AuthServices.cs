@@ -21,6 +21,10 @@ using HealthCare.Core.DTOS.AuthModule.RequestDtos;
 using HealthCare.Core.Models.PatientModule;
 using HealthCare.Core.DTOS.PatientModule.ResponseDto;
 using Microsoft.AspNetCore.Mvc;
+using HealthCare.Core.DTOS.DoctorModule.ResponseDtos;
+using HealthCare.Core.Models.DoctorModule;
+using Microsoft.AspNetCore.Hosting;
+using System.Numerics;
 
 namespace HealthCare.Services.Services
 {
@@ -28,13 +32,17 @@ namespace HealthCare.Services.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IConfiguration _configuration;
 
-        public AuthServices(IUnitOfWork unitOfWork, IMapper mapper)
+        public AuthServices(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment webHostEnvironment, IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _webHostEnvironment = webHostEnvironment;
+            _configuration = configuration;
         }
-         
+
         public async Task<GeneralResponse<SignUpResponse>> SignUp([FromForm]SignUpRequestDto dto)
         {
             try
@@ -48,34 +56,41 @@ namespace HealthCare.Services.Services
                         Message = "Wrong National Id.",
                     };
                 }
-                if (await _unitOfWork.UserRepository.AnyAsync(check: c => c.NationalId == dto.NationalId && c.RoleId == 3))
+                var patientWithNId = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(c => c.NationalId == dto.NationalId);
+                if (patientWithNId != null)
                 {
-                    return new GeneralResponse<SignUpResponse>
+                    if(patientWithNId.IsEmailConfirmed == true)
                     {
-                        IsSuccess = false,
-                        Message = "User with this national Id is already Exist.",
-                    };
-                }
-                if (await _unitOfWork.UserRepository.AnyAsync(check: c => c.Email == dto.Email && c.RoleId == 3))
-                {
-                    return new GeneralResponse<SignUpResponse>
+                        return new GeneralResponse<SignUpResponse>
+                        {
+                            IsSuccess = false,
+                            Message = "Patient with this National Id is already Exist.",
+                        };
+                    }
+                    else
                     {
-                        IsSuccess = false,
-                        Message = "User with this email is already Exist.",
-                    };
+                        _unitOfWork.PatientRepository.Remove(patientWithNId);
+                        await _unitOfWork.CompleteAsync();
+                    }
+                        
                 }
-                
-                if (await _unitOfWork.PatientRepository.AnyAsync(check: c => c.NationalId == dto.NationalId && c.IsEmailConfirmed == false))
+                var patientWithEmail = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(c => c.Email == dto.Email);
+                if (patientWithEmail != null)
                 {
-                    var UnConfirmedPatient = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(s => s.NationalId == dto.NationalId);
-                    _unitOfWork.PatientRepository.Remove(UnConfirmedPatient);
-                    await _unitOfWork.CompleteAsync();   
-                }
-                if (await _unitOfWork.PatientRepository.AnyAsync(check: c => c.Email == dto.Email && c.IsEmailConfirmed == false))
-                {
-                    var UnConfirmedPatient = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(s => s.Email == dto.Email);
-                    _unitOfWork.PatientRepository.Remove(UnConfirmedPatient);
-                    await _unitOfWork.CompleteAsync();
+                    if (patientWithEmail.IsEmailConfirmed == true)
+                    {
+                        return new GeneralResponse<SignUpResponse>
+                        {
+                            IsSuccess = false,
+                            Message = "Patient with this Email is already Exist.",
+                        };
+                    }
+                    else
+                    {
+                        _unitOfWork.PatientRepository.Remove(patientWithEmail);
+                        await _unitOfWork.CompleteAsync();
+                    }
+
                 }
 
                 if(await _unitOfWork.UserRepository.AnyAsync(a => a.UserName == dto.UserName))
@@ -83,7 +98,7 @@ namespace HealthCare.Services.Services
                     return new GeneralResponse<SignUpResponse>
                     {
                         IsSuccess = false,
-                        Message = "UserName is already Exist! Please write another UserName.",
+                        Message = "UserName is already used! Please use another UserName.",
                     };
                 }
 
@@ -99,6 +114,55 @@ namespace HealthCare.Services.Services
                 var patient = _mapper.Map<Patient>(dto);
                 patient.PassWord = HashingService.GetHash(dto.PassWord);
                 patient.FullName = nationalId.Name;
+                
+                var uploadedFile = new UploadedFile();
+
+                if(dto.Image != null)
+                {
+                    var MaxAllowedPosterSize = _configuration.GetValue<long>("MaxAllowedPosterSize");
+                    List<string> AllowedExtenstions = _configuration.GetSection("AllowedExtenstions").Get<List<string>>();
+
+                    if (!AllowedExtenstions.Contains(Path.GetExtension(dto.Image.FileName).ToLower()))
+                    {
+                        return new GeneralResponse<SignUpResponse>
+                        {
+                            IsSuccess = false,
+                            Message = "Only .jpg and .png Images Are Allowed."
+                        };
+                    }
+
+                    if (dto.Image.Length > MaxAllowedPosterSize)
+                    {
+                        return new GeneralResponse<SignUpResponse>
+                        {
+                            IsSuccess = false,
+                            Message = "Max Allowed Size Is 1MB."
+                        };
+                    }
+                    var fakeFileName = Path.GetRandomFileName();
+
+                    uploadedFile.FileName = dto.Image.FileName;
+                    uploadedFile.ContentType = dto.Image.ContentType;
+                    uploadedFile.StoredFileName = fakeFileName;
+                    
+                    var directoryPath = Path.Combine(_webHostEnvironment.ContentRootPath, "Uploads", "PatientImages");
+                    var path = Path.Combine(directoryPath, fakeFileName);
+                    using FileStream fileStream = new(path, FileMode.Create);
+                    dto.Image.CopyTo(fileStream);
+                    uploadedFile.FilePath = path;
+                    
+                }
+                else
+                {
+                    uploadedFile.FileName = "DefaultImage.png";
+                    uploadedFile.StoredFileName = "DefaultImage";
+                    uploadedFile.ContentType = "image/png";
+                    uploadedFile.FilePath = "G:\\WEB DEVELOPMENT\\HealthCareProject\\HealthCareAPIs\\HealthCare\\Uploads\\DefaultImage";
+                }
+                await _unitOfWork.UploadedFileRepository.AddAsync(uploadedFile);
+                await _unitOfWork.CompleteAsync();
+                patient.UploadedFile = uploadedFile;
+
                 var verificationCode = MailServices.RandomString(6);
                 if (!await MailServices.SendEmailAsync(dto.Email, "Verification Code", verificationCode))
                 {
@@ -110,9 +174,10 @@ namespace HealthCare.Services.Services
                 }
                     
                 patient.VerificationCode = verificationCode;
-                var data = _mapper.Map<SignUpResponse>(patient);
                 await _unitOfWork.PatientRepository.AddAsync(patient);
                 await _unitOfWork.CompleteAsync();
+                var data = _mapper.Map<SignUpResponse>(patient);
+                data.ImagePath = uploadedFile.FilePath;
 
                 return new GeneralResponse<SignUpResponse>
                 {
@@ -133,14 +198,14 @@ namespace HealthCare.Services.Services
       
         }
 
-        public async Task<GeneralResponse<VerifyResponse>> VerifyEmail(string email, string verificationCode)
+        public async Task<GeneralResponse<SignUpResponse>> VerifyEmail(string email, string verificationCode)
         {
             try
             {
-                var patient = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(s => s.Email == email);
+                var patient = await _unitOfWork.PatientRepository.GetSingleWithIncludesAsync(s => s.Email == email, a=>a.UploadedFile);
                 if(patient == null)
                 {
-                    return new GeneralResponse<VerifyResponse>
+                    return new GeneralResponse<SignUpResponse>
                     {
                         IsSuccess = false,
                         Message = "No Patient Found with this Email"
@@ -150,67 +215,56 @@ namespace HealthCare.Services.Services
                 {
                     _unitOfWork.PatientRepository.Remove(patient);
                     await _unitOfWork.CompleteAsync();
-                    return new GeneralResponse<VerifyResponse>
+                    return new GeneralResponse<SignUpResponse>
                     {
                         IsSuccess = false,
                         Message = "Wrong Verification code"
                     };
                 }
                 patient.IsEmailConfirmed = true;
-
-                var DefaultFile = new UploadedFile()
-                {
-                    FileName = "DefaultImage.png",
-                    StoredFileName = "DefaultImage",
-                    ContentType = "image/png",
-                    FilePath = "G:\\WEB DEVELOPMENT\\HealthCareProject\\HealthCareAPIs\\HealthCare\\Uploads\\DefaultImage"
-
-                };
-                await _unitOfWork.UploadedFileRepository.AddAsync(DefaultFile);
-                patient.UploadedFile = DefaultFile;
                 _unitOfWork.PatientRepository.Update(patient);
                 await _unitOfWork.CompleteAsync();
 
-                var user = _mapper.Map<User>(patient);
-                user.RoleId = 3;
-                
-                //await _unitOfWork.UploadedFileRepository.AddAsync(DefaultFile);
-                //user.UploadedFile = DefaultFile;
-                await _unitOfWork.UserRepository.AddAsync(user);
-                await _unitOfWork.CompleteAsync();
+                /* var user = _mapper.Map<User>(patient);
+                 user.RoleId = 3;
+                 await _unitOfWork.UserRepository.AddAsync(user);
+                 await _unitOfWork.CompleteAsync();
 
-                var userRole = new UserRole
-                {
-                    UserId = user.Id,
-                    RoleId = 3
-                };
-                await _unitOfWork.UserRoleRepository.AddAsync(userRole);
-                await _unitOfWork.CompleteAsync();
+                 var userRole = new UserRole
+                 {
+                     UserId = user.Id,
+                     RoleId = 3
+                 };
+                 await _unitOfWork.UserRoleRepository.AddAsync(userRole);
+                 await _unitOfWork.CompleteAsync();
 
-                var userToken = _mapper.Map<UserTokenDto>(user);
-                userToken.Role = "Patient";
-                var Token = TokenServices.CreateJwtToken(userToken);
-                var refreshToken = TokenServices.CreateRefreshToken();
-                var newRefreshToken = new RefreshToken
-                {
-                    Token = refreshToken.Token,
-                    ExpiresOn = refreshToken.ExpiresOn,
-                    CreatedOn = refreshToken.CreatedOn,
-                    userId = user.Id
-                };
-                await _unitOfWork.RefreshTokenRepository.AddAsync(newRefreshToken);
-                await _unitOfWork.CompleteAsync();
+                 var userToken = _mapper.Map<UserTokenDto>(user);
+                 userToken.Role = "Patient";
+                 var Token = TokenServices.CreateJwtToken(userToken);
+                 var refreshToken = TokenServices.CreateRefreshToken();
+                 var newRefreshToken = new RefreshToken
+                 {
+                     Token = refreshToken.Token,
+                     ExpiresOn = refreshToken.ExpiresOn,
+                     CreatedOn = refreshToken.CreatedOn,
+                     userId = user.Id
+                 };
+                 await _unitOfWork.RefreshTokenRepository.AddAsync(newRefreshToken);
+                 await _unitOfWork.CompleteAsync();
 
-                var data = _mapper.Map<VerifyResponse>(patient);
-                data.RefreshToken = refreshToken.Token;
-                data.RefreshTokenExpiration = refreshToken.ExpiresOn;
-                data.Token = new JwtSecurityTokenHandler().WriteToken(Token);
-                data.ExpiresOn = Token.ValidTo;
-                var Role = await _unitOfWork.RoleRepository.GetByIdAsync(user.RoleId);
-                data.Role = Role.Name;
-                data.ImagePath = DefaultFile.FilePath;
+                 var data = _mapper.Map<VerifyResponse>(patient);
+                 data.RefreshToken = refreshToken.Token;
+                 data.RefreshTokenExpiration = refreshToken.ExpiresOn;
+                 data.Token = new JwtSecurityTokenHandler().WriteToken(Token);
+                 data.ExpiresOn = Token.ValidTo;
+                 var Role = await _unitOfWork.RoleRepository.GetByIdAsync(user.RoleId);
+                 data.Role = Role.Name;
+                 data.ImagePath = DefaultFile.FilePath;*/
 
-                return new GeneralResponse<VerifyResponse>
+                var data = _mapper.Map<SignUpResponse>(patient);
+                data.ImagePath = patient.UploadedFile.FilePath;
+
+                return new GeneralResponse<SignUpResponse>
                 {
                     IsSuccess = true,
                     Message = "email verified sucessfully.",
@@ -219,7 +273,7 @@ namespace HealthCare.Services.Services
             }
             catch (Exception ex)
             {
-                return new GeneralResponse<VerifyResponse>
+                return new GeneralResponse<SignUpResponse>
                 {
                     IsSuccess = false,
                     Message = "Something went wrong",
@@ -252,8 +306,7 @@ namespace HealthCare.Services.Services
                 var Token = TokenServices.CreateJwtToken(userToken);
                 data.Token = new JwtSecurityTokenHandler().WriteToken(Token);
                 data.ExpiresOn = Token.ValidTo;
-                var Role = await _unitOfWork.RoleRepository.GetByIdAsync(user.RoleId);
-                data.Role = Role.Name;
+                data.Role = user.Role;
 
                 var userTokens = await _unitOfWork.RefreshTokenRepository.GetFirstItem(w => w.userId == user.Id && w.ExpiresOn>DateTime.Now);
                 if(userTokens != null)

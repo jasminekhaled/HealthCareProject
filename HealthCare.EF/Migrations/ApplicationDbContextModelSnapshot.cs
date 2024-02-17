@@ -510,8 +510,9 @@ namespace HealthCare.EF.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UploadedFileId")
                         .HasColumnType("int");
@@ -1140,21 +1141,106 @@ namespace HealthCare.EF.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("BirthDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FullName")
+                    b.Property<string>("Address")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PatientId")
-                        .HasColumnType("int");
+                    b.Property<string>("AllergyDescribtion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("AnyAllergy")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("AnyDiseases")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("AnyMedicine")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("AnySurgery")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("BirthDate")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DiseasesDescribtion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Endorsement")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FriendAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FriendName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FriendPhoneNum")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Gender")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("MedicalInsurance")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("MedicalInsuranceDescribtion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MedicineDescribtion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SurgeryDescribtion")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PatientId");
-
                     b.ToTable("MedicalHistories");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.PatientModule.MedicalHistoryFile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MedicalHistoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StoredFileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MedicalHistoryId");
+
+                    b.ToTable("MedicalHistoryFiles");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.PatientModule.Patient", b =>
@@ -1175,6 +1261,9 @@ namespace HealthCare.EF.Migrations
 
                     b.Property<bool>("IsEmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<int?>("MedicalHistoryId")
+                        .HasColumnType("int");
 
                     b.Property<string>("NationalId")
                         .IsRequired()
@@ -1202,6 +1291,10 @@ namespace HealthCare.EF.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("MedicalHistoryId")
+                        .IsUnique()
+                        .HasFilter("[MedicalHistoryId] IS NOT NULL");
 
                     b.HasIndex("UploadedFileId")
                         .IsUnique()
@@ -1795,23 +1888,29 @@ namespace HealthCare.EF.Migrations
                     b.Navigation("UploadedFile");
                 });
 
-            modelBuilder.Entity("HealthCare.Core.Models.PatientModule.MedicalHistory", b =>
+            modelBuilder.Entity("HealthCare.Core.Models.PatientModule.MedicalHistoryFile", b =>
                 {
-                    b.HasOne("HealthCare.Core.Models.PatientModule.Patient", "Patient")
-                        .WithMany()
-                        .HasForeignKey("PatientId")
+                    b.HasOne("HealthCare.Core.Models.PatientModule.MedicalHistory", "MedicalHistory")
+                        .WithMany("MedicalHistoryFiles")
+                        .HasForeignKey("MedicalHistoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Patient");
+                    b.Navigation("MedicalHistory");
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.PatientModule.Patient", b =>
                 {
+                    b.HasOne("HealthCare.Core.Models.PatientModule.MedicalHistory", "MedicalHistory")
+                        .WithOne("Patient")
+                        .HasForeignKey("HealthCare.Core.Models.PatientModule.Patient", "MedicalHistoryId");
+
                     b.HasOne("HealthCare.Core.Models.AuthModule.UploadedFile", "UploadedFile")
                         .WithOne("Patient")
                         .HasForeignKey("HealthCare.Core.Models.PatientModule.Patient", "UploadedFileId")
                         .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("MedicalHistory");
 
                     b.Navigation("UploadedFile");
                 });
@@ -2003,6 +2102,14 @@ namespace HealthCare.EF.Migrations
                     b.Navigation("ClinicLabs");
 
                     b.Navigation("DoctorSpecialization");
+                });
+
+            modelBuilder.Entity("HealthCare.Core.Models.PatientModule.MedicalHistory", b =>
+                {
+                    b.Navigation("MedicalHistoryFiles");
+
+                    b.Navigation("Patient")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("HealthCare.Core.Models.PatientModule.Patient", b =>

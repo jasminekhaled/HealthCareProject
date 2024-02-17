@@ -693,6 +693,7 @@
         "dependencies": {
           "MailKit": "4.2.0",
           "Microsoft.AspNetCore": "2.1.7",
+          "Microsoft.AspNetCore.Authentication.Google": "6.0.23",
           "Microsoft.Extensions.Configuration.Abstractions": "6.0.0",
           "Microsoft.IdentityModel.Tokens": "6.33.0",
           "MimeKit": "4.2.0",

@@ -12,5 +12,6 @@ namespace HealthCare.Core.Models.AuthModule
         public string Name { get; set; }
         public List<UserRole> UserRole { get; set; }
 
+        
     }
 }

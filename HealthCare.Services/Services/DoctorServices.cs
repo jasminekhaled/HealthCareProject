@@ -249,7 +249,7 @@ namespace HealthCare.Services.Services
                         {
                             IsSuccess = false,
                             Message = "Max Allowed Size Is 1MB."
-                        };
+                        }; 
                     }
                 }
 
@@ -259,7 +259,7 @@ namespace HealthCare.Services.Services
                 var data = _mapper.Map<AddDoctorResponseDto>(doctor);
 
                 if (dto.Image != null)
-                {
+                { 
                     var fakeFileName = Path.GetRandomFileName();
                     var uploadedFile = new UploadedFile()
                     {
@@ -317,7 +317,7 @@ namespace HealthCare.Services.Services
                 await _unitOfWork.CompleteAsync();
 
                 var user = _mapper.Map<User>(doctor);
-                user.RoleId = 4;
+                user.Role = User.Doctor;
                 user.UploadedFile = doctor.UploadedFile;
                 var userToken = _mapper.Map<UserTokenDto>(user);
                 userToken.Role = "Doctor";

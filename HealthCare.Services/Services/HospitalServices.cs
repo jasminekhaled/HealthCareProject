@@ -516,7 +516,7 @@ namespace HealthCare.Services.Services
                 await _unitOfWork.CompleteAsync();
 
                 var user = _mapper.Map<User>(admin);
-                user.RoleId = 2;
+                user.Role = User.HospitalAdmin;
                 user.UploadedFile = admin.UploadedFile;
                 await _unitOfWork.UserRepository.AddAsync(user);
                 await _unitOfWork.CompleteAsync();

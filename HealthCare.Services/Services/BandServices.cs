@@ -44,7 +44,7 @@ namespace HealthCare.Services.Services
             {
                 HttpContext httpContext = _httpContextAccessor.HttpContext;
                 int userId = httpContext.FindFirst(); 
-                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.RoleId == 2);
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.Role == User.HospitalAdmin);
                 if (user == null)
                 {
                     return new GeneralResponse<AddPrivateBandDto>
@@ -75,7 +75,7 @@ namespace HealthCare.Services.Services
                     IsSuccess = true,
                     Message = "New Private Band is added sucessfully.",
                     Data = data
-                };
+                }; 
             }
             catch (Exception ex)
             {
@@ -94,7 +94,7 @@ namespace HealthCare.Services.Services
             {
                 HttpContext httpContext = _httpContextAccessor.HttpContext;
                 int userId = httpContext.FindFirst();
-                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.RoleId == 2);
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.Role == User.HospitalAdmin);
                 if (user == null)
                 {
                     return new GeneralResponse<AddPublicBandDto>
@@ -162,7 +162,7 @@ namespace HealthCare.Services.Services
             {
                 HttpContext httpContext = _httpContextAccessor.HttpContext;
                 int userId = httpContext.FindFirst();
-                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.RoleId == 2);
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.Role == User.HospitalAdmin);
                 if (user == null)
                 {
                     return new GeneralResponse<string>
@@ -213,7 +213,7 @@ namespace HealthCare.Services.Services
             {
                 HttpContext httpContext = _httpContextAccessor.HttpContext;
                 int userId = httpContext.FindFirst();
-                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.RoleId == 3);
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.Role == User.Patient);
                 if (user == null)
                 {
                     return new GeneralResponse<string>
@@ -265,7 +265,7 @@ namespace HealthCare.Services.Services
             {
                 HttpContext httpContext = _httpContextAccessor.HttpContext;
                 int userId = httpContext.FindFirst();
-                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.RoleId == 2);
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.Role == User.HospitalAdmin);
                 if (user == null)
                 {
                     return new GeneralResponse<string>
@@ -314,7 +314,7 @@ namespace HealthCare.Services.Services
             {
                 HttpContext httpContext = _httpContextAccessor.HttpContext;
                 int userId = httpContext.FindFirst();
-                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.RoleId == 3);
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.Role == User.Patient);
                 if (user == null)
                 {
                     return new GeneralResponse<string>
@@ -363,7 +363,7 @@ namespace HealthCare.Services.Services
             {
                 HttpContext httpContext = _httpContextAccessor.HttpContext;
                 int userId = httpContext.FindFirst();
-                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.RoleId == 4);
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.Role == User.Doctor);
                 if (user == null)
                 {
                     return new GeneralResponse<string>
@@ -438,7 +438,7 @@ namespace HealthCare.Services.Services
             {
                 HttpContext httpContext = _httpContextAccessor.HttpContext;
                 int userId = httpContext.FindFirst();
-                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.RoleId == 2);
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.Role == User.HospitalAdmin);
                 if (user == null)
                 {
                     return new GeneralResponse<BandResponseDto>
@@ -508,7 +508,7 @@ namespace HealthCare.Services.Services
             {
                 HttpContext httpContext = _httpContextAccessor.HttpContext;
                 int userId = httpContext.FindFirst();
-                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.RoleId == 4);
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.Role == User.Doctor);
                 if (user == null)
                 {
                     return new GeneralResponse<List<BandResponseDto>>
@@ -566,7 +566,7 @@ namespace HealthCare.Services.Services
             {
                 HttpContext httpContext = _httpContextAccessor.HttpContext;
                 int userId = httpContext.FindFirst();
-                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.RoleId == 3);
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.Role == User.Patient);
                 if (user == null)
                 {
                     return new GeneralResponse<BandResponseDto>
@@ -642,7 +642,7 @@ namespace HealthCare.Services.Services
             {
                 HttpContext httpContext = _httpContextAccessor.HttpContext;
                 int userId = httpContext.FindFirst();
-                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.RoleId == 4);
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.Role == User.Doctor);
                 if (user == null)
                 {
                     return new GeneralResponse<List<BandResponseDto>>
@@ -704,7 +704,7 @@ namespace HealthCare.Services.Services
             {
                 HttpContext httpContext = _httpContextAccessor.HttpContext;
                 int userId = httpContext.FindFirst();
-                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.RoleId == 4);
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.Role == User.Doctor);
                 if (user == null)
                 {
                     return new GeneralResponse<List<BandResponseDto>>
@@ -759,7 +759,7 @@ namespace HealthCare.Services.Services
                     };
                 }
                 CurrentStateDto data = null;
-                if(user.RoleId == 3)
+                if(user.Role == User.Patient)
                 {
                     var patient = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(s => s.UserName == user.UserName);
                     var band = await _unitOfWork.BandRepository.GetSingleWithIncludesAsync(
@@ -775,7 +775,7 @@ namespace HealthCare.Services.Services
                     data = _mapper.Map<CurrentStateDto>(band.CurrentState);
                 }
 
-                if(user.RoleId == 4)
+                if(user.Role == User.Doctor)
                 {
                     var doctor = await _unitOfWork.DoctorRepository.SingleOrDefaultAsync(s => s.UserName == user.UserName);
                     var doctorHospitals = await _unitOfWork.HospitalDoctorRepository.GetSpecificItems(a => a.DoctorId == doctor.Id, s=>s.HospitalId);
@@ -800,7 +800,7 @@ namespace HealthCare.Services.Services
                     data = _mapper.Map<CurrentStateDto>(band.CurrentState);
                 }
 
-                if(user.RoleId == 2)
+                if(user.Role == User.HospitalAdmin)
                 {
                     var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(s => s.UserName == user.UserName, a=>a.AdminOfHospital);
                     var band = await _unitOfWork.BandRepository.GetSingleWithIncludesAsync(a => a.Id == bandId, i => i.CurrentState);
@@ -902,7 +902,7 @@ namespace HealthCare.Services.Services
                     };
                 }
 
-                if (user.RoleId == 4)
+                if (user.Role == User.Doctor)
                 {
                     var doctor = await _unitOfWork.DoctorRepository.SingleOrDefaultAsync(s => s.UserName == user.UserName);
                     var doctorHospitals = await _unitOfWork.HospitalDoctorRepository
@@ -917,7 +917,7 @@ namespace HealthCare.Services.Services
                         };
                     }
                 }
-                if(user.RoleId == 2)
+                if(user.Role == User.HospitalAdmin)
                 {
                     var hospitalAdmin = await _unitOfWork.HospitalAdminRepository
                         .GetSingleWithIncludesAsync(s => s.UserName == user.UserName, a => a.AdminOfHospital);

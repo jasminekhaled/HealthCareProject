@@ -9,6 +9,7 @@ using HealthCare.Core.DTOS.DoctorModule.RequestDtos;
 using HealthCare.Core.DTOS.DoctorModule.ResponseDtos;
 using HealthCare.Core.DTOS.HospitalModule.RequestDto;
 using HealthCare.Core.DTOS.HospitalModule.ResponseDto;
+using HealthCare.Core.DTOS.PatientModule.RequestDto;
 using HealthCare.Core.DTOS.PatientModule.ResponseDto;
 using HealthCare.Core.Models;
 using HealthCare.Core.Models.AppointmentModule;
@@ -37,12 +38,12 @@ namespace HealthCare.EF.AutoMapper
             CreateMap<SignUpRequestDto, Patient>()
                 .ForMember(src => src.PassWord, opt => opt.Ignore());
 
-            CreateMap<Patient, SignUpResponse>();
+            CreateMap<Patient, SignUpResponse>()
+                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath))
+                .ForMember(dest => dest.PatientId, opt => opt.MapFrom(src => src.Id));
 
             CreateMap<Patient, User>()
                 .ForMember(src => src.Id, opt => opt.Ignore());
-
-            CreateMap<Patient, VerifyResponse>();
 
             CreateMap<Doctor, LogInResponse>();
 
@@ -260,6 +261,18 @@ namespace HealthCare.EF.AutoMapper
                .ForMember(dest => dest.PatientImagePath, opt => opt.MapFrom(src => src.Patient.UploadedFile.FilePath));
 
             CreateMap<CurrentState, CurrentStateDto>();
+            
+            CreateMap<AddMedicalHistoryDto, MedicalHistory>();
+
+            CreateMap<MedicalHistory, MedicalHistoryResponseDto>()
+                .ForMember(dest => dest.MedicalHistoryId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Patient.FullName))
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Patient.PhoneNumber))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Patient.Email))
+                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.Patient.UploadedFile.FilePath));
+
+            CreateMap<Patient, PatientResponseDto>()
+                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath));
         }
     }
 }

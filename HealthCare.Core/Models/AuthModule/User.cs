@@ -13,10 +13,15 @@ namespace HealthCare.Core.Models.AuthModule
     {
         public string? VerificationCode { get; set; }
         public List<RefreshToken> RefreshTokens { get; set; }
-        public int RoleId { get; set; }
+        public string Role { get; set; }
         public UserRole UserRole { get; set; }
         public int UploadedFileId { get; set; }
         public UploadedFile UploadedFile { get; set; }
+
+        public static string SuperAdmin = "SuperAdmin";
+        public static string HospitalAdmin = "HospitalAdmin";
+        public static string Doctor = "Doctor";
+        public static string Patient = "Patient";
 
     }
 }

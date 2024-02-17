@@ -17,6 +17,7 @@ using HealthCare.EF.Repositories.ClinicModule;
 using HealthCare.EF.Repositories.DoctorModule;
 using HealthCare.EF.Repositories.HospitalModule;
 using HealthCare.EF.Repositories.HospitalRepositories;
+using HealthCare.EF.Repositories.PatientModule;
 using HealthCare.EF.Repositories.PatientRepositories;
 using System;
 using System.Collections.Generic;
@@ -40,6 +41,7 @@ namespace HealthCare.EF.Repositories
         public IDoctorSpecializationRepository DoctorSpecializationRepository { get; set; }
         public ISpecializationRepository SpecializationRepository { get; set; }
         public IMedicalHistoryRepository MedicalHistoryRepository { get; set; }
+        public IMedicalHistoryFileRepository MedicalHistoryFileRepository { get; set; }
         public IRateDoctorRepository RateDoctorRepository { get; set; }
         public IHospitalRepository HospitalRepository { get; set; }
         public IAdminOfHospitalRepository AdminOfHospitalRepository { get; set; }
@@ -105,6 +107,7 @@ namespace HealthCare.EF.Repositories
             SavedBandRepository = new SavedBandRepository(context);
             CurrentStateRepository = new CurrentStateRepository(context);
             MedicalHistoryRepository = new MedicalHistoryRepository(context);
+            MedicalHistoryFileRepository = new MedicalHistoryFileRepository(context);
             CivilRegestrationRepository = new CivilRegestrationRepository(context);
             RefreshTokenRepository = new RefreshTokenRepository(context);
             UploadedFileRepository = new UploadedFileRepository(context);

@@ -31,15 +31,6 @@ namespace HealthCare.Controllers
         public async Task<IActionResult> VerifyEmail(string email, string verificationCode)
         {
             var result = await _authServices.VerifyEmail(email, verificationCode);
-            if (result.Data != null)
-            {
-                var CookieOptions = new CookieOptions()
-                {
-                    HttpOnly = true,
-                    Expires = result.Data.ExpiresOn
-                };
-                Response.Cookies.Append("refreshToken", result.Data.RefreshToken, CookieOptions);
-            }
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
