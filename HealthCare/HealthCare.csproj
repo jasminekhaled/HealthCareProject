@@ -23,6 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="FileUploads\XrayFiles\" />
+    <Folder Include="FileUploads\TestFiles\" />
     <Folder Include="Uploads\HospitalImages\" />
     <Folder Include="Uploads\HospitalAdminImages\" />
     <Folder Include="Uploads\DoctorImages\" />

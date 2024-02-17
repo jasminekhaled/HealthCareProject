@@ -273,6 +273,13 @@ namespace HealthCare.EF.AutoMapper
 
             CreateMap<Patient, PatientResponseDto>()
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath));
+
+            CreateMap<MedicalHistoryFile, FileResponseDto>()
+                .ForMember(dest => dest.FilePath, opt => opt.MapFrom(src => src.FilePath))
+                .ForMember(dest => dest.FileId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.FileType, opt => opt.MapFrom(src => src.Type))
+                .ForMember(dest => dest.FileDescription, opt => opt.MapFrom(src => src.Description));
+
         }
     }
 }

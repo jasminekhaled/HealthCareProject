@@ -121,7 +121,8 @@ namespace HealthCare.Services.Services
         {
             try
             {
-                var patient = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(s => s.Id == patientId && s.IsEmailConfirmed == true);
+                var patient = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(
+                    s => s.Id == patientId && s.IsEmailConfirmed == true && s.MedicalHistory != null);
                 if (patient == null)
                 {
                     return new GeneralResponse<string>
@@ -131,8 +132,17 @@ namespace HealthCare.Services.Services
                     };
                 }
                 var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(s => s.UserName == patient.UserName);
+                var refreshTokens = await _unitOfWork.RefreshTokenRepository.Where(s => s.userId == user.Id);
+                var medicalHistory = await _unitOfWork.MedicalHistoryRepository.SingleOrDefaultAsync(s => s.Id == patient.MedicalHistoryId);
+                var uploadedfile = await _unitOfWork.UploadedFileRepository.GetByIdAsync(user.UploadedFileId);
+
+                if (uploadedfile.StoredFileName != "DefaultImage") File.Delete(uploadedfile.FilePath);
+
+                _unitOfWork.RefreshTokenRepository.RemoveRange(refreshTokens);
                 _unitOfWork.UserRepository.Remove(user);
                 _unitOfWork.PatientRepository.Remove(patient);
+                _unitOfWork.MedicalHistoryRepository.Remove(medicalHistory);
+                _unitOfWork.UploadedFileRepository.Remove(uploadedfile);
                 await _unitOfWork.CompleteAsync();
 
 

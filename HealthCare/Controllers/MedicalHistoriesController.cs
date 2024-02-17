@@ -35,5 +35,57 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "Patient, Doctor")]
+        [HttpPost("AddTestFilesToMedicalHistory")]
+        public async Task<IActionResult> AddTestFilesToMedicalHistory(int medicalHistoryId, [FromForm] AddFilesDto dto)
+        {
+            var result = await _medicalHistoryServices.AddTestFilesToMedicalHistory(medicalHistoryId, dto);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [Authorize(Roles = "Patient, Doctor")]
+        [HttpPost("AddXrayFilesToMedicalHistory")]
+        public async Task<IActionResult> AddXrayFilesToMedicalHistory(int medicalHistoryId, [FromForm] AddFilesDto dto)
+        {
+            var result = await _medicalHistoryServices.AddXrayFilesToMedicalHistory(medicalHistoryId, dto);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [Authorize(Roles = "Patient, Doctor")]
+        [HttpDelete("DeleteFileFromMedicalHistory")]
+        public async Task<IActionResult> DeleteFileFromMedicalHistory(int fileId)
+        {
+            var result = await _medicalHistoryServices.DeleteFileFromMedicalHistory(fileId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [Authorize(Roles = "Patient, Doctor")]
+        [HttpGet("GetMedicalHistory")]
+        public async Task<IActionResult> GetMedicalHistory(int medicalHistoryId)
+        {
+            var result = await _medicalHistoryServices.GetMedicalHistory(medicalHistoryId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [Authorize(Roles = "Patient")]
+        [HttpPut("EditMedicalHistoryByPatient")]
+        public async Task<IActionResult> EditMedicalHistoryByPatient(int medicalHistoryId, [FromForm] EditMedicalHistoryDto dto)
+        {
+            var result = await _medicalHistoryServices.EditMedicalHistoryByPatient(medicalHistoryId, dto);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+
+
     }
 }

@@ -15,6 +15,7 @@ namespace HealthCare.Core.Models.PatientModule
         public string FilePath { get; set; }
         public string Type { get; set; }
         public string? Description { get; set; }
+        public string AddedBy { get; set; }
         public int MedicalHistoryId { get; set; }
         public MedicalHistory MedicalHistory { get; set; }
 
