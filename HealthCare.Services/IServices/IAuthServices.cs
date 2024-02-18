@@ -19,6 +19,8 @@ namespace HealthCare.Services.IServices
         Task<GeneralResponse<string>> ResetPassword([FromForm]ResetPasswordRequestDto dto);
         Task<GeneralResponse<string>> ForgetPassword([FromForm]ForgetPasswordRequestDto dto);
         Task<GeneralResponse<string>> ChangeForgettedPassword(string userName, [FromForm]ChangeForgettedPasswordDto dto); // userName from frontend , frontend will save it from the forgetPassword Api
+       // Task<GeneralResponse<SuperAdminResponseDto>> AddSuperAdmin([FromForm]SuperAdminRequestDto dto); 
+       // Task<GeneralResponse<string>> DeleteSuperAdmin(int superAdminId); 
 
         Task AddNationalId(string nationalId, string name);
     }

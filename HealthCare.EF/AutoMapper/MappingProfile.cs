@@ -47,10 +47,11 @@ namespace HealthCare.EF.AutoMapper
 
             CreateMap<Doctor, LogInResponse>();
 
-            CreateMap<User, LogInResponse>();
+            CreateMap<User, LogInResponse>()
+                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath));
 
-            CreateMap<Patient, PatientDto>();
-
+            CreateMap<Patient, PatientDto>()
+            .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath));
             CreateMap<HospitalRequestDto, Hospital>();
 
             CreateMap<Hospital, HospitalDto>()

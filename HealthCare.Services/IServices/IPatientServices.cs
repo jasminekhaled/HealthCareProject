@@ -16,9 +16,9 @@ namespace HealthCare.Services.IServices
         Task<GeneralResponse<List<PatientDto>>> ListOfPatients();
         Task<GeneralResponse<PatientDto>> GetPatientByUserName(string userName);
         Task<GeneralResponse<PatientDto>> GetPatientByNationalId(string nationalId);
-        Task<GeneralResponse<string>> DeletePatient(int patientId);
-        Task<GeneralResponse<PatientDto>> EditPatient(int PatientId, [FromForm]EditPatientDto dto);
-        Task<GeneralResponse<PatientDto>> PatientDetails(int PatientId);
+        Task<GeneralResponse<string>> DeletePatient(int patientId); // it's  better not to use it
+        Task<GeneralResponse<PatientDto>> EditPatient([FromForm]EditPatientDto dto);
+        Task<GeneralResponse<PatientDto>> PatientDetails();
 
 
 

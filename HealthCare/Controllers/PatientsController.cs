@@ -58,11 +58,11 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize(Roles = "Patient, SuperAdmin")]
+        [Authorize(Roles = "Patient")]
         [HttpGet("PatientDetails")]
-        public async Task<IActionResult> PatientDetails(int patientId)
+        public async Task<IActionResult> PatientDetails()
         {
-            var result = await _patientServices.PatientDetails(patientId);
+            var result = await _patientServices.PatientDetails();
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
@@ -70,9 +70,9 @@ namespace HealthCare.Controllers
 
         [Authorize(Roles = "Patient")]
         [HttpPut("EditPatient")]
-        public async Task<IActionResult> EditPatient(int PatientId, [FromForm]EditPatientDto dto)
+        public async Task<IActionResult> EditPatient([FromForm]EditPatientDto dto)
         {
-            var result = await _patientServices.EditPatient(PatientId, dto);
+            var result = await _patientServices.EditPatient(dto);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);

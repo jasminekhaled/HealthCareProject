@@ -1,11 +1,18 @@
 ﻿using AutoMapper;
 using HealthCare.Core.DTOS;
 using HealthCare.Core.DTOS.AuthModule.ResponseDtos;
+using HealthCare.Core.DTOS.BandModule.ResponseDtos;
+using HealthCare.Core.DTOS.DoctorModule.ResponseDtos;
 using HealthCare.Core.DTOS.PatientModule.RequestDto;
 using HealthCare.Core.DTOS.PatientModule.ResponseDto;
+using HealthCare.Core.Helpers;
 using HealthCare.Core.IRepositories;
+using HealthCare.Core.Models.AuthModule;
 using HealthCare.Services.IServices;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,10 +25,17 @@ namespace HealthCare.Services.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public PatientServices(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IConfiguration _configuration;
+        public PatientServices(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContextAccessor, 
+            IWebHostEnvironment webHostEnvironment, IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
+            _webHostEnvironment = webHostEnvironment;
+            _configuration = configuration;
         }
         
         
@@ -29,7 +43,12 @@ namespace HealthCare.Services.Services
         {
             try
             {
-                var patients = await _unitOfWork.PatientRepository.Where(w => w.IsEmailConfirmed == true);
+                var patientUserNames = await _unitOfWork.UserRepository.GetSpecificItems(w => w.Role == User.Patient, 
+                    s => s.UserName);
+                var patients = await _unitOfWork.PatientRepository.WhereIncludeAsync(
+                    w => patientUserNames.Contains(w.UserName),
+                    a => a.UploadedFile);
+
                 var data = _mapper.Map<List<PatientDto>>(patients);
 
                 return new GeneralResponse<List<PatientDto>>
@@ -49,20 +68,25 @@ namespace HealthCare.Services.Services
                 };
             }
         }
-
+        
         public async Task<GeneralResponse<PatientDto>> GetPatientByNationalId(string nationalId)
         {
             try
             {
-                var patient = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(s => s.NationalId == nationalId && s.IsEmailConfirmed == true);
-                if(patient == null)
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(s => s.NationalId == nationalId && 
+                s.Role == User.Patient);
+                if(user == null)
                 {
                     return new GeneralResponse<PatientDto>
                     {
                         IsSuccess = false,
-                        Message = "No Patient was found!"
+                        Message = "No user was found!"
                     };
                 }
+                var patient = await _unitOfWork.PatientRepository.GetSingleWithIncludesAsync(
+                    s => s.UserName == user.UserName,
+                    a => a.UploadedFile);
+
                 var data = _mapper.Map<PatientDto>(patient);
 
                 return new GeneralResponse<PatientDto>
@@ -82,21 +106,25 @@ namespace HealthCare.Services.Services
                 };
             }
         }
-
-
+        
         public async Task<GeneralResponse<PatientDto>> GetPatientByUserName(string userName)
         {
             try
             {
-                var patient = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(s => s.UserName == userName && s.IsEmailConfirmed == true);
-                if (patient == null)
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(s => s.UserName == userName &&
+                s.Role == User.Patient);
+                if (user == null)
                 {
                     return new GeneralResponse<PatientDto>
                     {
                         IsSuccess = false,
-                        Message = "No Patient was found!"
+                        Message = "No user was found!"
                     };
                 }
+                var patient = await _unitOfWork.PatientRepository.GetSingleWithIncludesAsync(
+                    s => s.UserName == userName,
+                    a => a.UploadedFile);
+                
                 var data = _mapper.Map<PatientDto>(patient);
 
                 return new GeneralResponse<PatientDto>
@@ -162,19 +190,26 @@ namespace HealthCare.Services.Services
                 };
             }
         }
-        public async Task<GeneralResponse<PatientDto>> PatientDetails(int PatientId)
+
+        public async Task<GeneralResponse<PatientDto>> PatientDetails()
         {
             try
             {
-                var patient = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(s => s.Id == PatientId && s.IsEmailConfirmed == true);
-                if (patient == null)
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.Role == User.Patient);
+                if (user == null)
                 {
                     return new GeneralResponse<PatientDto>
                     {
                         IsSuccess = false,
-                        Message = "No Patient was found!"
+                        Message = "No patient Found!"
                     };
                 }
+                var patient = await _unitOfWork.PatientRepository.GetSingleWithIncludesAsync(
+                    s => s.UserName == user.UserName,
+                    a => a.UploadedFile);
+
                 var data = _mapper.Map<PatientDto>(patient);
 
                 return new GeneralResponse<PatientDto>
@@ -194,51 +229,81 @@ namespace HealthCare.Services.Services
                 };
             }
         }
-        public async Task<GeneralResponse<PatientDto>> EditPatient(int PatientId, [FromForm]EditPatientDto dto)
+   
+        public async Task<GeneralResponse<PatientDto>> EditPatient([FromForm]EditPatientDto dto)
         {
             try
             {
-                var patient = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(s => s.Id == PatientId && s.IsEmailConfirmed == true);
-                if (patient == null)
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.Role == User.Patient);
+                if (user == null)
                 {
                     return new GeneralResponse<PatientDto>
                     {
                         IsSuccess = false,
-                        Message = "No Patient was found!"
+                        Message = "No user Found!"
                     };
                 }
+                var patient = await _unitOfWork.PatientRepository.GetSingleWithIncludesAsync(
+                    s => s.UserName == user.UserName,
+                    a => a.UploadedFile);
 
-                if(dto.UserName != null)
+                if (dto.PhoneNumber != null)
                 {
-                    if(await _unitOfWork.UserRepository.AnyAsync(a => a.UserName == dto.UserName) 
-                    || await _unitOfWork.PatientRepository.AnyAsync(n => n.UserName == dto.UserName))
+                    if(!dto.PhoneNumber.All(char.IsDigit) || dto.PhoneNumber.Length != 11)
                     {
-                        return new GeneralResponse<PatientDto>
-                        {
-                            IsSuccess = false,
-                            Message = "This UserName is already Exists"
-                        };
-                    }
-                }
-
-                
-                if (dto.PhoneNumber != null && !dto.PhoneNumber.All(char.IsDigit))
-                {
                         return new GeneralResponse<PatientDto>
                         {
                             IsSuccess = false,
                             Message = "Wrong Phone Number"
                         };
+                    }     
                 }
+                if (dto.Image != null)
+                {
+                    var MaxAllowedPosterSize = _configuration.GetValue<long>("MaxAllowedPosterSize");
+                    List<string> AllowedExtenstions = _configuration.GetSection("AllowedExtenstions").Get<List<string>>();
 
-                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(s => s.UserName == patient.UserName);
-                user.UserName = dto.UserName ?? user.UserName;
-                patient.UserName = dto.UserName ?? patient.UserName;
+                    if (!AllowedExtenstions.Contains(Path.GetExtension(dto.Image.FileName).ToLower()))
+                    {
+                        return new GeneralResponse<PatientDto>
+                        {
+                            IsSuccess = false,
+                            Message = "Only .jpg and .png Images Are Allowed."
+                        };
+                    }
+
+                    if (dto.Image.Length > MaxAllowedPosterSize)
+                    {
+                        return new GeneralResponse<PatientDto>
+                        {
+                            IsSuccess = false,
+                            Message = "Max Allowed Size Is 1MB."
+                        };
+                    }
+
+                    var fakeFileName = Path.GetRandomFileName();
+                    var uploadedFile = await _unitOfWork.UploadedFileRepository.GetByIdAsync(user.UploadedFileId);
+                    File.Delete(uploadedFile.FilePath);
+                    uploadedFile.FileName = dto.Image.FileName;
+                    uploadedFile.ContentType = dto.Image.ContentType;
+                    uploadedFile.StoredFileName = fakeFileName;
+
+                    var directoryPath = Path.Combine(_webHostEnvironment.ContentRootPath, "Uploads", "PatientImages");
+                    var path = Path.Combine(directoryPath, fakeFileName);
+                    using FileStream fileStream = new(path, FileMode.Create);
+                    dto.Image.CopyTo(fileStream);
+
+                    uploadedFile.FilePath = path;
+                    _unitOfWork.UploadedFileRepository.Update(uploadedFile);
+                    await _unitOfWork.CompleteAsync();
+
+                }
+                
                 patient.PhoneNumber = dto.PhoneNumber ?? patient.PhoneNumber;
-                _unitOfWork.UserRepository.Update(user);
                 _unitOfWork.PatientRepository.Update(patient);
                 await _unitOfWork.CompleteAsync();
-                
 
                 var data = _mapper.Map<PatientDto>(patient);
 

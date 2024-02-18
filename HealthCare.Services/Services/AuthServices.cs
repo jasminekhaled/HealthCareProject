@@ -255,7 +255,8 @@ namespace HealthCare.Services.Services
         {
             try
             {
-                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(s => s.UserName == dto.UserName);
+                var user = await _unitOfWork.UserRepository.GetSingleWithIncludesAsync(s => s.UserName == dto.UserName, 
+                     a => a.UploadedFile);
 
                 var HashedPassword = HashingService.GetHash(dto.PassWord);
                 if (user == null || user.Email != dto.Email || user.PassWord != HashedPassword)
@@ -274,6 +275,17 @@ namespace HealthCare.Services.Services
                 data.Token = new JwtSecurityTokenHandler().WriteToken(Token);
                 data.ExpiresOn = Token.ValidTo;
                 data.Role = user.Role;
+                if(user.Role == User.Patient)
+                {
+                    var patient = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(s => s.UserName == user.UserName);
+                    data.FullName = patient.FullName;
+                    data.PhoneNumber = patient.PhoneNumber;
+                }
+                if (user.Role == User.Doctor)
+                {
+                    var doctor = await _unitOfWork.DoctorRepository.SingleOrDefaultAsync(s => s.UserName == user.UserName);
+                    data.FullName = doctor.FullName;
+                }
 
                 var userTokens = await _unitOfWork.RefreshTokenRepository.GetFirstItem(w => w.userId == user.Id && w.ExpiresOn>DateTime.Now);
                 if(userTokens != null)

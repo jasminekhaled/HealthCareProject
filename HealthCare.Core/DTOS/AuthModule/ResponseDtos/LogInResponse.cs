@@ -13,10 +13,13 @@ namespace HealthCare.Core.DTOS.AuthModule.ResponseDtos
         public string NationalId { get; set; }
         [EmailAddress]
         public string Email { get; set; }
+        public string? FullName { get; set; }
+        public string? PhoneNumber { get; set; }
 
         [MinLength(length: 10)]
         [MaxLength(length: 100)]
         public string UserName { get; set; }
+        public string ImagePath { get; set; }
 
         [MinLength(length: 15)]
         [MaxLength(length: 100)]

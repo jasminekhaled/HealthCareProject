@@ -50,7 +50,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize(Roles = "Patient")]
+        [Authorize(Roles = "HospitalAdmin")]
         [HttpDelete("DeletePublicBand")]
         public async Task<IActionResult> DeletePublicBand(int bandId)
         {
@@ -100,7 +100,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize(Roles = "Doctor")]
+        [Authorize(Roles = "Doctor, HospitalAdmin")]
         [HttpGet("GetHospitalPrivateBands")]
         public async Task<IActionResult> GetHospitalPrivateBands(int hospitalId)
         {

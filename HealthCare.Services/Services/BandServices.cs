@@ -213,22 +213,22 @@ namespace HealthCare.Services.Services
             {
                 HttpContext httpContext = _httpContextAccessor.HttpContext;
                 int userId = httpContext.FindFirst();
-                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.Role == User.Patient);
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.Role == User.HospitalAdmin);
                 if (user == null)
                 {
                     return new GeneralResponse<string>
                     {
                         IsSuccess = false,
-                        Message = "No patient Found!"
+                        Message = "No HospitalAdmin Found!"
                     };
                 }
-                var patient = await _unitOfWork.PatientRepository.GetSingleWithIncludesAsync(
-                    a => a.UserName == user.UserName);
-
+                var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(
+                    a => a.UserName == user.UserName, s => s.AdminOfHospital);
+                
                 var band = await _unitOfWork.BandRepository
                     .GetSingleWithIncludesAsync(a => a.Id == bandId &&
                     a.Type == Band.Public &&
-                    a.Patient == patient,
+                    a.HospitalId == hospitalAdmin.AdminOfHospital.HospitalId,
                     i => i.CurrentState);
                 if (band == null)
                 {
@@ -508,15 +508,16 @@ namespace HealthCare.Services.Services
             {
                 HttpContext httpContext = _httpContextAccessor.HttpContext;
                 int userId = httpContext.FindFirst();
-                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.Role == User.Doctor);
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId);
                 if (user == null)
                 {
                     return new GeneralResponse<List<BandResponseDto>>
                     {
                         IsSuccess = false,
-                        Message = "No doctor Found!"
+                        Message = "No user Found!"
                     };
                 }
+                
                 var hospital = await _unitOfWork.HospitalRepository.GetByIdAsync(hospitalId);
                 if(hospital == null)
                 {
@@ -526,17 +527,35 @@ namespace HealthCare.Services.Services
                         Message = "No hospital Found!"
                     };
                 }
-                var doctor = await _unitOfWork.DoctorRepository.GetSingleWithIncludesAsync(
-                    a => a.UserName == user.UserName);
-                if(!await _unitOfWork.HospitalDoctorRepository.AnyAsync
-                    (a=>a.HospitalId==hospitalId && a.DoctorId == doctor.Id))
+                if (user.Role == User.HospitalAdmin)
                 {
-                    return new GeneralResponse<List<BandResponseDto>>
+                    var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.SingleOrDefaultAsync(s => s.UserName == user.UserName);
+                    var CheckHospitalAdmin = await _unitOfWork.AdminOfHospitalRepository.SingleOrDefaultAsync(
+                        s => s.HospitalAdminId == hospitalAdmin.Id && s.HospitalId == hospitalId);
+                    if (CheckHospitalAdmin == null)
                     {
-                        IsSuccess = false,
-                        Message = "This doctor isnot working in this hospital!"
-                    };
+                        return new GeneralResponse<List<BandResponseDto>>
+                        {
+                            IsSuccess = false,
+                            Message = "You donot have the permission to see this data!"
+                        };
+                    }
                 }
+                if(user.Role == User.Doctor)
+                {
+                    var doctor = await _unitOfWork.DoctorRepository.GetSingleWithIncludesAsync(
+                    a => a.UserName == user.UserName);
+                    if (!await _unitOfWork.HospitalDoctorRepository.AnyAsync
+                    (a => a.HospitalId == hospitalId && a.DoctorId == doctor.Id))
+                    {
+                        return new GeneralResponse<List<BandResponseDto>>
+                        {
+                            IsSuccess = false,
+                            Message = "You donot have the permission to see this data!"
+                        };
+                    }
+                }
+
                 var bands = await _unitOfWork.BandRepository.WhereIncludeAsync(
                     w => w.HospitalId == hospitalId && w.Type == Band.Private,
                     i => i.Patient.UploadedFile);

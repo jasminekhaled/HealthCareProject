@@ -35,7 +35,7 @@ namespace HealthCare.Services.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly IConfiguration _configuration;
+        private readonly IConfiguration _configuration; 
 
         public DoctorServices(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment webHostEnvironment, IConfiguration configuration)
         {

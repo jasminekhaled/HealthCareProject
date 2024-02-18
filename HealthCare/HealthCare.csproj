@@ -29,6 +29,7 @@
     <Folder Include="Uploads\HospitalAdminImages\" />
     <Folder Include="Uploads\DoctorImages\" />
     <Folder Include="Uploads\LabSpecializationImages\" />
+    <Folder Include="Uploads\SuperAdminImages\" />
     <Folder Include="Uploads\PatientImages\" />
     <Folder Include="Uploads\SpecializationImages\" />
     <Folder Include="Uploads\XraySpecializationImages\" />
