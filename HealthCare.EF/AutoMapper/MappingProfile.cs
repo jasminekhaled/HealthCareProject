@@ -113,6 +113,9 @@ namespace HealthCare.EF.AutoMapper
 
             CreateMap<LabSpecialization, AddClinicResponseDto>()
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath));
+            
+            CreateMap<LabSpecialization, ListOfLabSpecializationDto>()
+                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath));
 
             CreateMap<ClinicLab, AddClinicResponseDto>()
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.Specialization.UploadedFile.FilePath))
@@ -125,6 +128,7 @@ namespace HealthCare.EF.AutoMapper
             CreateMap<Lab, AddLabResponseDto>();
 
             CreateMap<LabSpecialization, SpecializationDto>();
+            CreateMap<LabSpecialization, LabSpecializationDto>();
 
             CreateMap<ClinicAppointment, AppointmentResponseDto>()
                 .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor.FullName))
@@ -279,6 +283,40 @@ namespace HealthCare.EF.AutoMapper
                 .ForMember(dest => dest.FileId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.FileType, opt => opt.MapFrom(src => src.Type))
                 .ForMember(dest => dest.FileDescription, opt => opt.MapFrom(src => src.Description));
+
+            CreateMap<ClinicLab, ListOfSpecificClinics>()
+                .ForMember(dest => dest.ClinicId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.ClinicSpecialization, opt => opt.MapFrom(src => src.Specialization.Name))
+                .ForMember(dest => dest.ClinicImagePath, opt => opt.MapFrom(src => src.Specialization.UploadedFile.FilePath))
+                .ForMember(dest => dest.HospitalId, opt => opt.MapFrom(src => src.HospitalId))
+                .ForMember(dest => dest.HospitalImagePath, opt => opt.MapFrom(src => src.Hospital.UploadedFile.FilePath))
+                .ForMember(dest => dest.HospitalAddress, opt => opt.MapFrom(src => src.Hospital.Address))
+                .ForMember(dest => dest.HospitalDescription, opt => opt.MapFrom(src => src.Hospital.Description))
+                .ForMember(dest => dest.HospitalGovernorate, opt => opt.MapFrom(src => src.Hospital.HospitalGovernorate.Governorate.Name))
+                .ForMember(dest => dest.HospitalName, opt => opt.MapFrom(src => src.Hospital.Name));
+
+
+            CreateMap<Xray, ListOfSpecificClinics>()
+                .ForMember(dest => dest.ClinicId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.ClinicSpecialization, opt => opt.MapFrom(src => src.XraySpecialization.Name))
+                .ForMember(dest => dest.ClinicImagePath, opt => opt.MapFrom(src => src.XraySpecialization.UploadedFile.FilePath))
+                .ForMember(dest => dest.HospitalId, opt => opt.MapFrom(src => src.HospitalId))
+                .ForMember(dest => dest.HospitalImagePath, opt => opt.MapFrom(src => src.Hospital.UploadedFile.FilePath))
+                .ForMember(dest => dest.HospitalAddress, opt => opt.MapFrom(src => src.Hospital.Address))
+                .ForMember(dest => dest.HospitalDescription, opt => opt.MapFrom(src => src.Hospital.Description))
+                .ForMember(dest => dest.HospitalGovernorate, opt => opt.MapFrom(src => src.Hospital.HospitalGovernorate.Governorate.Name))
+                .ForMember(dest => dest.HospitalName, opt => opt.MapFrom(src => src.Hospital.Name));
+
+
+            CreateMap<Lab, ListOfSpecificLabs>()
+                .ForMember(dest => dest.LabId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.LabName, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.HospitalId, opt => opt.MapFrom(src => src.HospitalId))
+                .ForMember(dest => dest.HospitalImagePath, opt => opt.MapFrom(src => src.Hospital.UploadedFile.FilePath))
+                .ForMember(dest => dest.HospitalAddress, opt => opt.MapFrom(src => src.Hospital.Address))
+                .ForMember(dest => dest.HospitalDescription, opt => opt.MapFrom(src => src.Hospital.Description))
+                .ForMember(dest => dest.HospitalGovernorate, opt => opt.MapFrom(src => src.Hospital.HospitalGovernorate.Governorate.Name))
+                .ForMember(dest => dest.HospitalName, opt => opt.MapFrom(src => src.Hospital.Name));
 
         }
     }

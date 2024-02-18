@@ -25,6 +25,7 @@ using HealthCare.Core.DTOS.DoctorModule.ResponseDtos;
 using HealthCare.Core.Models.DoctorModule;
 using Microsoft.AspNetCore.Hosting;
 using System.Numerics;
+using Microsoft.AspNetCore.Http;
 
 namespace HealthCare.Services.Services
 {
@@ -34,13 +35,16 @@ namespace HealthCare.Services.Services
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthServices(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment webHostEnvironment, IConfiguration configuration)
+        public AuthServices(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment webHostEnvironment,
+            IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _webHostEnvironment = webHostEnvironment;
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<GeneralResponse<SignUpResponse>> SignUp([FromForm]SignUpRequestDto dto)
@@ -197,7 +201,7 @@ namespace HealthCare.Services.Services
             }
       
         }
-
+        
         public async Task<GeneralResponse<SignUpResponse>> VerifyEmail(string email, string verificationCode)
         {
             try
@@ -222,44 +226,9 @@ namespace HealthCare.Services.Services
                     };
                 }
                 patient.IsEmailConfirmed = true;
+                patient.VerificationCode = null;
                 _unitOfWork.PatientRepository.Update(patient);
                 await _unitOfWork.CompleteAsync();
-
-                /* var user = _mapper.Map<User>(patient);
-                 user.RoleId = 3;
-                 await _unitOfWork.UserRepository.AddAsync(user);
-                 await _unitOfWork.CompleteAsync();
-
-                 var userRole = new UserRole
-                 {
-                     UserId = user.Id,
-                     RoleId = 3
-                 };
-                 await _unitOfWork.UserRoleRepository.AddAsync(userRole);
-                 await _unitOfWork.CompleteAsync();
-
-                 var userToken = _mapper.Map<UserTokenDto>(user);
-                 userToken.Role = "Patient";
-                 var Token = TokenServices.CreateJwtToken(userToken);
-                 var refreshToken = TokenServices.CreateRefreshToken();
-                 var newRefreshToken = new RefreshToken
-                 {
-                     Token = refreshToken.Token,
-                     ExpiresOn = refreshToken.ExpiresOn,
-                     CreatedOn = refreshToken.CreatedOn,
-                     userId = user.Id
-                 };
-                 await _unitOfWork.RefreshTokenRepository.AddAsync(newRefreshToken);
-                 await _unitOfWork.CompleteAsync();
-
-                 var data = _mapper.Map<VerifyResponse>(patient);
-                 data.RefreshToken = refreshToken.Token;
-                 data.RefreshTokenExpiration = refreshToken.ExpiresOn;
-                 data.Token = new JwtSecurityTokenHandler().WriteToken(Token);
-                 data.ExpiresOn = Token.ValidTo;
-                 var Role = await _unitOfWork.RoleRepository.GetByIdAsync(user.RoleId);
-                 data.Role = Role.Name;
-                 data.ImagePath = DefaultFile.FilePath;*/
 
                 var data = _mapper.Map<SignUpResponse>(patient);
                 data.ImagePath = patient.UploadedFile.FilePath;
@@ -282,7 +251,7 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public async Task<GeneralResponse<LogInResponse>> Login([FromForm] LoginRequest dto)
+        public async Task<GeneralResponse<LogInResponse>> Login([FromForm]LoginRequest dto)
         {
             try
             {
@@ -300,9 +269,7 @@ namespace HealthCare.Services.Services
                 
                 var data = _mapper.Map<LogInResponse>(user);
                 var userToken = _mapper.Map<UserTokenDto>(user);
-                var userRole = await _unitOfWork.UserRoleRepository.SingleOrDefaultAsync(s => s.UserId == user.Id);
-                var role  = await _unitOfWork.RoleRepository.SingleOrDefaultAsync(s => s.Id == userRole.RoleId);
-                userToken.Role = role.Name;
+                userToken.Role = user.Role;
                 var Token = TokenServices.CreateJwtToken(userToken);
                 data.Token = new JwtSecurityTokenHandler().WriteToken(Token);
                 data.ExpiresOn = Token.ValidTo;
@@ -352,18 +319,20 @@ namespace HealthCare.Services.Services
             }
         }
 
-
         public async Task<GeneralResponse<string>> ResetPassword([FromForm] ResetPasswordRequestDto dto)
         {
             try
             {
-                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(s => s.UserName == dto.UserName);
-                if(user == null || user.Email != dto.Email || user.PassWord != HashingService.GetHash(dto.PassWord))
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId);
+
+                if(user == null || user.PassWord != HashingService.GetHash(dto.PassWord))
                 {
                     return new GeneralResponse<string>()
                     {
                         IsSuccess = false,
-                        Message = "Wrong Email Or Password or UserName."
+                        Message = "Wrong old Password."
                     };
                 }
                 if(dto.NewPassWord != dto.ConfirmNewPassWord)
@@ -378,7 +347,28 @@ namespace HealthCare.Services.Services
                 user.PassWord = HashNewPassword;
                 _unitOfWork.UserRepository.Update(user);
                 await _unitOfWork.CompleteAsync();
-                
+
+                if (user.Role == User.Patient)
+                {
+                    var patient = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(s => s.UserName == user.UserName);
+                    patient.PassWord = HashNewPassword;
+                    _unitOfWork.PatientRepository.Update(patient);
+                    _unitOfWork.CompleteAsync();
+                }
+                if (user.Role == User.Doctor)
+                {
+                    var doctor = await _unitOfWork.DoctorRepository.SingleOrDefaultAsync(s => s.UserName == user.UserName);
+                    doctor.PassWord = HashNewPassword;
+                    _unitOfWork.DoctorRepository.Update(doctor);
+                    _unitOfWork.CompleteAsync();
+                }
+                if (user.Role == User.HospitalAdmin)
+                {
+                    var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.SingleOrDefaultAsync(s => s.UserName == user.UserName);
+                    hospitalAdmin.PassWord = HashNewPassword;
+                    _unitOfWork.HospitalAdminRepository.Update(hospitalAdmin);
+                    _unitOfWork.CompleteAsync();
+                }
 
                 return new GeneralResponse<string>()
                 {
@@ -444,11 +434,11 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public async Task<GeneralResponse<string>> ChangeForgettedPassword([FromForm]ChangeForgettedPasswordDto dto)
+        public async Task<GeneralResponse<string>> ChangeForgettedPassword(string userName, [FromForm]ChangeForgettedPasswordDto dto)
         {
             try
             {
-                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(s => s.UserName == dto.UserName);
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(s => s.UserName == userName);
                 if (user == null || user.VerificationCode != dto.VerificationCode)
                 {
                     return new GeneralResponse<string>()
@@ -457,11 +447,41 @@ namespace HealthCare.Services.Services
                         Message = "Wrong UserName or verificationCode."
                     };
                 }
-                var HashedPassword = HashingService.GetHash(dto.PassWord);
+                if(dto.NewPassWord != dto.ConfirmPassWord)
+                {
+                    return new GeneralResponse<string>()
+                    {
+                        IsSuccess = false,
+                        Message = "Your Confirmation Password is different than your NewPassword."
+                    };
+                }
+                var HashedPassword = HashingService.GetHash(dto.NewPassWord);
                 user.PassWord = HashedPassword;
+                user.VerificationCode = null;
                 _unitOfWork.UserRepository.Update(user);
                 await _unitOfWork.CompleteAsync();
 
+                if(user.Role == User.Patient)
+                {
+                    var patient = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(s => s.UserName == userName);
+                    patient.PassWord = HashedPassword;
+                    _unitOfWork.PatientRepository.Update(patient);
+                    _unitOfWork.CompleteAsync();
+                }
+                if (user.Role == User.Doctor)
+                {
+                    var doctor = await _unitOfWork.DoctorRepository.SingleOrDefaultAsync(s => s.UserName == userName);
+                    doctor.PassWord = HashedPassword;
+                    _unitOfWork.DoctorRepository.Update(doctor);
+                    _unitOfWork.CompleteAsync();
+                }
+                if (user.Role == User.HospitalAdmin)
+                {
+                    var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.SingleOrDefaultAsync(s => s.UserName == userName);
+                    hospitalAdmin.PassWord = HashedPassword;
+                    _unitOfWork.HospitalAdminRepository.Update(hospitalAdmin);
+                    _unitOfWork.CompleteAsync();
+                }
 
                 return new GeneralResponse<string>()
                 {

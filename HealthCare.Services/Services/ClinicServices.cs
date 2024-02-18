@@ -81,6 +81,7 @@ namespace HealthCare.Services.Services
             }
 
         }
+
         public async Task<GeneralResponse<string>> DeleteXraySpecialization(int xraySpecializationId)
         {
             try
@@ -134,6 +135,7 @@ namespace HealthCare.Services.Services
                 var labSpecialization = new LabSpecialization()
                 {
                     Name = dto.Name,
+                    Description = dto.Description,
                     UploadedFile = uploadedFile
                 };
                 await _unitOfWork.LabSpecializationRepository.AddAsync(labSpecialization);
@@ -156,6 +158,7 @@ namespace HealthCare.Services.Services
             }
 
         }
+
         public async Task<GeneralResponse<string>> DeleteLabSpecialization(int labSpecializationId)
         {
             try
@@ -293,7 +296,6 @@ namespace HealthCare.Services.Services
                 };
             }
         }
-
 
         public async Task<GeneralResponse<string>> DeleteClinic(int clinicId)
         {
@@ -540,7 +542,7 @@ namespace HealthCare.Services.Services
                 };
             }
         }
-
+  
         public async Task<GeneralResponse<AddLabResponseDto>> AddLab(int hospitalAdminId, [FromForm] AddLabDto dto)
         {
             try
@@ -590,7 +592,7 @@ namespace HealthCare.Services.Services
 
                 var data = _mapper.Map<AddLabResponseDto>(lab);
                 data.ImagePath = "G:\\WEB DEVELOPMENT\\HealthCareProject\\HealthCareAPIs\\HealthCare\\Uploads\\LabSpecializationImages\\1z5ysxnp.th1";
-                data.Specializations = _mapper.Map<List<SpecializationDto>>(labSpecializations);
+                data.LabSpecializations = _mapper.Map<List<LabSpecializationDto>>(labSpecializations);
 
                 return new GeneralResponse<AddLabResponseDto>
                 {
@@ -644,7 +646,7 @@ namespace HealthCare.Services.Services
             }
      
         }
-
+      
         public async Task<GeneralResponse<List<AddLabResponseDto>>> ListOfLabsInHospital(int hospitalId)
         {
             try
@@ -663,9 +665,9 @@ namespace HealthCare.Services.Services
                 
                 foreach(var a in data)
                 {
-                    a.ImagePath = "G:\\WEB DEVELOPMENT\\HealthCareProject\\HealthCareAPIs\\HealthCare\\Uploads\\LabSpecializationImages\\1z5ysxnp.th1";
+                    a.ImagePath = Lab.LabImagePath;
                     var labSpecializatons = await _unitOfWork.SpecializationsOfLabRepository.GetSpecificItems(filter: s=>s.LabId == a.Id, select: s=>s.LabSpecialization);
-                    a.Specializations = _mapper.Map<List<SpecializationDto>>(labSpecializatons);
+                    a.LabSpecializations = _mapper.Map<List<LabSpecializationDto>>(labSpecializatons);
                 }
                 return new GeneralResponse<List<AddLabResponseDto>>
                 {
@@ -684,7 +686,7 @@ namespace HealthCare.Services.Services
                 };
             }
         }
-
+        /// /////////
         public async Task<GeneralResponse<List<AddLabResponseDto>>> ListOfLabsADoctorWorksin(int doctorId, int hospitalId)
         {
             try
@@ -725,7 +727,7 @@ namespace HealthCare.Services.Services
                 {
                     a.ImagePath = "G:\\WEB DEVELOPMENT\\HealthCareProject\\HealthCareAPIs\\HealthCare\\Uploads\\LabSpecializationImages\\1z5ysxnp.th1";
                     var labSpecializatons = await _unitOfWork.SpecializationsOfLabRepository.GetSpecificItems(filter: s => s.LabId == a.Id, select: s => s.LabSpecialization);
-                    a.Specializations = _mapper.Map<List<SpecializationDto>>(labSpecializatons);
+                    a.LabSpecializations = _mapper.Map<List<LabSpecializationDto>>(labSpecializatons);
                 }
                 return new GeneralResponse<List<AddLabResponseDto>>
                 {
@@ -778,24 +780,24 @@ namespace HealthCare.Services.Services
                 };
             }
         }
-
-        public async Task<GeneralResponse<List<AddClinicResponseDto>>> ListOfLabSpecialization()
+       
+        public async Task<GeneralResponse<List<ListOfLabSpecializationDto>>> ListOfLabSpecialization()
         {
             try
             {
                 var labSpecializations = await _unitOfWork.LabSpecializationRepository.GetAllIncludedAsync(a => a.UploadedFile);
                 if (labSpecializations == null)
                 {
-                    return new GeneralResponse<List<AddClinicResponseDto>>
+                    return new GeneralResponse<List<ListOfLabSpecializationDto>>
                     {
                         IsSuccess = false,
                         Message = "No LabSpecializations Found!"
                     };
                 }
 
-                var data = _mapper.Map<List<AddClinicResponseDto>>(labSpecializations);
+                var data = _mapper.Map<List<ListOfLabSpecializationDto>>(labSpecializations);
 
-                return new GeneralResponse<List<AddClinicResponseDto>>
+                return new GeneralResponse<List<ListOfLabSpecializationDto>>
                 {
                     IsSuccess = true,
                     Message = "The LabSpecializations Listed successfully.",
@@ -804,7 +806,281 @@ namespace HealthCare.Services.Services
             }
             catch (Exception ex)
             {
-                return new GeneralResponse<List<AddClinicResponseDto>>
+                return new GeneralResponse<List<ListOfLabSpecializationDto>>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+        public async Task<GeneralResponse<List<ListOfSpecificClinics>>> ListOfClinicsOfSpecificSpecialization(int specializationId)
+        {
+            try
+            {
+                var specalize = await _unitOfWork.SpecializationRepository.GetByIdAsync(specializationId);
+                if(specalize == null)
+                {
+                    return new GeneralResponse<List<ListOfSpecificClinics>>
+                    {
+                        IsSuccess = false,
+                        Message = "No specialization found."
+                    };
+                }
+                var clinics = await _unitOfWork.ClinicLabRepository.WhereIncludeAsync(
+                    s => s.SpecializationId == specializationId,
+                    a => a.Hospital, a => a.Hospital.HospitalGovernorate.Governorate,
+                    a => a.Hospital.UploadedFile, a => a.Specialization.UploadedFile);
+
+                var data = _mapper.Map<List<ListOfSpecificClinics>>(clinics);
+
+                return new GeneralResponse<List<ListOfSpecificClinics>>
+                {
+                    IsSuccess = true,
+                    Message = "The Specific Clinics are Listed successfully.",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<List<ListOfSpecificClinics>>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+        public async Task<GeneralResponse<List<ListOfSpecificClinics>>> ListOfXraysOfSpecificSpecialization(int xraySpecializationId)
+        {
+            try
+            {
+                var specalize = await _unitOfWork.XraySpecializationRepository.GetByIdAsync(xraySpecializationId);
+                if (specalize == null)
+                {
+                    return new GeneralResponse<List<ListOfSpecificClinics>>
+                    {
+                        IsSuccess = false,
+                        Message = "No XraySpecialization found."
+                    };
+                }
+                var xrays = await _unitOfWork.XrayRepository.WhereIncludeAsync(
+                    s => s.XraySpecializationId == xraySpecializationId,
+                    a => a.Hospital, a => a.Hospital.HospitalGovernorate.Governorate,
+                    a => a.Hospital.UploadedFile, a => a.XraySpecialization.UploadedFile);
+
+                var data = _mapper.Map<List<ListOfSpecificClinics>>(xrays);
+
+                return new GeneralResponse<List<ListOfSpecificClinics>>
+                {
+                    IsSuccess = true,
+                    Message = "The Specific XrayLabs are Listed successfully.",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<List<ListOfSpecificClinics>>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+        public async Task<GeneralResponse<List<ListOfSpecificLabs>>> ListOfLabsOfSpecificSpecialization(int labSpecializationId)
+        {
+            try
+            {
+                var specalize = await _unitOfWork.LabSpecializationRepository.GetByIdAsync(labSpecializationId);
+                if (specalize == null)
+                {
+                    return new GeneralResponse<List<ListOfSpecificLabs>>
+                    {
+                        IsSuccess = false,
+                        Message = "No LabSpecialization found."
+                    };
+                }
+                var labIds = await _unitOfWork.SpecializationsOfLabRepository.GetSpecificItems(
+                    s => s.LabSpecializationId == labSpecializationId, a => a.LabId);
+                var labs = await _unitOfWork.LabRepository.WhereIncludeAsync(w => labIds.Contains(w.Id), 
+                    a => a.Hospital, a => a.Hospital.HospitalGovernorate.Governorate,
+                    a => a.Hospital.UploadedFile);
+
+                var data = _mapper.Map<List<ListOfSpecificLabs>>(labs);
+                foreach (var a in data)
+                {
+                    a.LabImagePath = Lab.LabImagePath;
+                    var labSpecializatons = await _unitOfWork.SpecializationsOfLabRepository.GetSpecificItems(filter: s => s.LabId == a.LabId, select: s => s.LabSpecialization.Name);
+                    a.LabSpecializationNames = labSpecializatons.ToList();
+                }
+
+                return new GeneralResponse<List<ListOfSpecificLabs>>
+                {
+                    IsSuccess = true,
+                    Message = "The Specific TestLabs are Listed successfully.",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<List<ListOfSpecificLabs>>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+        public async Task<GeneralResponse<List<ListOfSpecificClinics>>> FilterClinicsBySpecializeAndGovernorate(int SpecializationId, int GovernorateId)
+        {
+            try
+            {
+                var specalize = await _unitOfWork.SpecializationRepository.GetByIdAsync(SpecializationId);
+                if (specalize == null)
+                {
+                    return new GeneralResponse<List<ListOfSpecificClinics>>
+                    {
+                        IsSuccess = false,
+                        Message = "No specialization found."
+                    };
+                }
+                var governorate = await _unitOfWork.GovernorateRepository.GetByIdAsync(GovernorateId);
+                if (governorate == null)
+                {
+                    return new GeneralResponse<List<ListOfSpecificClinics>>
+                    {
+                        IsSuccess = false,
+                        Message = "No governorate found."
+                    };
+                }
+                var clinics = await _unitOfWork.ClinicLabRepository.WhereIncludeAsync(
+                    s => s.SpecializationId == SpecializationId &&
+                    s.Hospital.HospitalGovernorate.GovernorateId == GovernorateId,
+                    a => a.Hospital, a => a.Hospital.HospitalGovernorate.Governorate,
+                    a => a.Hospital.UploadedFile, a => a.Specialization.UploadedFile);
+
+                var data = _mapper.Map<List<ListOfSpecificClinics>>(clinics);
+
+                return new GeneralResponse<List<ListOfSpecificClinics>>
+                {
+                    IsSuccess = true,
+                    Message = "The Specific Clinics are Listed successfully.",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<List<ListOfSpecificClinics>>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+        public async Task<GeneralResponse<List<ListOfSpecificClinics>>> FilterXraysBySpecializeAndGovernorate(int xraySpecializationId, int GovernorateId)
+        {
+            try
+            {
+                var specalize = await _unitOfWork.XraySpecializationRepository.GetByIdAsync(xraySpecializationId);
+                if (specalize == null)
+                {
+                    return new GeneralResponse<List<ListOfSpecificClinics>>
+                    {
+                        IsSuccess = false,
+                        Message = "No XraySpecialization found."
+                    };
+                }
+                var governorate = await _unitOfWork.GovernorateRepository.GetByIdAsync(GovernorateId);
+                if (governorate == null)
+                {
+                    return new GeneralResponse<List<ListOfSpecificClinics>>
+                    {
+                        IsSuccess = false,
+                        Message = "No governorate found."
+                    };
+                }
+
+                var xrays = await _unitOfWork.XrayRepository.WhereIncludeAsync(
+                    s => s.XraySpecializationId == xraySpecializationId &&
+                    s.Hospital.HospitalGovernorate.GovernorateId == GovernorateId,
+                    a => a.Hospital, a => a.Hospital.HospitalGovernorate.Governorate,
+                    a => a.Hospital.UploadedFile, a => a.XraySpecialization.UploadedFile);
+
+                var data = _mapper.Map<List<ListOfSpecificClinics>>(xrays);
+
+                return new GeneralResponse<List<ListOfSpecificClinics>>
+                {
+                    IsSuccess = true,
+                    Message = "The Specific XrayLabs are Listed successfully.",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<List<ListOfSpecificClinics>>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+        public async Task<GeneralResponse<List<ListOfSpecificLabs>>> FilterLabsBySpecializeAndGovernorate(int labSpecializationId, int GovernorateId)
+        {
+            try
+            {
+                var specalize = await _unitOfWork.LabSpecializationRepository.GetByIdAsync(labSpecializationId);
+                if (specalize == null)
+                {
+                    return new GeneralResponse<List<ListOfSpecificLabs>>
+                    {
+                        IsSuccess = false,
+                        Message = "No LabSpecialization found."
+                    };
+                }
+                var governorate = await _unitOfWork.GovernorateRepository.GetByIdAsync(GovernorateId);
+                if (governorate == null)
+                {
+                    return new GeneralResponse<List<ListOfSpecificLabs>>
+                    {
+                        IsSuccess = false,
+                        Message = "No governorate found."
+                    };
+                }
+
+                var labIds = await _unitOfWork.SpecializationsOfLabRepository.GetSpecificItems(
+                    s => s.LabSpecializationId == labSpecializationId, a => a.LabId);
+                var labs = await _unitOfWork.LabRepository.WhereIncludeAsync(w => labIds.Contains(w.Id) && 
+                    w.Hospital.HospitalGovernorate.GovernorateId == GovernorateId,
+                    a => a.Hospital, a => a.Hospital.HospitalGovernorate.Governorate,
+                    a => a.Hospital.UploadedFile);
+
+                var data = _mapper.Map<List<ListOfSpecificLabs>>(labs);
+                foreach (var a in data)
+                {
+                    a.LabImagePath = Lab.LabImagePath;
+                    var labSpecializatons = await _unitOfWork.SpecializationsOfLabRepository.GetSpecificItems(filter: s => s.LabId == a.LabId, select: s => s.LabSpecialization.Name);
+                    a.LabSpecializationNames = labSpecializatons.ToList();
+                }
+
+                return new GeneralResponse<List<ListOfSpecificLabs>>
+                {
+                    IsSuccess = true,
+                    Message = "The Specific TestLabs are Listed successfully.",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<List<ListOfSpecificLabs>>
                 {
                     IsSuccess = false,
                     Message = "Something went wrong",

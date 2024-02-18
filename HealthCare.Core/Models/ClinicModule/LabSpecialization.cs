@@ -11,6 +11,7 @@ namespace HealthCare.Core.Models.ClinicModule
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
         public int UploadedFileId { get; set; }
         public UploadedFile UploadedFile { get; set; }
         public List<SpecializationsOfLab> SpecializationsOfLab { get; set; }

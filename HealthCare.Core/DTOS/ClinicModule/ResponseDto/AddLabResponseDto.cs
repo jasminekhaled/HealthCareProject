@@ -12,6 +12,6 @@ namespace HealthCare.Core.DTOS.ClinicModule.ResponseDto
         public int Id { get; set; }
         public string Name { get; set; }
         public string ImagePath { get; set; }
-        public List<SpecializationDto> Specializations { get; set; }
+        public List<LabSpecializationDto> LabSpecializations { get; set; }
     }
 }

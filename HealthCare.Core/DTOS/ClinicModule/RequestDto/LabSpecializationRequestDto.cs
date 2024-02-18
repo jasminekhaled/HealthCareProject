@@ -9,5 +9,6 @@ namespace HealthCare.Core.DTOS.ClinicModule.RequestDto
     public class LabSpecializationRequestDto
     {
         public string Name { get; set; }
+        public string Description { get; set; }
     }
 }

@@ -1,5 +1,8 @@
 ﻿using HealthCare.Core.DTOS.ClinicModule.RequestDto;
 using HealthCare.Core.DTOS.HospitalModule.ResponseDto;
+using HealthCare.Core.Models;
+using HealthCare.Core.Models.ClinicModule;
+using HealthCare.Core.Models.HospitalModule;
 using HealthCare.Services.IServices;
 using HealthCare.Services.Services;
 using Microsoft.AspNetCore.Http;
@@ -175,6 +178,61 @@ namespace HealthCare.Controllers
         public async Task<IActionResult> ListOfLabsInHospital(int hospitalId)
         {
             var result = await _clinicServices.ListOfLabsInHospital(hospitalId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+
+        [HttpGet("ListOfClinicsOfSpecificSpecialization")]
+        public async Task<IActionResult> ListOfClinicsOfSpecificSpecialization(int specializationId)
+        {
+            var result = await _clinicServices.ListOfClinicsOfSpecificSpecialization(specializationId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpGet("ListOfXraysOfSpecificSpecialization")]
+        public async Task<IActionResult> ListOfXraysOfSpecificSpecialization(int xraySpecializationId)
+        {
+            var result = await _clinicServices.ListOfXraysOfSpecificSpecialization(xraySpecializationId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpGet("ListOfLabsOfSpecificSpecialization")]
+        public async Task<IActionResult> ListOfLabsOfSpecificSpecialization(int labSpecializationId)
+        {
+            var result = await _clinicServices.ListOfLabsOfSpecificSpecialization(labSpecializationId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpGet("FilterClinicsBySpecializeAndGovernorate")]
+        public async Task<IActionResult> FilterClinicsBySpecializeAndGovernorate(int SpecializationId, int GovernorateId)
+        {
+            var result = await _clinicServices.FilterClinicsBySpecializeAndGovernorate(SpecializationId, GovernorateId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpGet("FilterXraysBySpecializeAndGovernorate")]
+        public async Task<IActionResult> FilterXraysBySpecializeAndGovernorate(int xraySpecializationId, int GovernorateId)
+        {
+            var result = await _clinicServices.FilterXraysBySpecializeAndGovernorate(xraySpecializationId, GovernorateId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpGet("FilterLabsBySpecializeAndGovernorate")]
+        public async Task<IActionResult> FilterLabsBySpecializeAndGovernorate(int labSpecializationId, int GovernorateId)
+        {
+            var result = await _clinicServices.FilterLabsBySpecializeAndGovernorate(labSpecializationId, GovernorateId);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);

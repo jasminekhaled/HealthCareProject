@@ -39,7 +39,7 @@ namespace HealthCare.Services.Services
         public MedicalHistoryServices(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContextAccessor,
             IWebHostEnvironment webHostEnvironment, IConfiguration configuration)
         {
-            _unitOfWork = unitOfWork;
+            _unitOfWork = unitOfWork; 
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
             _webHostEnvironment = webHostEnvironment;

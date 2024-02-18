@@ -15,10 +15,10 @@ namespace HealthCare.Services.IServices
         Task<GeneralResponse<SignUpResponse>> SignUp([FromForm]SignUpRequestDto dto);
         Task<GeneralResponse<SignUpResponse>> VerifyEmail(string email ,string verificationCode); 
         Task<GeneralResponse<RefreshTokenResponse>> RefreshToken(string? RefreshToken);
-        Task<GeneralResponse<LogInResponse>> Login([FromForm] LoginRequest dto);
-        Task<GeneralResponse<string>> ResetPassword([FromForm] ResetPasswordRequestDto dto);
-        Task<GeneralResponse<string>> ForgetPassword([FromForm] ForgetPasswordRequestDto dto);
-        Task<GeneralResponse<string>> ChangeForgettedPassword([FromForm] ChangeForgettedPasswordDto dto);
+        Task<GeneralResponse<LogInResponse>> Login([FromForm]LoginRequest dto);
+        Task<GeneralResponse<string>> ResetPassword([FromForm]ResetPasswordRequestDto dto);
+        Task<GeneralResponse<string>> ForgetPassword([FromForm]ForgetPasswordRequestDto dto);
+        Task<GeneralResponse<string>> ChangeForgettedPassword(string userName, [FromForm]ChangeForgettedPasswordDto dto); // userName from frontend , frontend will save it from the forgetPassword Api
 
         Task AddNationalId(string nationalId, string name);
     }

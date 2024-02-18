@@ -19,7 +19,7 @@ namespace HealthCare.Controllers
 
 
         [HttpPost("SignUp")]
-        public async Task<IActionResult> SignUp([FromForm]SignUpRequestDto dto)
+        public async Task<IActionResult> SignUp([FromForm] SignUpRequestDto dto)
         {
             var result = await _authServices.SignUp(dto);
             if (result.IsSuccess)
@@ -46,7 +46,7 @@ namespace HealthCare.Controllers
             return Ok(result);
         }
 
-        
+        [Authorize]
         [HttpPost("ResetPassword")]
         public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordRequestDto dto)
         {
@@ -66,9 +66,9 @@ namespace HealthCare.Controllers
         }
 
         [HttpPost("ChangeForgettedPassword")]
-        public async Task<IActionResult> ChangeForgettedPassword([FromForm] ChangeForgettedPasswordDto dto)
+        public async Task<IActionResult> ChangeForgettedPassword(string userName, [FromForm] ChangeForgettedPasswordDto dto)
         {
-            var result = await _authServices.ChangeForgettedPassword(dto);
+            var result = await _authServices.ChangeForgettedPassword(userName, dto);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);

@@ -18,7 +18,7 @@ namespace HealthCare.Services.IServices
         Task<GeneralResponse<string>> AddLabSpecialization([FromForm] LabSpecializationRequestDto dto);
         Task<GeneralResponse<string>> DeleteLabSpecialization(int LabSpecializationId);
         Task<GeneralResponse<List<AddClinicResponseDto>>> ListOfXraySpecialization();
-        Task<GeneralResponse<List<AddClinicResponseDto>>> ListOfLabSpecialization();
+        Task<GeneralResponse<List<ListOfLabSpecializationDto>>> ListOfLabSpecialization();
         Task<GeneralResponse<AddClinicResponseDto>> AddClinic(int hospitalAdminId, [FromForm]AddClinicDto dto);
         Task<GeneralResponse<AddClinicResponseDto>> AddXrayLab(int hospitalAdminId, [FromForm]AddClinicDto dto);
         Task<GeneralResponse<AddLabResponseDto>> AddLab(int hospitalAdminId, [FromForm] AddLabDto dto);
@@ -31,5 +31,11 @@ namespace HealthCare.Services.IServices
         Task<GeneralResponse<List<AddClinicResponseDto>>> ListOfClinicsADoctorWorksin(int doctorId, int hospitalId);
         Task<GeneralResponse<List<AddClinicResponseDto>>> ListOfXrayLabsADoctorWorksin(int doctorId, int hospitalId);
         Task<GeneralResponse<List<AddLabResponseDto>>> ListOfLabsADoctorWorksin(int doctorId, int hospitalId);//check that itis working
+        Task<GeneralResponse<List<ListOfSpecificClinics>>> ListOfClinicsOfSpecificSpecialization(int specializationId);
+        Task<GeneralResponse<List<ListOfSpecificClinics>>> ListOfXraysOfSpecificSpecialization(int xraySpecializationId);
+        Task<GeneralResponse<List<ListOfSpecificLabs>>> ListOfLabsOfSpecificSpecialization(int labSpecializationId);
+        Task<GeneralResponse<List<ListOfSpecificClinics>>> FilterClinicsBySpecializeAndGovernorate(int SpecializationId, int GovernorateId);
+        Task<GeneralResponse<List<ListOfSpecificClinics>>> FilterXraysBySpecializeAndGovernorate(int xraySpecializationId, int GovernorateId);
+        Task<GeneralResponse<List<ListOfSpecificLabs>>> FilterLabsBySpecializeAndGovernorate(int labSpecializationId, int GovernorateId);
     }
 }

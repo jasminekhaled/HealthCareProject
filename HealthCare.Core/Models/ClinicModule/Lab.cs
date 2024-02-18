@@ -17,5 +17,9 @@ namespace HealthCare.Core.Models.ClinicModule
         public Hospital Hospital { get; set; }
         public List<LabDoctor> LabDoctors { get; set; }
         public List<LabAppointment> LabAppointments { get; set; }
+
+        
+        
+        public static string LabImagePath = "G:\\WEB DEVELOPMENT\\HealthCareProject\\HealthCareAPIs\\HealthCare\\Uploads\\LabSpecializationImages\\1z5ysxnp.th1";
     }
 }

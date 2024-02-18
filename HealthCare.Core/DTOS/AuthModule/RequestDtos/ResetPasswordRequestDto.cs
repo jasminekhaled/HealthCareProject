@@ -9,9 +9,7 @@ namespace HealthCare.Core.DTOS.AuthModule.RequestDtos
 {
     public class ResetPasswordRequestDto
     {
-        public string UserName { get; set; }
-        [EmailAddress]
-        public string Email { get; set; }
+
         public string PassWord { get; set; }
 
         [MinLength(length: 15)]
