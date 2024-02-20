@@ -2,6 +2,7 @@
 using HealthCare.Services.IServices;
 using HealthCare.Services.Services;
 using Humanizer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,7 @@ namespace HealthCare.Controllers
             _hospitalServices = hospitalServices;
         }
 
+        [Authorize(Roles ="SuperAdmin")]
         [HttpPost("AddHospital")]
         public async Task<IActionResult> AddHospital([FromForm] HospitalRequestDto dto)
         {
@@ -26,6 +28,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
+        [Authorize]
         [HttpGet("ListOfHospitals")]
         public async Task<IActionResult> ListOfHospitals()
         {
@@ -35,7 +38,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-
+        [Authorize(Roles = "SuperAdmin")]
         [HttpDelete("DeleteHospital")]
         public async Task<IActionResult> DeleteHospital(int hospitalId)
         {
@@ -45,6 +48,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
+        [Authorize]
         [HttpGet("GetHospitalByName")]
         public async Task<IActionResult> GetHospitalByName(string Name)
         {
@@ -54,7 +58,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-
+        [Authorize]
         [HttpGet("GetHospitalByGovernorate")]
         public async Task<IActionResult> GetHospitalByGovernorate(int governoratetId)
         {
@@ -64,7 +68,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-
+        [Authorize]
         [HttpGet("HospitalDetails")]
         public async Task<IActionResult> HospitalDetails(int hospitalId)
         {
@@ -74,7 +78,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-
+        [Authorize(Roles = "HospitalAdmin")]
         [HttpPatch("EditHospital")]
         public async Task<IActionResult> EditHospital(int hospitalId, [FromForm] EditHospitalDto dto)
         {
@@ -84,7 +88,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-
+        [Authorize(Roles = "HospitalAdmin, SuperAdmin")]
         [HttpPost("AddHospitalAdmin")]
         public async Task<IActionResult> AddHospitalAdmin(int hospitalId, [FromForm] HospitalAdminRequestDto dto)
         {
@@ -103,7 +107,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-
+        [Authorize(Roles = "HospitalAdmin, SuperAdmin")]
         [HttpDelete("DeleteHospitalAdmin")]
         public async Task<IActionResult> DeleteHospitalAdmin(int hospitalAdminId)
         {
@@ -113,26 +117,27 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "HospitalAdmin")]
         [HttpGet("HospitalAdminDetails")]
-        public async Task<IActionResult> HospitalAdminDetails(int hospitalAdminId)
+        public async Task<IActionResult> HospitalAdminDetails()
         {
-            var result = await _hospitalServices.HospitalAdminDetails(hospitalAdminId);
+            var result = await _hospitalServices.HospitalAdminDetails();
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
         }
 
-
+        [Authorize(Roles = "HospitalAdmin")]
         [HttpPatch("EditHospitalAdmin")]
-        public async Task<IActionResult> EditHospitalAdmin(int hospitalAdminId, [FromForm] EditHospitalAdminDto dto)
+        public async Task<IActionResult> EditHospitalAdmin([FromForm] EditHospitalAdminDto dto)
         {
-            var result = await _hospitalServices.EditHospitalAdmin(hospitalAdminId, dto);
+            var result = await _hospitalServices.EditHospitalAdmin(dto);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
         }
 
-
+        [Authorize(Roles = "HospitalAdmin, SuperAdmin")]
         [HttpGet("ListOfSpecificHospitalAdmins")]
         public async Task<IActionResult> ListOfSpecificHospitalAdmins(int HospitalId)
         {
@@ -142,6 +147,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "SuperAdmin")]
         [HttpPost("AddGovernorate")]
         public async Task<IActionResult> AddGovernorate(string name)
         {
@@ -151,6 +157,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
+        [Authorize]
         [HttpGet("ListOfGovernorates")]
         public async Task<IActionResult> ListOfGovernorates()
         {
@@ -160,6 +167,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "SuperAdmin")]
         [HttpDelete("DeleteGovernorate")]
         public async Task<IActionResult> DeleteGovernorate(int governorateId)
         {

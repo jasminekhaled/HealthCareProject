@@ -25,5 +25,8 @@ namespace HealthCare.Core.Models.AuthModule
         public Specialization Specialization { get; set; }
         public XraySpecialization XraySpecialization { get; set; }
         public LabSpecialization LabSpecialization { get; set; }
+
+
+        public static string DefaultImagePath = "G:\\WEB DEVELOPMENT\\HealthCareProject\\HealthCareAPIs\\HealthCare\\Uploads\\DefaultImage";
     }
 }

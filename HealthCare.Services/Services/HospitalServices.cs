@@ -24,6 +24,8 @@ using HealthCare.Core.DTOS.AuthModule.RequestDtos;
 using HealthCare.Core.Helpers;
 using System.IdentityModel.Tokens.Jwt;
 using HealthCare.Core.DTOS.DoctorModule.ResponseDtos;
+using Microsoft.AspNetCore.Http;
+using HealthCare.Core.DTOS.BandModule.ResponseDtos;
 
 namespace HealthCare.Services.Services
 {
@@ -33,13 +35,15 @@ namespace HealthCare.Services.Services
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IConfiguration _configuration;
-
-        public HospitalServices(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment webHostEnvironment, IConfiguration configuration)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public HospitalServices(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment webHostEnvironment,
+            IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _webHostEnvironment = webHostEnvironment;
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
         }
 
 
@@ -48,7 +52,7 @@ namespace HealthCare.Services.Services
             try
             {
                 var hospitals = await _unitOfWork.HospitalRepository.GetAllIncludedAsync(i => i.UploadedFile, i => i.HospitalGovernorate.Governorate);
-                if(hospitals == null)
+                /*if(hospitals == null)
                 {
                     return new GeneralResponse<List<ListOfHospitalDto>>
                     {
@@ -56,7 +60,7 @@ namespace HealthCare.Services.Services
                         Message = "No Hospitals Found!!"
                     };
 
-                }
+                }*/
                 var data = _mapper.Map<List<ListOfHospitalDto>>(hospitals);
 
                 return new GeneralResponse<List<ListOfHospitalDto>>
@@ -249,7 +253,10 @@ namespace HealthCare.Services.Services
                         Message = "No Governorate Found."
                     };
                 }
-                var hospitals = await _unitOfWork.HospitalRepository.WhereIncludeAsync(filter: a => a.HospitalGovernorate.GovernorateId == governoratetId, i => i.UploadedFile, i => i.HospitalGovernorate.Governorate);
+                var hospitals = await _unitOfWork.HospitalRepository.WhereIncludeAsync(
+                    filter: a => a.HospitalGovernorate.GovernorateId == governoratetId,
+                    i => i.UploadedFile,
+                    i => i.HospitalGovernorate.Governorate);
                 
                 if (!hospitals.Any())
                 {
@@ -264,7 +271,7 @@ namespace HealthCare.Services.Services
                 return new GeneralResponse<List<ListOfHospitalDto>>
                 {
                     IsSuccess = true,
-                    Message = "Hospitals with inserted name listed successfully.",
+                    Message = "Hospitals in this Governorate are listed successfully.",
                     Data = data
                 };
             }
@@ -282,7 +289,11 @@ namespace HealthCare.Services.Services
         {
             try
             {
-                var hospital = await _unitOfWork.HospitalRepository.GetSingleWithIncludesAsync(single: h => h.Id == hospitalId, i => i.UploadedFile, i => i.HospitalGovernorate.Governorate);
+                var hospital = await _unitOfWork.HospitalRepository.GetSingleWithIncludesAsync(
+                    single: h => h.Id == hospitalId,
+                    i => i.UploadedFile,
+                    i => i.HospitalGovernorate.Governorate);
+
                 if(hospital == null)
                 {
                     return new GeneralResponse<HospitalDto>
@@ -315,7 +326,34 @@ namespace HealthCare.Services.Services
         {
             try
             {
-                var hospital = await _unitOfWork.HospitalRepository.GetSingleWithIncludesAsync(single: h => h.Id == hospitalId, i => i.UploadedFile, i => i.HospitalGovernorate.Governorate);
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.Role == User.HospitalAdmin);
+                if (user == null)
+                {
+                    return new GeneralResponse<HospitalDto>
+                    {
+                        IsSuccess = false,
+                        Message = "No user Found!"
+                    };
+                }
+                var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(
+                    s => s.UserName == user.UserName,
+                    i => i.AdminOfHospital);
+
+                if(hospitalAdmin.AdminOfHospital.HospitalId != hospitalId)
+                {
+                    return new GeneralResponse<HospitalDto>
+                    {
+                        IsSuccess = false,
+                        Message = "You donot have permission to edit this hospital!!"
+                    };
+                }
+                var hospital = await _unitOfWork.HospitalRepository.GetSingleWithIncludesAsync(
+                    single: h => h.Id == hospitalId,
+                    i => i.UploadedFile,
+                    i => i.HospitalGovernorate.Governorate);
+
                 if (hospital == null)
                 {
                     return new GeneralResponse<HospitalDto>
@@ -417,7 +455,35 @@ namespace HealthCare.Services.Services
         {
             try
             {
-                var hospital = await _unitOfWork.HospitalRepository.GetByIdAsync(hospitalId);
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId);
+                if (user == null)
+                {
+                    return new GeneralResponse<HospitalAdminDto>
+                    {
+                        IsSuccess = false,
+                        Message = "No user Found!"
+                    };
+                }
+                if(user.Role == User.HospitalAdmin)
+                {
+                    var ThisHospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(
+                    s => s.UserName == user.UserName,
+                    i => i.AdminOfHospital);
+
+                    if (ThisHospitalAdmin.AdminOfHospital.HospitalId != hospitalId)
+                    {
+                        return new GeneralResponse<HospitalAdminDto>
+                        {
+                            IsSuccess = false,
+                            Message = "You donot have permission to Add Admin in this Hospital!!"
+                        };
+                    }
+                }
+
+                var hospital = await _unitOfWork.HospitalRepository.GetSingleWithIncludesAsync(s=>s.Id == hospitalId,
+                    i => i.UploadedFile);
                 if(hospital == null)
                 {
                     return new GeneralResponse<HospitalAdminDto>
@@ -434,12 +500,14 @@ namespace HealthCare.Services.Services
                         Message = "This UserName is already used."
                     };
                 }
-                if (!await _unitOfWork.CivilRegestrationRepository.AnyAsync(a => a.NationalId == dto.NationalId) || await _unitOfWork.HospitalAdminRepository.AnyAsync(a => a.NationalId == dto.NationalId) || await _unitOfWork.HospitalAdminRepository.AnyAsync(a => a.Email == dto.Email))
+                if (!await _unitOfWork.CivilRegestrationRepository.AnyAsync(a => a.NationalId == dto.NationalId) ||
+                    await _unitOfWork.HospitalAdminRepository.AnyAsync(a => a.NationalId == dto.NationalId) ||
+                    await _unitOfWork.HospitalAdminRepository.AnyAsync(a => a.Email == dto.Email))
                 {
                     return new GeneralResponse<HospitalAdminDto>
                     {
                         IsSuccess = false,
-                        Message = "NationalId Or Email cannot be accepted."
+                        Message = "NationalId Or Email cannot be accepted, one Of them is wrong or already used by another hospitalAdmin."
                     };
                 }
                 
@@ -504,7 +572,7 @@ namespace HealthCare.Services.Services
                     data.ImagePath = path;
 
                 }
-                
+
                 var adminOfHospital = new AdminOfHospital()
                 {
                     Hospital = hospital,
@@ -515,23 +583,23 @@ namespace HealthCare.Services.Services
                 await _unitOfWork.AdminOfHospitalRepository.AddAsync(adminOfHospital);
                 await _unitOfWork.CompleteAsync();
 
-                var user = _mapper.Map<User>(admin);
-                user.Role = User.HospitalAdmin;
-                user.UploadedFile = admin.UploadedFile;
-                await _unitOfWork.UserRepository.AddAsync(user);
+                var newUser = _mapper.Map<User>(admin);
+                newUser.Role = User.HospitalAdmin;
+                newUser.UploadedFile = admin.UploadedFile;
+                await _unitOfWork.UserRepository.AddAsync(newUser);
                 await _unitOfWork.CompleteAsync();
 
                 var userRole = new UserRole()
                 {
-                    UserId = user.Id,
-                    RoleId = 2
+                    User = newUser,
+                    Role = await _unitOfWork.RoleRepository.SingleOrDefaultAsync(s => s.Name == User.HospitalAdmin)
                 };
                 await _unitOfWork.UserRoleRepository.AddAsync(userRole);
                 await _unitOfWork.CompleteAsync();
 
 
-                var userToken = _mapper.Map<UserTokenDto>(user);
-                userToken.Role = "HospitalAdmin";
+                var userToken = _mapper.Map<UserTokenDto>(newUser);
+                userToken.Role = User.HospitalAdmin;
                 var Token = TokenServices.CreateJwtToken(userToken);
                 var refreshToken = TokenServices.CreateRefreshToken();
                 var newRefreshToken = new RefreshToken
@@ -539,7 +607,7 @@ namespace HealthCare.Services.Services
                     Token = refreshToken.Token,
                     ExpiresOn = refreshToken.ExpiresOn,
                     CreatedOn = refreshToken.CreatedOn,
-                    userId = user.Id
+                    userId = newUser.Id
                 };
                
                 await _unitOfWork.RefreshTokenRepository.AddAsync(newRefreshToken);
@@ -549,7 +617,10 @@ namespace HealthCare.Services.Services
                 data.RefreshTokenExpiration = refreshToken.ExpiresOn;
                 data.Token = new JwtSecurityTokenHandler().WriteToken(Token);
                 data.ExpiresOn = Token.ValidTo;
-
+                data.Id = admin.Id;
+                data.HospitalId = hospitalId;
+                data.HospitalName = hospital.Name;
+                data.HospitalImagePath = hospital.UploadedFile.FilePath;
 
                 return new GeneralResponse<HospitalAdminDto>
                 {
@@ -570,14 +641,15 @@ namespace HealthCare.Services.Services
 
         }
 
-        
-
         public async Task<GeneralResponse<string>> DeleteHospitalAdmin(int hospitalAdminId)
         {
             try
             {
-                var admin = await _unitOfWork.HospitalAdminRepository.GetByIdAsync(hospitalAdminId);
-                if(admin == null)
+                var admin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(
+                    s=>s.Id == hospitalAdminId,
+                    a=>a.AdminOfHospital);
+
+                if (admin == null)
                 {
                     return new GeneralResponse<string>
                     {
@@ -585,15 +657,43 @@ namespace HealthCare.Services.Services
                         Message = "No Admin Found!"
                     };
                 }
+
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId);
+                if (ThisUser == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No user Found!"
+                    };
+                }
+                if (ThisUser.Role == User.HospitalAdmin)
+                {
+                    var ThisHospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(
+                    s => s.UserName == ThisUser.UserName,
+                    i => i.AdminOfHospital);
+
+                    if (ThisHospitalAdmin.AdminOfHospital.HospitalId != admin.AdminOfHospital.HospitalId)
+                    {
+                        return new GeneralResponse<string>
+                        {
+                            IsSuccess = false,
+                            Message = "You donot have permission to Delete Admin in this Hospital!!"
+                        };
+                    }
+                }
+
                 var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(s => s.UserName == admin.UserName);
-                var refreshToken = await _unitOfWork.RefreshTokenRepository.SingleOrDefaultAsync(s => s.userId == user.Id);
+                var refreshToken = await _unitOfWork.RefreshTokenRepository.Where(s => s.userId == user.Id);
                 var uploadedFile = await _unitOfWork.UploadedFileRepository.GetByIdAsync(admin.UploadedFileId);
-                if(uploadedFile.FilePath != "G:\\WEB DEVELOPMENT\\HealthCareProject\\HealthCareAPIs\\HealthCare\\Uploads\\DefaultImage")
+                if(uploadedFile.FilePath != UploadedFile.DefaultImagePath)
                 {
                     File.Delete(uploadedFile.FilePath);
                 }
                 
-                _unitOfWork.RefreshTokenRepository.Remove(refreshToken);
+                _unitOfWork.RefreshTokenRepository.RemoveRange(refreshToken);
                 _unitOfWork.UserRepository.Remove(user);
                 _unitOfWork.HospitalAdminRepository.Remove(admin);
                 _unitOfWork.UploadedFileRepository.Remove(uploadedFile);
@@ -617,19 +717,29 @@ namespace HealthCare.Services.Services
         }
 
         
-        public async Task<GeneralResponse<EditHospitalAdminResponse>> HospitalAdminDetails(int hospitalAdminId)
+        public async Task<GeneralResponse<EditHospitalAdminResponse>> HospitalAdminDetails()
         {
             try
             {
-                var admin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(single: s => s.Id  == hospitalAdminId, i => i.UploadedFile);
-                if (admin == null)
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.Role == User.HospitalAdmin);
+                if (ThisUser == null)
                 {
                     return new GeneralResponse<EditHospitalAdminResponse>
                     {
                         IsSuccess = false,
-                        Message = "No Admin Found!"
+                        Message = "No user Found!"
                     };
                 }
+
+                var admin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(
+                    s => s.UserName  == ThisUser.UserName,
+                    i => i.UploadedFile,
+                    i => i.AdminOfHospital.Hospital,
+                    i => i.AdminOfHospital.Hospital.UploadedFile);
+
+
                 var data = _mapper.Map<EditHospitalAdminResponse>(admin);
 
                 return new GeneralResponse<EditHospitalAdminResponse>
@@ -651,55 +761,27 @@ namespace HealthCare.Services.Services
         }
 
 
-        public async Task<GeneralResponse<EditHospitalAdminResponse>> EditHospitalAdmin(int hospitalAdminId, [FromForm]EditHospitalAdminDto dto)
+        public async Task<GeneralResponse<EditHospitalAdminResponse>> EditHospitalAdmin([FromForm]EditHospitalAdminDto dto)
         {
             try
             {
-                var admin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(single: s => s.Id == hospitalAdminId, i => i.UploadedFile);
-                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(s => s.UserName == admin.UserName);
-                if (admin == null)
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.Role == User.HospitalAdmin);
+                if (ThisUser == null)
                 {
                     return new GeneralResponse<EditHospitalAdminResponse>
                     {
                         IsSuccess = false,
-                        Message = "No Admin Found!"
+                        Message = "No user Found!"
                     };
                 }
-                if(await _unitOfWork.UserRepository.AnyAsync(a => a.UserName == dto.UserName))
-                {
-                    return new GeneralResponse<EditHospitalAdminResponse>
-                    {
-                        IsSuccess = false,
-                        Message = "UserName ia already used."
-                    };
-                }
-                if (dto.NationalId != null && !await _unitOfWork.CivilRegestrationRepository.AnyAsync(a => a.NationalId == dto.NationalId))
-                {
-                    return new GeneralResponse<EditHospitalAdminResponse>
-                    {
-                        IsSuccess = false,
-                        Message = "NationalId isn't accepted!"
-                    };
-                }
-          
-                var check = await _unitOfWork.HospitalAdminRepository.SingleOrDefaultAsync(s => s.NationalId == dto.NationalId);
-                if(check != null && admin != check)
-                {
-                    return new GeneralResponse<EditHospitalAdminResponse>
-                    {
-                        IsSuccess = false,
-                        Message = "NationalId isn't accepted!"
-                    };
-                }
-                var emailUser = await _unitOfWork.HospitalAdminRepository.SingleOrDefaultAsync(s => s.Email == dto.Email);
-                if (emailUser != null && admin != emailUser)
-                {
-                    return new GeneralResponse<EditHospitalAdminResponse>
-                    {
-                        IsSuccess = false,
-                        Message = "Email isn't accepted!"
-                    };
-                }
+                var admin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(
+                    s => s.UserName == ThisUser.UserName,
+                    i => i.UploadedFile,
+                    i => i.AdminOfHospital.Hospital,
+                    i => i.AdminOfHospital.Hospital.UploadedFile);
+
                 if (dto.Image != null)
                 {
                     var MaxAllowedPosterSize = _configuration.GetValue<long>("MaxAllowedPosterSize");
@@ -739,30 +821,13 @@ namespace HealthCare.Services.Services
                     _unitOfWork.UploadedFileRepository.Update(uploadedFile);
                     await _unitOfWork.CompleteAsync();
                 }
-                admin.Email = dto.Email ?? admin.Email;
-                admin.UserName = dto.UserName ?? admin.UserName;
-                admin.NationalId = dto.NationalId ?? admin.NationalId;
-                if(dto.PassWord != null)
-                {
-                    var pw = HashingService.GetHash(dto.PassWord);
-                    admin.PassWord = pw;
-                    user.PassWord = admin.PassWord;
-                }
-                 
-                user.UserName = admin.UserName;
-                user.Email = admin.Email;
-                user.NationalId = admin.NationalId;
-                user.UploadedFile = admin.UploadedFile;
-                _unitOfWork.HospitalAdminRepository.Update(admin);
-                _unitOfWork.UserRepository.Update(user);
-                await _unitOfWork.CompleteAsync();
-                
+
                 var data = _mapper.Map<EditHospitalAdminResponse>(admin);
 
                 return new GeneralResponse<EditHospitalAdminResponse>
                 {
                     IsSuccess = true,
-                    Message = "Admin Details have been Displayed successfully",
+                    Message = "Profile Edited successfully",
                     Data = data
                 };
             }
@@ -777,14 +842,12 @@ namespace HealthCare.Services.Services
             }
         }
 
-      
-
         public async Task<GeneralResponse<List<ListOfHospitalAdminDto>>> ListOfSpecificHospitalAdmins(int HospitalId)
         {
             try
             {
                 var hospital = await _unitOfWork.HospitalRepository.GetByIdAsync(HospitalId);
-                if(hospital == null)
+                if (hospital == null)
                 {
                     return new GeneralResponse<List<ListOfHospitalAdminDto>>
                     {
@@ -792,8 +855,41 @@ namespace HealthCare.Services.Services
                         Message = "No Hospital Found"
                     };
                 }
-                var adminsOfHospital = await _unitOfWork.AdminOfHospitalRepository.GetSpecificItems(filter: w => w.HospitalId == HospitalId, select: s => s.HospitalAdminId);
-                var admins = await _unitOfWork.HospitalAdminRepository.WhereIncludeAsync(filter: i => adminsOfHospital.Contains(i.Id), a => a.UploadedFile );
+
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId);
+                if (ThisUser == null)
+                {
+                    return new GeneralResponse<List<ListOfHospitalAdminDto>>
+                    {
+                        IsSuccess = false,
+                        Message = "No user Found!"
+                    };
+                }
+                if (ThisUser.Role == User.HospitalAdmin)
+                {
+                    var ThisHospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(
+                    s => s.UserName == ThisUser.UserName,
+                    i => i.AdminOfHospital);
+
+                    if (ThisHospitalAdmin.AdminOfHospital.HospitalId != HospitalId)
+                    {
+                        return new GeneralResponse<List<ListOfHospitalAdminDto>>
+                        {
+                            IsSuccess = false,
+                            Message = "You donot have permission to Delete Admin in this Hospital!!"
+                        };
+                    }
+                }
+
+                
+                var adminsOfHospital = await _unitOfWork.AdminOfHospitalRepository.GetSpecificItems(
+                    filter: w => w.HospitalId == HospitalId, select: s => s.HospitalAdminId);
+
+                var admins = await _unitOfWork.HospitalAdminRepository.WhereIncludeAsync(
+                    filter: i => adminsOfHospital.Contains(i.Id), a => a.UploadedFile );
+
                 var data = _mapper.Map<List<ListOfHospitalAdminDto>>(admins);
 
                 return new GeneralResponse<List<ListOfHospitalAdminDto>>

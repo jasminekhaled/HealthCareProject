@@ -56,6 +56,7 @@ namespace HealthCare.EF.AutoMapper
 
             CreateMap<Hospital, HospitalDto>()
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath))
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Governorate, opt => opt.MapFrom(src => src.HospitalGovernorate.Governorate.Name));
 
             CreateMap<Hospital, ListOfHospitalDto>()
@@ -71,7 +72,11 @@ namespace HealthCare.EF.AutoMapper
                 .ForMember(src => src.Id, opt => opt.Ignore());
 
             CreateMap<HospitalAdmin, EditHospitalAdminResponse>()
-                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath));
+                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath))
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.HospitalId, opt => opt.MapFrom(src => src.AdminOfHospital.Hospital.Id))
+                .ForMember(dest => dest.HospitalImagePath, opt => opt.MapFrom(src => src.AdminOfHospital.Hospital.UploadedFile.FilePath))
+                .ForMember(dest => dest.HospitalName, opt => opt.MapFrom(src => src.AdminOfHospital.Hospital.Name));
 
             CreateMap<HospitalAdmin, ListOfHospitalAdminDto>()
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath));

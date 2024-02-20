@@ -25,8 +25,8 @@ namespace HealthCare.Services.IServices
         Task<GeneralResponse<HospitalAdminDto>> AddHospitalAdmin(int hospitalId, [FromForm] HospitalAdminRequestDto dto);
         Task<GeneralResponse<List<ListOfHospitalAdminDto>>> ListOfSpecificHospitalAdmins(int HospitalId);
         Task<GeneralResponse<string>> DeleteHospitalAdmin(int hospitalAdminId);
-        Task<GeneralResponse<EditHospitalAdminResponse>> HospitalAdminDetails(int hospitalAdminId);
-        Task<GeneralResponse<EditHospitalAdminResponse>> EditHospitalAdmin(int hospitalAdminId, [FromForm]EditHospitalAdminDto dto);
+        Task<GeneralResponse<EditHospitalAdminResponse>> HospitalAdminDetails();
+        Task<GeneralResponse<EditHospitalAdminResponse>> EditHospitalAdmin([FromForm]EditHospitalAdminDto dto);
         Task<GeneralResponse<List<GovernorateDto>>> ListOfGovernorates();
         Task<GeneralResponse<string>> AddGovernorate(string name);
         Task<GeneralResponse<string>> DeleteGovernorate(int governorateId);
