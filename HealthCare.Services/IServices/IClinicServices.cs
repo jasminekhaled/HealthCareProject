@@ -19,9 +19,9 @@ namespace HealthCare.Services.IServices
         Task<GeneralResponse<string>> DeleteLabSpecialization(int LabSpecializationId);
         Task<GeneralResponse<List<AddClinicResponseDto>>> ListOfXraySpecialization();
         Task<GeneralResponse<List<ListOfLabSpecializationDto>>> ListOfLabSpecialization();
-        Task<GeneralResponse<AddClinicResponseDto>> AddClinic(int hospitalAdminId, [FromForm]AddClinicDto dto);
-        Task<GeneralResponse<AddClinicResponseDto>> AddXrayLab(int hospitalAdminId, [FromForm]AddClinicDto dto);
-        Task<GeneralResponse<AddLabResponseDto>> AddLab(int hospitalAdminId, [FromForm] AddLabDto dto);
+        Task<GeneralResponse<AddClinicResponseDto>> AddClinic([FromForm]AddClinicDto dto);
+        Task<GeneralResponse<AddClinicResponseDto>> AddXrayLab([FromForm]AddClinicDto dto);
+        Task<GeneralResponse<AddLabResponseDto>> AddLab([FromForm] AddLabDto dto);
         Task<GeneralResponse<string>> DeleteClinic(int clinicId); // donot forget to delete the appointments and reservations of this clinic
         Task<GeneralResponse<string>> DeleteXrayLab(int xrayLabId); // donot forget to delete the appointments and reservations of this clinic
         Task<GeneralResponse<string>> DeleteLab(int labId); // donot forget to delete the appointments and reservations of this clinic

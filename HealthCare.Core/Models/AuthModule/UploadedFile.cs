@@ -28,5 +28,6 @@ namespace HealthCare.Core.Models.AuthModule
 
 
         public static string DefaultImagePath = "G:\\WEB DEVELOPMENT\\HealthCareProject\\HealthCareAPIs\\HealthCare\\Uploads\\DefaultImage";
+        public static string LabSpecializationImagePath = "G:\\WEB DEVELOPMENT\\HealthCareProject\\HealthCareAPIs\\HealthCare\\Uploads\\LabSpecializationImages\\1z5ysxnp.th1";
     }
 }

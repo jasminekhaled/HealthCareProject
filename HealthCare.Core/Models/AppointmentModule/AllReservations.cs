@@ -23,5 +23,9 @@ namespace HealthCare.Core.Models.AppointmentModule
         public int RoomReservationId { get; set; }
         public int PatientId { get; set; }
         public Patient Patient { get; set; }
+
+        public static string Clinic = "Clinic";
+        public static string Xray = "Xray";
+        public static string Lab = "Lab";
     }
 }
