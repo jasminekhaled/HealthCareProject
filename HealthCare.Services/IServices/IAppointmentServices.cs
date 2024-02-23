@@ -10,14 +10,13 @@ using System.Threading.Tasks;
 
 namespace HealthCare.Services.IServices
 {
-    public interface IAppointmentServices
+    public interface IAppointmentServices 
     {
         Task<GeneralResponse<List<ListAppointmentDto>>> ListOfAppointmentOfClinic(int clinicId);
         Task<GeneralResponse<List<ListAppointmentDto>>> ListOfAppointmentOfLab(int labId);
         Task<GeneralResponse<List<ListAppointmentDto>>> ListOfAppointmentOfXray(int xrayId);
-        Task<GeneralResponse<List<ReservationResponseDto>>> ListOfReservationsOfDoctor(int hospitalId, int doctorId);
-        Task<GeneralResponse<List<PatientReservationDto>>> ListOfReservationsOfPatient(int patientId);// donot forget to delete a reservation after a 24 hours
-    //  سؤال اعمله ولا لا // Task<GeneralResponse<List<ReservationResponseDto>>> ListOfReservationsOfAnAppointmentForSpecificDay(int hospitalId, int doctorId, DateOnly date);// donot forget to delete a reservation after a 24 hours
+        Task<GeneralResponse<List<ReservationResponseDto>>> ListOfReservationsOfDoctor(int hospitalId);
+        Task<GeneralResponse<List<PatientReservationDto>>> ListOfReservationsOfPatient();
         Task<GeneralResponse<AppointmentResponseDto>> AddClinicAppointment(int clinicId, [FromForm]AddAppointmentRequestDto dto);
         Task<GeneralResponse<ListAppointmentDto>> AddClinicAppointmentDatesToAnAppointment(int clinicAppointmentId, AddAppointmentDateRequestDto dto);
         Task<GeneralResponse<string>> DeleteClinicAppointmentDateOfAnAppointment(int clinicAppointmentDateId);
@@ -30,14 +29,12 @@ namespace HealthCare.Services.IServices
         Task<GeneralResponse<string>> DeleteClinicAppointment(int clinicAppointmentId);//notification
         Task<GeneralResponse<string>> DeleteXrayAppointment(int xrayAppointmentId);
         Task<GeneralResponse<string>> DeleteLabAppointment(int labAppointmentId);
-        Task<GeneralResponse<PatientReservationDto>> BookAnAppointmentOfClinic(int patientId, int clinicAppointmentDateId, string date);
-        Task<GeneralResponse<PatientReservationDto>> BookAnAppointmentOfXray(int patientId, int xrayAppointmentDateId, string date);
-        Task<GeneralResponse<PatientReservationDto>> BookAnAppointmentOfLab(int patientId, int labAppointmentDateId, string date);
-        Task<GeneralResponse<string>> CancelClinicReservation(int patientId, int clinicReservationId);
-        Task<GeneralResponse<string>> CancelXrayReservation(int patientId, int xrayReservationId);
-        Task<GeneralResponse<string>> CancelLabReservation(int patientId, int labReservationId);
-        //   Task<GeneralResponse<string>> NumOfReservationsOfAnAppointmentForSpecificDay(int AppointmentId, DateOnly date);
-        //  Task<GeneralResponse<string>> NumOfAllReservationsOfAnAppointment();
+        Task<GeneralResponse<PatientReservationDto>> BookAnAppointmentOfClinic(int clinicAppointmentDateId, string date);
+        Task<GeneralResponse<PatientReservationDto>> BookAnAppointmentOfXray(int xrayAppointmentDateId, string date);
+        Task<GeneralResponse<PatientReservationDto>> BookAnAppointmentOfLab(int labAppointmentDateId, string date);
+        Task<GeneralResponse<string>> CancelClinicReservation(int clinicReservationId);
+        Task<GeneralResponse<string>> CancelXrayReservation(int xrayReservationId);
+        Task<GeneralResponse<string>> CancelLabReservation(int labReservationId);
         Task<GeneralResponse<string>> DoneReservation(int reservationId);
 
 

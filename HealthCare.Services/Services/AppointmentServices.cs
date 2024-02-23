@@ -4,6 +4,7 @@ using HealthCare.Core.DTOS.AppointmentModule.RequestDto;
 using HealthCare.Core.DTOS.AppointmentModule.ResponseDto;
 using HealthCare.Core.DTOS.AuthModule.ResponseDtos;
 using HealthCare.Core.DTOS.ClinicModule.ResponseDto;
+using HealthCare.Core.Helpers;
 using HealthCare.Core.IRepositories;
 using HealthCare.Core.Models.AppointmentModule;
 using HealthCare.Core.Models.AuthModule;
@@ -27,30 +28,48 @@ using static Org.BouncyCastle.Bcpg.Attr.ImageAttrib;
 
 namespace HealthCare.Services.Services
 {
-    public class AppointmentServices : IAppointmentServices
+    public class AppointmentServices : IAppointmentServices 
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _webHostEnvironment;
-
-        public AppointmentServices(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment webHostEnvironment)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public AppointmentServices(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment webHostEnvironment,
+            IHttpContextAccessor httpContextAccessor)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _webHostEnvironment = webHostEnvironment;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<GeneralResponse<AppointmentResponseDto>> AddClinicAppointment(int clinicId, [FromForm]AddAppointmentRequestDto dto)
         {
             try
             {
-                var clinic = await _unitOfWork.ClinicLabRepository.GetByIdAsync(clinicId);
-                if (clinic == null)
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
+                    a => a.Id == userId && a.Role == User.HospitalAdmin);
+
+                if (ThisUser == null)
                 {
                     return new GeneralResponse<AppointmentResponseDto>
                     {
                         IsSuccess = false,
-                        Message = "No Clinic Found!"
+                        Message = "No HospitalAdmin Found!"
+                    };
+                }
+                var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(
+                    s => s.UserName == ThisUser.UserName, i => i.AdminOfHospital);
+
+                var clinic = await _unitOfWork.ClinicLabRepository.GetByIdAsync(clinicId);
+                if (clinic == null || clinic.HospitalId != hospitalAdmin.AdminOfHospital.HospitalId)
+                {
+                    return new GeneralResponse<AppointmentResponseDto>
+                    {
+                        IsSuccess = false,
+                        Message = "No Clinic Found by this id in your hospital!"
                     };
                 }
                 var doctor = await _unitOfWork.DoctorRepository.SingleOrDefaultAsync(s => s.Id == dto.DoctorId);
@@ -141,13 +160,30 @@ namespace HealthCare.Services.Services
         {
             try
             {
-                var lab = await _unitOfWork.LabRepository.GetByIdAsync(labId);
-                if (lab == null)
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
+                    a => a.Id == userId && a.Role == User.HospitalAdmin);
+
+                if (ThisUser == null)
                 {
                     return new GeneralResponse<AppointmentResponseDto>
                     {
                         IsSuccess = false,
-                        Message = "No Lab Found!"
+                        Message = "No HospitalAdmin Found!"
+                    };
+                }
+                var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(
+                    s => s.UserName == ThisUser.UserName, i => i.AdminOfHospital);
+
+
+                var lab = await _unitOfWork.LabRepository.GetByIdAsync(labId);
+                if (lab == null || lab.HospitalId != hospitalAdmin.AdminOfHospital.HospitalId)
+                {
+                    return new GeneralResponse<AppointmentResponseDto>
+                    {
+                        IsSuccess = false,
+                        Message = "No Lab Found in your hospital with this id!"
                     };
                 }
                 var doctor = await _unitOfWork.DoctorRepository.SingleOrDefaultAsync(s => s.Id == dto.DoctorId);
@@ -238,8 +274,25 @@ namespace HealthCare.Services.Services
         {
             try
             {
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
+                    a => a.Id == userId && a.Role == User.HospitalAdmin);
+
+                if (ThisUser == null)
+                {
+                    return new GeneralResponse<AppointmentResponseDto>
+                    {
+                        IsSuccess = false,
+                        Message = "No HospitalAdmin Found!"
+                    };
+                }
+                var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(
+                    s => s.UserName == ThisUser.UserName, i => i.AdminOfHospital);
+
+
                 var xray = await _unitOfWork.XrayRepository.GetByIdAsync(xrayId);
-                if (xray == null)
+                if (xray == null || xray.HospitalId != hospitalAdmin.AdminOfHospital.HospitalId)
                 {
                     return new GeneralResponse<AppointmentResponseDto>
                     {
@@ -335,8 +388,27 @@ namespace HealthCare.Services.Services
         {
             try
             {
-                var clinicAppointment = await _unitOfWork.ClinicAppointmentRepository.GetSingleWithIncludesAsync(s => s.Id ==clinicAppointmentId, i=>i.Doctor,i=>i.ClinicAppointmentDates);
-                if (clinicAppointment == null)
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
+                    a => a.Id == userId && a.Role == User.HospitalAdmin);
+
+                if (ThisUser == null)
+                {
+                    return new GeneralResponse<ListAppointmentDto>
+                    {
+                        IsSuccess = false,
+                        Message = "No HospitalAdmin Found!"
+                    };
+                }
+                var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(
+                    s => s.UserName == ThisUser.UserName, i => i.AdminOfHospital);
+
+
+                var clinicAppointment = await _unitOfWork.ClinicAppointmentRepository.GetSingleWithIncludesAsync(
+                    s => s.Id ==clinicAppointmentId && s.ClinicLab.HospitalId == hospitalAdmin.AdminOfHospital.HospitalId
+                    , i=>i.Doctor,i=>i.ClinicAppointmentDates);
+                if (clinicAppointment == null )
                 {
                     return new GeneralResponse<ListAppointmentDto>
                     {
@@ -418,7 +490,26 @@ namespace HealthCare.Services.Services
         {
             try
             {
-                var labAppointment = await _unitOfWork.LabAppointmentRepository.GetSingleWithIncludesAsync(s => s.Id == labAppointmentId, i => i.Doctor, i => i.LabAppointmentDates);
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
+                    a => a.Id == userId && a.Role == User.HospitalAdmin);
+
+                if (ThisUser == null)
+                {
+                    return new GeneralResponse<ListAppointmentDto>
+                    {
+                        IsSuccess = false,
+                        Message = "No HospitalAdmin Found!"
+                    };
+                }
+                var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(
+                    s => s.UserName == ThisUser.UserName, i => i.AdminOfHospital);
+
+
+                var labAppointment = await _unitOfWork.LabAppointmentRepository.GetSingleWithIncludesAsync(
+                    s => s.Id == labAppointmentId && s.Lab.HospitalId == hospitalAdmin.AdminOfHospital.HospitalId,
+                    i => i.Doctor, i => i.LabAppointmentDates);
                 if (labAppointment == null)
                 {
                     return new GeneralResponse<ListAppointmentDto>
@@ -500,7 +591,26 @@ namespace HealthCare.Services.Services
         {
             try
             {
-                var xrayAppointment = await _unitOfWork.XrayAppointmentRepository.GetSingleWithIncludesAsync(s => s.Id == xrayAppointmentId, i => i.Doctor, i => i.XrayAppointmentDates);
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
+                    a => a.Id == userId && a.Role == User.HospitalAdmin);
+
+                if (ThisUser == null)
+                {
+                    return new GeneralResponse<ListAppointmentDto>
+                    {
+                        IsSuccess = false,
+                        Message = "No HospitalAdmin Found!"
+                    };
+                }
+                var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(
+                    s => s.UserName == ThisUser.UserName, i => i.AdminOfHospital);
+
+
+                var xrayAppointment = await _unitOfWork.XrayAppointmentRepository.GetSingleWithIncludesAsync(
+                    s => s.Id == xrayAppointmentId && s.Xray.HospitalId == hospitalAdmin.AdminOfHospital.HospitalId,
+                    i => i.Doctor, i => i.XrayAppointmentDates);
                 if (xrayAppointment == null)
                 {
                     return new GeneralResponse<ListAppointmentDto>
@@ -579,12 +689,16 @@ namespace HealthCare.Services.Services
         }
 
         
-        public async Task<GeneralResponse<PatientReservationDto>> BookAnAppointmentOfClinic(int patientId, int clinicAppointmentDateId, string date)
+        public async Task<GeneralResponse<PatientReservationDto>> BookAnAppointmentOfClinic(int clinicAppointmentDateId, string date)
         {
             try 
             {
-                var patient = await _unitOfWork.PatientRepository.GetByIdAsync(patientId);
-                if (patient == null)
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
+                    a => a.Id == userId && a.Role == User.Patient);
+
+                if (ThisUser == null)
                 {
                     return new GeneralResponse<PatientReservationDto>
                     {
@@ -592,6 +706,8 @@ namespace HealthCare.Services.Services
                         Message = "No Patient Found!"
                     };
                 }
+                var patient = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(s => s.UserName == ThisUser.UserName);
+
                 var clinicAppointmentDate = await _unitOfWork.ClinicAppointmentDateRepository.GetSingleWithIncludesAsync(s=> s.Id == clinicAppointmentDateId,
                     i=>i.ClinicAppointment, i=>i.Day, i=>i.ClinicAppointment.Doctor,
                     i=>i.ClinicAppointment.ClinicLab.Specialization, i=>i.ClinicAppointment.ClinicLab.Hospital);
@@ -603,7 +719,7 @@ namespace HealthCare.Services.Services
                         Message = "No clinicAppointmentDate Found!"
                     };
                 }
-                if(await _unitOfWork.ClinicReservationRepository.AnyAsync(a=>a.PatientId==patientId && a.ClinicAppointmentDateId == clinicAppointmentDateId))
+                if(await _unitOfWork.ClinicReservationRepository.AnyAsync(a=>a.PatientId==patient.Id && a.ClinicAppointmentDateId == clinicAppointmentDateId))
                 {
                     return new GeneralResponse<PatientReservationDto>
                     {
@@ -647,13 +763,14 @@ namespace HealthCare.Services.Services
                 await _unitOfWork.ClinicReservationRepository.AddAsync(reservation);
                 await _unitOfWork.CompleteAsync();
                 var all = _mapper.Map<AllReservations>(reservation);
-                all.Type = "Clinic";
+                all.Type = AllReservations.Clinic;
                 await _unitOfWork.AllReservationsRepository.AddAsync(all);
                 await _unitOfWork.CompleteAsync();
                 var data = _mapper.Map<PatientReservationDto>(reservation);
                 var user = await _unitOfWork.UserRepository.GetSingleWithIncludesAsync(
                     s => s.UserName == clinicAppointmentDate.ClinicAppointment.Doctor.UserName, a => a.UploadedFile);
                 data.DoctorImagePath = user.UploadedFile.FilePath;
+                data.Type = AllReservations.Clinic;
                 return new GeneralResponse<PatientReservationDto>
                 {
                     IsSuccess = true,
@@ -672,12 +789,16 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public async Task<GeneralResponse<PatientReservationDto>> BookAnAppointmentOfLab(int patientId, int labAppointmentDateId, string date)
+        public async Task<GeneralResponse<PatientReservationDto>> BookAnAppointmentOfLab(int labAppointmentDateId, string date)
         {
             try
             {
-                var patient = await _unitOfWork.PatientRepository.GetByIdAsync(patientId);
-                if (patient == null)
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
+                    a => a.Id == userId && a.Role == User.Patient);
+
+                if (ThisUser == null)
                 {
                     return new GeneralResponse<PatientReservationDto>
                     {
@@ -685,6 +806,8 @@ namespace HealthCare.Services.Services
                         Message = "No Patient Found!"
                     };
                 }
+                var patient = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(s => s.UserName == ThisUser.UserName);
+
                 var labAppointmentDate = await _unitOfWork.LabAppointmentDateRepository.GetSingleWithIncludesAsync(s => s.Id == labAppointmentDateId,
                     i => i.LabAppointment, i => i.Day, i => i.LabAppointment.Doctor,
                     i => i.LabAppointment.Lab, i => i.LabAppointment.Lab.Hospital);
@@ -696,7 +819,7 @@ namespace HealthCare.Services.Services
                         Message = "No labAppointmentDate Found!"
                     };
                 }
-                if (await _unitOfWork.LabReservationRepository.AnyAsync(a => a.PatientId == patientId && a.LabAppointmentDateId == labAppointmentDateId))
+                if (await _unitOfWork.LabReservationRepository.AnyAsync(a => a.PatientId == patient.Id && a.LabAppointmentDateId == labAppointmentDateId))
                 {
                     return new GeneralResponse<PatientReservationDto>
                     {
@@ -740,7 +863,7 @@ namespace HealthCare.Services.Services
                 await _unitOfWork.LabReservationRepository.AddAsync(reservation);
                 await _unitOfWork.CompleteAsync();
                 var all = _mapper.Map<AllReservations>(reservation);
-                all.Type = "Lab";
+                all.Type = AllReservations.Lab;
 
                 await _unitOfWork.AllReservationsRepository.AddAsync(all);
                 await _unitOfWork.CompleteAsync();
@@ -748,6 +871,7 @@ namespace HealthCare.Services.Services
                 var user = await _unitOfWork.UserRepository.GetSingleWithIncludesAsync(
                     s => s.UserName == labAppointmentDate.LabAppointment.Doctor.UserName, a => a.UploadedFile);
                 data.DoctorImagePath = user.UploadedFile.FilePath;
+                data.Type = AllReservations.Lab;
                 return new GeneralResponse<PatientReservationDto>
                 {
                     IsSuccess = true,
@@ -766,12 +890,16 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public async Task<GeneralResponse<PatientReservationDto>> BookAnAppointmentOfXray(int patientId, int xrayAppointmentDateId, string date)
+        public async Task<GeneralResponse<PatientReservationDto>> BookAnAppointmentOfXray(int xrayAppointmentDateId, string date)
         {
             try
             {
-                var patient = await _unitOfWork.PatientRepository.GetByIdAsync(patientId);
-                if (patient == null)
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
+                    a => a.Id == userId && a.Role == User.Patient);
+
+                if (ThisUser == null)
                 {
                     return new GeneralResponse<PatientReservationDto>
                     {
@@ -779,6 +907,8 @@ namespace HealthCare.Services.Services
                         Message = "No Patient Found!"
                     };
                 }
+                var patient = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(s => s.UserName == ThisUser.UserName);
+
                 var xrayAppointmentDate = await _unitOfWork.XrayAppointmentDateRepository.GetSingleWithIncludesAsync(s => s.Id == xrayAppointmentDateId,
                     i => i.XrayAppointment, i => i.Day, i => i.XrayAppointment.Doctor,
                     i => i.XrayAppointment.Xray.XraySpecialization, i => i.XrayAppointment.Xray.Hospital);
@@ -790,7 +920,7 @@ namespace HealthCare.Services.Services
                         Message = "No xrayAppointmentDate Found!"
                     };
                 }
-                if (await _unitOfWork.XrayReservationRepository.AnyAsync(a => a.PatientId == patientId && a.XrayAppointmentDateId == xrayAppointmentDateId))
+                if (await _unitOfWork.XrayReservationRepository.AnyAsync(a => a.PatientId == patient.Id && a.XrayAppointmentDateId == xrayAppointmentDateId))
                 {
                     return new GeneralResponse<PatientReservationDto>
                     {
@@ -834,7 +964,7 @@ namespace HealthCare.Services.Services
                 var all = _mapper.Map<AllReservations>(reservation);
                 await _unitOfWork.XrayReservationRepository.AddAsync(reservation);
                 await _unitOfWork.CompleteAsync();
-                all.Type = "Xray";
+                all.Type = AllReservations.Xray;
 
                 await _unitOfWork.AllReservationsRepository.AddAsync(all);
                 await _unitOfWork.CompleteAsync();
@@ -842,6 +972,8 @@ namespace HealthCare.Services.Services
                 var user = await _unitOfWork.UserRepository.GetSingleWithIncludesAsync(
                     s => s.UserName == xrayAppointmentDate.XrayAppointment.Doctor.UserName, a => a.UploadedFile);
                 data.DoctorImagePath = user.UploadedFile.FilePath;
+                data.Type = AllReservations.Xray;
+
                 return new GeneralResponse<PatientReservationDto>
                 {
                     IsSuccess = true,
@@ -861,12 +993,16 @@ namespace HealthCare.Services.Services
 
         }
 
-        public async Task<GeneralResponse<string>> CancelClinicReservation(int patientId, int clinicReservationId)
+        public async Task<GeneralResponse<string>> CancelClinicReservation(int clinicReservationId)
         {
             try
             {
-                var patient = await _unitOfWork.PatientRepository.GetByIdAsync(patientId);
-                if (patient == null)
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
+                    a => a.Id == userId && a.Role == User.Patient);
+
+                if (ThisUser == null)
                 {
                     return new GeneralResponse<string>
                     {
@@ -874,6 +1010,8 @@ namespace HealthCare.Services.Services
                         Message = "No Patient Found!"
                     };
                 }
+                var patient = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(s => s.UserName == ThisUser.UserName);
+
                 var clinicReservation = await _unitOfWork.ClinicReservationRepository.GetByIdAsync(clinicReservationId);
                 if (clinicReservation == null)
                 {
@@ -884,7 +1022,7 @@ namespace HealthCare.Services.Services
                     };
                 }
                var all = await _unitOfWork.AllReservationsRepository.SingleOrDefaultAsync
-                    (s => s.RoomReservationId == clinicReservationId && s.Type == "Clinic");
+                    (s => s.RoomReservationId == clinicReservationId && s.Type == AllReservations.Clinic);
                 _unitOfWork.AllReservationsRepository.Remove(all);
                 _unitOfWork.ClinicReservationRepository.Remove(clinicReservation);
                 await _unitOfWork.CompleteAsync();
@@ -906,12 +1044,16 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public async Task<GeneralResponse<string>> CancelLabReservation(int patientId, int labReservationId)
+        public async Task<GeneralResponse<string>> CancelLabReservation(int labReservationId)
         {
             try
             {
-                var patient = await _unitOfWork.PatientRepository.GetByIdAsync(patientId);
-                if (patient == null)
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
+                    a => a.Id == userId && a.Role == User.Patient);
+
+                if (ThisUser == null)
                 {
                     return new GeneralResponse<string>
                     {
@@ -919,6 +1061,8 @@ namespace HealthCare.Services.Services
                         Message = "No Patient Found!"
                     };
                 }
+                var patient = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(s => s.UserName == ThisUser.UserName);
+
                 var labReservation = await _unitOfWork.LabReservationRepository.GetByIdAsync(labReservationId);
                 if (labReservation == null)
                 {
@@ -929,7 +1073,7 @@ namespace HealthCare.Services.Services
                     };
                 }
                 var all = await _unitOfWork.AllReservationsRepository.SingleOrDefaultAsync
-                    (s => s.RoomReservationId == labReservationId && s.Type == "Lab");
+                    (s => s.RoomReservationId == labReservationId && s.Type == AllReservations.Lab);
                 _unitOfWork.AllReservationsRepository.Remove(all);
                 _unitOfWork.LabReservationRepository.Remove(labReservation);
                 await _unitOfWork.CompleteAsync();
@@ -951,12 +1095,16 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public async Task<GeneralResponse<string>> CancelXrayReservation(int patientId, int xrayReservationId)
+        public async Task<GeneralResponse<string>> CancelXrayReservation(int xrayReservationId)
         {
             try
             {
-                var patient = await _unitOfWork.PatientRepository.GetByIdAsync(patientId);
-                if (patient == null)
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
+                    a => a.Id == userId && a.Role == User.Patient);
+
+                if (ThisUser == null)
                 {
                     return new GeneralResponse<string>
                     {
@@ -964,6 +1112,8 @@ namespace HealthCare.Services.Services
                         Message = "No Patient Found!"
                     };
                 }
+                var patient = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(s => s.UserName == ThisUser.UserName);
+
                 var xrayReservation = await _unitOfWork.XrayReservationRepository.GetByIdAsync(xrayReservationId);
                 if (xrayReservation == null)
                 {
@@ -974,7 +1124,7 @@ namespace HealthCare.Services.Services
                     };
                 }
                 var all = await _unitOfWork.AllReservationsRepository.SingleOrDefaultAsync
-                    (s => s.RoomReservationId == xrayReservationId && s.Type == "Xray");
+                    (s => s.RoomReservationId == xrayReservationId && s.Type == AllReservations.Xray);
                 _unitOfWork.AllReservationsRepository.Remove(all);
                 _unitOfWork.XrayReservationRepository.Remove(xrayReservation);
                 await _unitOfWork.CompleteAsync();
@@ -1001,7 +1151,26 @@ namespace HealthCare.Services.Services
         {
             try
             {
-                var clinicAppointment = await _unitOfWork.ClinicAppointmentRepository.GetSingleWithIncludesAsync(s=>s.Id == clinicAppointmentId, a=>a.ClinicReservations);
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
+                    a => a.Id == userId && a.Role == User.HospitalAdmin);
+
+                if (ThisUser == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No hospitalAdmin Found!"
+                    };
+                }
+                var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(
+                    s => s.UserName == ThisUser.UserName, i => i.AdminOfHospital);
+
+
+                var clinicAppointment = await _unitOfWork.ClinicAppointmentRepository.GetSingleWithIncludesAsync(
+                    s=>s.Id == clinicAppointmentId && s.ClinicLab.HospitalId == hospitalAdmin.AdminOfHospital.HospitalId, 
+                    a=>a.ClinicReservations);
                 if (clinicAppointment == null)
                 {
                     return new GeneralResponse<string>
@@ -1014,7 +1183,7 @@ namespace HealthCare.Services.Services
                     .GetSpecificItems(w => w.ClinicAppointmentId == clinicAppointmentId, a => a.Id);
 
                 var all = await _unitOfWork.AllReservationsRepository
-                    .Where(w => clinicDates.Contains(w.RoomAppointmentDateId) && w.Type == "Clinic");
+                    .Where(w => clinicDates.Contains(w.RoomAppointmentDateId) && w.Type == AllReservations.Clinic);
 
                 _unitOfWork.AllReservationsRepository.RemoveRange(all);
                 _unitOfWork.ClinicReservationRepository.RemoveRange(clinicAppointment.ClinicReservations);
@@ -1042,7 +1211,26 @@ namespace HealthCare.Services.Services
         {
             try
             {
-                var labAppointment = await _unitOfWork.LabAppointmentRepository.GetSingleWithIncludesAsync(s => s.Id == labAppointmentId, a => a.LabReservations);
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
+                    a => a.Id == userId && a.Role == User.HospitalAdmin);
+
+                if (ThisUser == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No hospitalAdmin Found!"
+                    };
+                }
+                var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(
+                    s => s.UserName == ThisUser.UserName, i => i.AdminOfHospital);
+
+
+                var labAppointment = await _unitOfWork.LabAppointmentRepository.GetSingleWithIncludesAsync(
+                    s => s.Id == labAppointmentId && s.Lab.HospitalId == hospitalAdmin.AdminOfHospital.HospitalId, 
+                    a => a.LabReservations);
                 if (labAppointment == null)
                 {
                     return new GeneralResponse<string>
@@ -1055,7 +1243,7 @@ namespace HealthCare.Services.Services
                     .GetSpecificItems(w => w.LabAppointmentId == labAppointmentId, a => a.Id);
 
                 var all = await _unitOfWork.AllReservationsRepository
-                    .Where(w => labDates.Contains(w.RoomAppointmentDateId) && w.Type == "Lab");
+                    .Where(w => labDates.Contains(w.RoomAppointmentDateId) && w.Type == AllReservations.Lab);
 
                 _unitOfWork.AllReservationsRepository.RemoveRange(all);
                 _unitOfWork.LabReservationRepository.RemoveRange(labAppointment.LabReservations);
@@ -1082,7 +1270,26 @@ namespace HealthCare.Services.Services
         {
             try
             {
-                var xrayAppointment = await _unitOfWork.XrayAppointmentRepository.GetSingleWithIncludesAsync(s => s.Id == xrayAppointmentId, a => a.XrayReservations);
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
+                    a => a.Id == userId && a.Role == User.HospitalAdmin);
+
+                if (ThisUser == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No hospitalAdmin Found!"
+                    };
+                }
+                var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(
+                    s => s.UserName == ThisUser.UserName, i => i.AdminOfHospital);
+
+
+                var xrayAppointment = await _unitOfWork.XrayAppointmentRepository.GetSingleWithIncludesAsync(
+                    s => s.Id == xrayAppointmentId && s.Xray.HospitalId == hospitalAdmin.AdminOfHospital.HospitalId, 
+                    a => a.XrayReservations);
                 if (xrayAppointment == null)
                 {
                     return new GeneralResponse<string>
@@ -1095,7 +1302,7 @@ namespace HealthCare.Services.Services
                     .GetSpecificItems(w => w.XrayAppointmentId == xrayAppointmentId, a => a.Id);
 
                 var all = await _unitOfWork.AllReservationsRepository
-                    .Where(w => xrayDates.Contains(w.RoomAppointmentDateId) && w.Type == "Xray");
+                    .Where(w => xrayDates.Contains(w.RoomAppointmentDateId) && w.Type == AllReservations.Xray);
 
                 _unitOfWork.AllReservationsRepository.RemoveRange(all);
                 _unitOfWork.XrayReservationRepository.RemoveRange(xrayAppointment.XrayReservations);
@@ -1123,7 +1330,27 @@ namespace HealthCare.Services.Services
         {
             try
             {
-                var clinicAppointmentDate = await _unitOfWork.ClinicAppointmentDateRepository.GetSingleWithIncludesAsync(s => s.Id == clinicAppointmentDateId, a => a.ClinicReservations);
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
+                    a => a.Id == userId && a.Role == User.HospitalAdmin);
+
+                if (ThisUser == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No hospitalAdmin Found!"
+                    };
+                }
+                var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(
+                    s => s.UserName == ThisUser.UserName, i => i.AdminOfHospital);
+
+
+                var clinicAppointmentDate = await _unitOfWork.ClinicAppointmentDateRepository.GetSingleWithIncludesAsync(
+                    s => s.Id == clinicAppointmentDateId &&
+                    s.ClinicAppointment.ClinicLab.HospitalId == hospitalAdmin.AdminOfHospital.HospitalId, 
+                    a => a.ClinicReservations);
                 if (clinicAppointmentDate == null)
                 {
                     return new GeneralResponse<string>
@@ -1133,7 +1360,7 @@ namespace HealthCare.Services.Services
                     };
                 }
                 var all = await _unitOfWork.AllReservationsRepository
-                    .Where(w => w.RoomAppointmentDateId==clinicAppointmentDateId && w.Type == "Clinic");
+                    .Where(w => w.RoomAppointmentDateId==clinicAppointmentDateId && w.Type == AllReservations.Clinic);
 
                 _unitOfWork.AllReservationsRepository.RemoveRange(all);
                 _unitOfWork.ClinicReservationRepository.RemoveRange(clinicAppointmentDate.ClinicReservations);
@@ -1157,13 +1384,31 @@ namespace HealthCare.Services.Services
             }
         }
 
-        
-
         public async Task<GeneralResponse<string>> DeleteLabAppointmentDateOfAnAppointment(int labAppointmentDateId)
         {
             try
             {
-                var labAppointmentDate = await _unitOfWork.LabAppointmentDateRepository.GetSingleWithIncludesAsync(s => s.Id == labAppointmentDateId, a => a.LabReservations);
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
+                    a => a.Id == userId && a.Role == User.HospitalAdmin);
+
+                if (ThisUser == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No hospitalAdmin Found!"
+                    };
+                }
+                var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(
+                    s => s.UserName == ThisUser.UserName, i => i.AdminOfHospital);
+
+
+                var labAppointmentDate = await _unitOfWork.LabAppointmentDateRepository.GetSingleWithIncludesAsync(
+                    s => s.Id == labAppointmentDateId &&
+                    s.LabAppointment.Lab.HospitalId == hospitalAdmin.AdminOfHospital.HospitalId, 
+                    a => a.LabReservations);
                 if (labAppointmentDate == null)
                 {
                     return new GeneralResponse<string>
@@ -1173,7 +1418,7 @@ namespace HealthCare.Services.Services
                     };
                 }
                 var all = await _unitOfWork.AllReservationsRepository
-                    .Where(w => w.RoomAppointmentDateId == labAppointmentDateId && w.Type == "Lab");
+                    .Where(w => w.RoomAppointmentDateId == labAppointmentDateId && w.Type == AllReservations.Lab);
 
                 _unitOfWork.AllReservationsRepository.RemoveRange(all);
                 _unitOfWork.LabReservationRepository.RemoveRange(labAppointmentDate.LabReservations);
@@ -1197,13 +1442,31 @@ namespace HealthCare.Services.Services
             }
         }
 
-        
-
         public async Task<GeneralResponse<string>> DeleteXrayAppointmentDateOfAnAppointment(int xrayAppointmentDateId)
         {
             try
             {
-                var xrayAppointmentDate = await _unitOfWork.XrayAppointmentDateRepository.GetSingleWithIncludesAsync(s => s.Id == xrayAppointmentDateId, a => a.XrayReservations);
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
+                    a => a.Id == userId && a.Role == User.HospitalAdmin);
+
+                if (ThisUser == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No hospitalAdmin Found!"
+                    };
+                }
+                var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(
+                    s => s.UserName == ThisUser.UserName, i => i.AdminOfHospital);
+
+
+                var xrayAppointmentDate = await _unitOfWork.XrayAppointmentDateRepository.GetSingleWithIncludesAsync(
+                    s => s.Id == xrayAppointmentDateId &&
+                    s.XrayAppointment.Xray.HospitalId == hospitalAdmin.AdminOfHospital.HospitalId,
+                    a => a.XrayReservations);
                 if (xrayAppointmentDate == null)
                 {
                     return new GeneralResponse<string>
@@ -1213,7 +1476,7 @@ namespace HealthCare.Services.Services
                     };
                 }
                 var all = await _unitOfWork.AllReservationsRepository
-                    .Where(w => w.RoomAppointmentDateId == xrayAppointmentDateId && w.Type == "Xray");
+                    .Where(w => w.RoomAppointmentDateId == xrayAppointmentDateId && w.Type == AllReservations.Xray);
 
                 _unitOfWork.AllReservationsRepository.RemoveRange(all);
                 _unitOfWork.XrayReservationRepository.RemoveRange(xrayAppointmentDate.XrayReservations);
@@ -1379,10 +1642,25 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public async Task<GeneralResponse<List<ReservationResponseDto>>> ListOfReservationsOfDoctor(int hospitalId, int doctorId)
+        public async Task<GeneralResponse<List<ReservationResponseDto>>> ListOfReservationsOfDoctor(int hospitalId)
         {
             try
             {
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
+                    a => a.Id == userId && a.Role == User.Doctor);
+
+                if (ThisUser == null)
+                {
+                    return new GeneralResponse<List<ReservationResponseDto>>
+                    {
+                        IsSuccess = false,
+                        Message = "No doctor Found!"
+                    };
+                }
+                var doctor = await _unitOfWork.DoctorRepository.SingleOrDefaultAsync(s => s.UserName == ThisUser.UserName);
+
                 var hospital = await _unitOfWork.HospitalRepository.GetSingleWithIncludesAsync(s => s.Id == hospitalId);
                 if (hospital == null)
                 {
@@ -1392,8 +1670,9 @@ namespace HealthCare.Services.Services
                         Message = "No Hospital Found!"
                     };
                 }
-                var doctor = await _unitOfWork.DoctorRepository.GetSingleWithIncludesAsync(s => s.Id == doctorId);
-                if (doctor == null || !await _unitOfWork.HospitalDoctorRepository.AnyAsync(a=>a.HospitalId==hospitalId && a.DoctorId==doctorId))
+
+                if (!await _unitOfWork.HospitalDoctorRepository.AnyAsync(
+                    a=>a.HospitalId==hospitalId && a.DoctorId==doctor.Id))
                 {
                     return new GeneralResponse<List<ReservationResponseDto>>
                     {
@@ -1402,23 +1681,32 @@ namespace HealthCare.Services.Services
                     };
                 }
 
-                var all = await _unitOfWork.AllReservationsRepository.WhereIncludeAsync(w => w.DoctorId == doctorId, a=>a.Patient);
-                var available = all
-                        .Where(a => DateTime.Parse(a.Date) >= DateTime.Now).ToList();
+                var all = await _unitOfWork.AllReservationsRepository.WhereIncludeAsync(
+                    w => w.DoctorId == doctor.Id, a=>a.Patient);
+             
+                var available = all.Where(a => DateTime.Parse(a.Date) >= DateTime.Now).ToList();
+               
                 var data = _mapper.Map<List<ReservationResponseDto>>(available.OrderBy(available => DateTime.Parse(available.Date)));
-                var unAvailable = all
-                        .Where(a => DateTime.Parse(a.Date) < DateTime.Now).ToList();
+               
+                var unAvailable = all.Where(a => DateTime.Parse(a.Date) < DateTime.Now).ToList();
 
-                var clinicReservationIds = unAvailable.Where(w => w.Type == "Clinic").Select(s=>s.RoomReservationId);
-                var clinicReservations = await _unitOfWork.ClinicReservationRepository.Where(w => clinicReservationIds.Contains(w.Id));
+                var clinicReservationIds = unAvailable.Where(w => w.Type == AllReservations.Clinic)
+                    .Select(s=>s.RoomReservationId);
+                var clinicReservations = await _unitOfWork.ClinicReservationRepository.Where(
+                    w => clinicReservationIds.Contains(w.Id));
+
                 _unitOfWork.ClinicReservationRepository.RemoveRange(clinicReservations);
 
-                var labReservationIds = unAvailable.Where(w => w.Type == "Lab").Select(s => s.RoomReservationId);
-                var labReservations = await _unitOfWork.LabReservationRepository.Where(w => labReservationIds.Contains(w.Id));
+                var labReservationIds = unAvailable.Where(w => w.Type == AllReservations.Lab)
+                    .Select(s => s.RoomReservationId);
+                var labReservations = await _unitOfWork.LabReservationRepository.Where(
+                    w => labReservationIds.Contains(w.Id));
                 _unitOfWork.LabReservationRepository.RemoveRange(labReservations);
 
-                var xrayReservationIds = unAvailable.Where(w => w.Type == "Xray").Select(s => s.RoomReservationId);
-                var xrayReservations = await _unitOfWork.XrayReservationRepository.Where(w => xrayReservationIds.Contains(w.Id));
+                var xrayReservationIds = unAvailable.Where(w => w.Type == AllReservations.Xray)
+                    .Select(s => s.RoomReservationId);
+                var xrayReservations = await _unitOfWork.XrayReservationRepository.Where(
+                    w => xrayReservationIds.Contains(w.Id));
                 _unitOfWork.XrayReservationRepository.RemoveRange(xrayReservations);
 
                 _unitOfWork.AllReservationsRepository.RemoveRange(unAvailable);
@@ -1442,12 +1730,16 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public async Task<GeneralResponse<List<PatientReservationDto>>> ListOfReservationsOfPatient(int patientId)
+        public async Task<GeneralResponse<List<PatientReservationDto>>> ListOfReservationsOfPatient()
         {
             try
             {
-                var patient = await _unitOfWork.PatientRepository.GetSingleWithIncludesAsync(s => s.Id == patientId);
-                if (patient == null)
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
+                    a => a.Id == userId && a.Role == User.Patient);
+
+                if (ThisUser == null)
                 {
                     return new GeneralResponse<List<PatientReservationDto>>
                     {
@@ -1455,29 +1747,34 @@ namespace HealthCare.Services.Services
                         Message = "No patient Found!"
                     };
                 }
+                var patient = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(s => s.UserName == ThisUser.UserName);
 
-                var all = await _unitOfWork.AllReservationsRepository.WhereIncludeAsync(w => w.PatientId == patientId, a => a.Doctor);
-                var available = all
-                        .Where(a => DateTime.Parse(a.Date) >= DateTime.Now).ToList();
+
+                var all = await _unitOfWork.AllReservationsRepository.WhereIncludeAsync(
+                    w => w.PatientId == patient.Id, a => a.Doctor);
+
+                var available = all.Where(a => DateTime.Parse(a.Date) >= DateTime.Now).ToList();
+
                 var data = _mapper.Map<List<PatientReservationDto>>(available.OrderBy(available => DateTime.Parse(available.Date)));
                 foreach(var a in data)
                 {
-                    var reservation = await _unitOfWork.AllReservationsRepository.GetSingleWithIncludesAsync(s => s.Id == a.Id, w => w.Doctor);
-                    var user = await _unitOfWork.UserRepository.GetSingleWithIncludesAsync(s => s.UserName == reservation.Doctor.UserName, a => a.UploadedFile);
-                    a.DoctorImagePath = user.UploadedFile.FilePath;
-                    if(a.Type=="Clinic")
+                    var reservation = await _unitOfWork.AllReservationsRepository.GetSingleWithIncludesAsync(
+                        s => s.Id == a.Id, w => w.Doctor, w => w.Doctor.UploadedFile);
+                    
+                    a.DoctorImagePath = reservation.Doctor.UploadedFile.FilePath;
+                    if(a.Type == AllReservations.Clinic)
                     {
                         var name = await _unitOfWork.ClinicLabRepository.GetSingleWithIncludesAsync(s => s.Id == a.RoomId, w => w.Specialization, w => w.Hospital);
                         a.ClinicName = name.Specialization.Name;
                         a.HospitalName = name.Hospital.Name;
                     }
-                    if (a.Type == "Lab")
+                    if (a.Type == AllReservations.Lab)
                     {
                         var name = await _unitOfWork.LabRepository.GetSingleWithIncludesAsync(s => s.Id == a.RoomId, w => w.Hospital);
                         a.ClinicName = name.Name;
                         a.HospitalName = name.Hospital.Name;
                     }
-                    if (a.Type == "Xray")
+                    if (a.Type == AllReservations.Xray)
                     {
                         var name = await _unitOfWork.XrayRepository.GetSingleWithIncludesAsync(s => s.Id == a.RoomId, w => w.XraySpecialization, w => w.Hospital);
                         a.ClinicName = name.XraySpecialization.Name;
@@ -1488,16 +1785,21 @@ namespace HealthCare.Services.Services
                 var unAvailable = all
                         .Where(a => DateTime.Parse(a.Date) < DateTime.Now).ToList();
 
-                var clinicReservationIds = unAvailable.Where(w => w.Type == "Clinic").Select(s => s.RoomReservationId);
-                var clinicReservations = await _unitOfWork.ClinicReservationRepository.Where(w => clinicReservationIds.Contains(w.Id));
+                var clinicReservationIds = unAvailable.Where(w => w.Type == AllReservations.Clinic)
+                    .Select(s => s.RoomReservationId);
+                var clinicReservations = await _unitOfWork.ClinicReservationRepository.Where(
+                    w => clinicReservationIds.Contains(w.Id));
                 _unitOfWork.ClinicReservationRepository.RemoveRange(clinicReservations);
 
-                var labReservationIds = unAvailable.Where(w => w.Type == "Lab").Select(s => s.RoomReservationId);
+                var labReservationIds = unAvailable.Where(w => w.Type == AllReservations.Lab)
+                    .Select(s => s.RoomReservationId);
                 var labReservations = await _unitOfWork.LabReservationRepository.Where(w => labReservationIds.Contains(w.Id));
                 _unitOfWork.LabReservationRepository.RemoveRange(labReservations);
 
-                var xrayReservationIds = unAvailable.Where(w => w.Type == "Xray").Select(s => s.RoomReservationId);
-                var xrayReservations = await _unitOfWork.XrayReservationRepository.Where(w => xrayReservationIds.Contains(w.Id));
+                var xrayReservationIds = unAvailable.Where(w => w.Type == AllReservations.Xray)
+                    .Select(s => s.RoomReservationId);
+                var xrayReservations = await _unitOfWork.XrayReservationRepository.Where(
+                    w => xrayReservationIds.Contains(w.Id));
                 _unitOfWork.XrayReservationRepository.RemoveRange(xrayReservations);
 
                 _unitOfWork.AllReservationsRepository.RemoveRange(unAvailable);
@@ -1526,7 +1828,23 @@ namespace HealthCare.Services.Services
         {
             try
             {
-                var reservation = await _unitOfWork.AllReservationsRepository.GetSingleWithIncludesAsync(s => s.Id == reservationId);
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
+                    a => a.Id == userId && a.Role == User.Doctor);
+
+                if (ThisUser == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No doctor Found!"
+                    };
+                }
+                var doctor = await _unitOfWork.DoctorRepository.SingleOrDefaultAsync(s => s.UserName == ThisUser.UserName);
+
+                var reservation = await _unitOfWork.AllReservationsRepository.GetSingleWithIncludesAsync(
+                    s => s.Id == reservationId && s.DoctorId == doctor.Id);
                 if (reservation == null)
                 {
                     return new GeneralResponse<string>
@@ -1535,19 +1853,19 @@ namespace HealthCare.Services.Services
                         Message = "No reservation Found!"
                     };
                 }
-                if (reservation.Type =="Clinic")
+                if (reservation.Type == AllReservations.Clinic)
                 {
                     var clinicReservation = await _unitOfWork.ClinicReservationRepository.GetByIdAsync(reservation.RoomReservationId);
                     _unitOfWork.ClinicReservationRepository.Remove(clinicReservation);
                     await _unitOfWork.CompleteAsync();
                 }
-                if (reservation.Type == "Lab")
+                if (reservation.Type == AllReservations.Lab)
                 {
                     var labReservation = await _unitOfWork.LabReservationRepository.GetByIdAsync(reservation.RoomReservationId);
                     _unitOfWork.LabReservationRepository.Remove(labReservation);
                     await _unitOfWork.CompleteAsync();
                 }
-                if (reservation.Type == "Xray")
+                if (reservation.Type == AllReservations.Xray)
                 {
                     var xrayReservation = await _unitOfWork.XrayReservationRepository.GetByIdAsync(reservation.RoomReservationId);
                     _unitOfWork.XrayReservationRepository.Remove(xrayReservation);
