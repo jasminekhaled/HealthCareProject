@@ -28,9 +28,9 @@ namespace HealthCare.Controllers
         }
 
         [HttpPost("VerifyEmail")]
-        public async Task<IActionResult> VerifyEmail(string email, string verificationCode)
+        public async Task<IActionResult> VerifyEmail(string userName, string verificationCode)
         {
-            var result = await _authServices.VerifyEmail(email, verificationCode);
+            var result = await _authServices.VerifyEmail(userName, verificationCode);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);

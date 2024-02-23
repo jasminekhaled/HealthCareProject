@@ -81,21 +81,23 @@ namespace HealthCare.EF.AutoMapper
             CreateMap<HospitalAdmin, ListOfHospitalAdminDto>()
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath));
 
-            CreateMap<Specialization, SpecializationDto>();
+            CreateMap<Specialization, SpecializationDto>()
+                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath));
 
             CreateMap<Governorate, GovernorateDto>();
 
-            CreateMap<DoctorRequestDto, Doctor>()
-                .ForMember(src => src.Id, opt => opt.Ignore())
+            CreateMap<DoctorRequestDto, Doctor>();
+               /* .ForMember(src => src.Id, opt => opt.Ignore())
                 .ForMember(src => src.hospitalDoctors, opt => opt.Ignore())
                 .ForMember(src => src.RateDoctor, opt => opt.Ignore())
                 .ForMember(src => src.clinicLabDoctors, opt => opt.Ignore())
-                .ForMember(src => src.DoctorSpecialization, opt => opt.Ignore());
+                .ForMember(src => src.DoctorSpecialization, opt => opt.Ignore());*/
 
             CreateMap<Doctor, User>()
                 .ForMember(src => src.Id, opt => opt.Ignore());
-
-            CreateMap<Doctor, AddDoctorResponseDto>();
+             
+            CreateMap<Doctor, AddDoctorResponseDto>()
+                .ForMember(dest => dest.DoctorId, opt => opt.MapFrom(src => src.Id));
 
             CreateMap<Hospital, HospitalIdDto>();
 
@@ -104,8 +106,7 @@ namespace HealthCare.EF.AutoMapper
             CreateMap<Doctor, DoctorDto>()
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.UploadedFile.FilePath))
                 .ForMember(src => src.Hospitals, opt => opt.Ignore())
-                .ForMember(src => src.Specializations, opt => opt.Ignore())
-                .ForMember(src => src.Rate, opt => opt.Ignore());
+                .ForMember(src => src.Specializations, opt => opt.Ignore());
 
             CreateMap<Doctor, EditDoctorResponseDto>()
                 .ForMember(src => src.ImagePath, opt => opt.Ignore())

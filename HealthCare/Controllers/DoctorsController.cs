@@ -3,6 +3,7 @@ using HealthCare.Core.DTOS.DoctorModule.RequestDtos;
 using HealthCare.Core.DTOS.HospitalModule.RequestDto;
 using HealthCare.Services.IServices;
 using HealthCare.Services.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,7 +20,7 @@ namespace HealthCare.Controllers
             _doctorServices = doctorServices;
         }
 
-
+        [Authorize(Roles = "SuperAdmin")]
         [HttpPost("AddSpecialization")]
         public async Task<IActionResult> AddSpecialization([FromForm] SpecializationRequestDto dto)
         {
@@ -29,6 +30,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "SuperAdmin")]
         [HttpDelete("DeleteSpecialization")]
         public async Task<IActionResult> DeleteSpecialization(int specializationId)
         {
@@ -38,6 +40,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
+        [Authorize]
         [HttpGet("ListOfSpecialization")]
         public async Task<IActionResult> ListOfSpecialization()
         {
@@ -47,6 +50,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "HospitalAdmin")]
         [HttpPost("AddDoctor")]
         public async Task<IActionResult> AddDoctor([FromForm]DoctorRequestDto dto)
         {
@@ -65,6 +69,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "HospitalAdmin")]
         [HttpDelete("DeleteDoctor")]
         public async Task<IActionResult> DeleteDoctor(int doctorId)
         {
@@ -74,6 +79,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
+        [Authorize]
         [HttpGet("ListOfDoctors")]
         public async Task<IActionResult> ListOfDoctors()
         {
@@ -83,24 +89,27 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "Doctor")]
         [HttpGet("DoctorDetails")]
-        public async Task<IActionResult> DoctorDetails(int doctorId)
+        public async Task<IActionResult> DoctorDetails()
         {
-            var result = await _doctorServices.DoctorDetails(doctorId);
+            var result = await _doctorServices.DoctorDetails();
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "Doctor")]
         [HttpPatch("EditDoctor")]
-        public async Task<IActionResult> EditDoctor(int doctorId, [FromForm] EditDoctorDto dto)
+        public async Task<IActionResult> EditDoctor([FromForm] EditDoctorDto dto)
         {
-            var result = await _doctorServices.EditDoctor(doctorId, dto);
+            var result = await _doctorServices.EditDoctor(dto);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
         }
 
+        [Authorize]
         [HttpGet("GetDoctorByName")]
         public async Task<IActionResult> GetDoctorByName(string FullName)
         {
@@ -110,6 +119,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "HospitalAdmin, SuperAdmin")]
         [HttpGet("ListOfDoctorsinHospital")]
         public async Task<IActionResult> ListOfDoctorsinHospital(int hospitalId)
         {
@@ -119,38 +129,41 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-
+        [Authorize(Roles = "Doctor")]
         [HttpGet("ListOfHospitalsADoctorWorksin")]
-        public async Task<IActionResult> ListOfHospitalsADoctorWorksin(int doctorId)
+        public async Task<IActionResult> ListOfHospitalsADoctorWorksin()
         {
-            var result = await _doctorServices.ListOfHospitalsADoctorWorksin(doctorId);
+            var result = await _doctorServices.ListOfHospitalsADoctorWorksin();
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "Patient")]
         [HttpPost("RateTheDoctor")]
-        public async Task<IActionResult> RateTheDoctor(int doctorId, int PatientId, [FromForm] RateRequestDto dto)
+        public async Task<IActionResult> RateTheDoctor(int doctorId, [FromForm] RateRequestDto dto)
         {
-            var result = await _doctorServices.RateTheDoctor(doctorId, PatientId, dto);
+            var result = await _doctorServices.RateTheDoctor(doctorId, dto);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "HospitalAdmin")]
         [HttpPost("AddDoctorToHospital")]
-        public async Task<IActionResult> AddDoctorToHospital(int doctorId, int hospitalAdminId)
+        public async Task<IActionResult> AddDoctorToHospital(int doctorId)
         {
-            var result = await _doctorServices.AddDoctorToHospital(doctorId, hospitalAdminId);
+            var result = await _doctorServices.AddDoctorToHospital(doctorId);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "HospitalAdmin")]
         [HttpDelete("DeleteDoctorFromHospital")]
-        public async Task<IActionResult> DeleteDoctorFromHospital(int doctorId, int hospitalAdminId)
+        public async Task<IActionResult> DeleteDoctorFromHospital(int doctorId)
         {
-            var result = await _doctorServices.DeleteDoctorFromHospital(doctorId, hospitalAdminId);
+            var result = await _doctorServices.DeleteDoctorFromHospital(doctorId);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);

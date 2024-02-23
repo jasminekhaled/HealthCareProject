@@ -13,7 +13,7 @@ namespace HealthCare.Services.IServices
 {
     public interface IMedicalHistoryServices
     {
-        Task<GeneralResponse<PatientResponseDto>> AddMedicalHistory(string email, [FromForm]AddMedicalHistoryDto dto); // delete mediacl history when patient is deleted
+        Task<GeneralResponse<PatientResponseDto>> AddMedicalHistory(string userName, [FromForm]AddMedicalHistoryDto dto); // delete mediacl history when patient is deleted
         Task<GeneralResponse<MedicalHistoryResponseDto>> EditMedicalHistoryByPatient(int medicalHistoryId, [FromForm]EditMedicalHistoryDto dto); // token of patient
         Task<GeneralResponse<MedicalHistoryResponseDto>> AddXrayFilesToMedicalHistory(int medicalHistoryId, [FromForm]AddFilesDto dto); // token of doctor
         Task<GeneralResponse<MedicalHistoryResponseDto>> AddTestFilesToMedicalHistory(int medicalHistoryId, [FromForm]AddFilesDto dto); // token of doctor

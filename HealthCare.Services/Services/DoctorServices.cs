@@ -15,6 +15,7 @@ using HealthCare.Core.Models.HospitalModule;
 using HealthCare.Core.Models.PatientModule;
 using HealthCare.Services.IServices;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -35,14 +36,16 @@ namespace HealthCare.Services.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly IConfiguration _configuration; 
-
-        public DoctorServices(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment webHostEnvironment, IConfiguration configuration)
-        {
+        private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public DoctorServices(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment webHostEnvironment,
+            IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+        { 
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _webHostEnvironment = webHostEnvironment;
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
         }
 
 
@@ -126,14 +129,11 @@ namespace HealthCare.Services.Services
                 };
             }
         }
-
-
-
         public async Task<GeneralResponse<List<SpecializationDto>>> ListOfSpecialization()
         {
             try
             {
-                var specializations = await _unitOfWork.SpecializationRepository.GetAllAsync();
+                var specializations = await _unitOfWork.SpecializationRepository.GetAllIncludedAsync(a => a.UploadedFile);
                 if (specializations == null)
                 {
                     return new GeneralResponse<List<SpecializationDto>>
@@ -166,6 +166,24 @@ namespace HealthCare.Services.Services
         {
             try
             {
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
+                    a => a.Id == userId && a.Role == User.HospitalAdmin);
+
+                if (ThisUser == null)
+                {
+                    return new GeneralResponse<AddDoctorResponseDto>
+                    {
+                        IsSuccess = false,
+                        Message = "No HospitalAdmin Found!"
+                    };
+                }
+                var ThisHospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(
+                    s => s.UserName == ThisUser.UserName,
+                    i => i.AdminOfHospital);
+
+                
                 if (!await _unitOfWork.CivilRegestrationRepository.AnyAsync(a => a.NationalId == dto.NationalId))
                 {
                     return new GeneralResponse<AddDoctorResponseDto>
@@ -179,7 +197,8 @@ namespace HealthCare.Services.Services
                     return new GeneralResponse<AddDoctorResponseDto>
                     {
                         IsSuccess = false,
-                        Message = "National Id is already Used!"
+                        Message = "National Id is already Used," +
+                        " may be the doctor you are trying to add is already has an account and you can add him to your hospital directly."
                     };
                 }
                 if (await _unitOfWork.UserRepository.AnyAsync(a => a.UserName == dto.UserName))
@@ -195,14 +214,16 @@ namespace HealthCare.Services.Services
                     return new GeneralResponse<AddDoctorResponseDto>
                     {
                         IsSuccess = false,
-                        Message = "This Email is already Used!"
+                        Message = "This Email is already Used!" +
+                        " May be the doctor you are trying to add is already has an account and you can add him to your hospital directly."
                     };
                 }
 
                 var specializations = new List<Specialization>();
                 foreach (var id in dto.SpecializationId)
                 {
-                    var specialization = await _unitOfWork.SpecializationRepository.GetByIdAsync(id);
+                    var specialization = await _unitOfWork.SpecializationRepository.GetSingleWithIncludesAsync(i => i.Id == id,
+                        a=>a.UploadedFile);
                     if (specialization == null)
                     {
                         return new GeneralResponse<AddDoctorResponseDto>
@@ -213,21 +234,19 @@ namespace HealthCare.Services.Services
                     }
                     specializations.Add(specialization);
                 }
+                var hospital = await _unitOfWork.HospitalRepository.GetSingleWithIncludesAsync(
+                    s => s.Id == ThisHospitalAdmin.AdminOfHospital.HospitalId,
+                    i => i.UploadedFile);
 
-                var hospitals = new List<Hospital>();
-                foreach (var id in dto.HospitalId)
-                {
-                    var hospital = await _unitOfWork.HospitalRepository.GetByIdAsync(id);
-                    if (hospital == null)
-                    {
-                        return new GeneralResponse<AddDoctorResponseDto>
-                        {
-                            IsSuccess = false,
-                            Message = "hospital not found!"
-                        };
-                    }
-                    hospitals.Add(hospital);
-                }
+                var doctor = _mapper.Map<Doctor>(dto);
+                doctor.FullName = dto.FirstName + " " + dto.LastName;
+                doctor.PassWord = HashingService.GetHash(dto.PassWord);
+                var data = _mapper.Map<AddDoctorResponseDto>(doctor);
+                data.HospitalId = hospital.Id;
+                data.HospitalName = hospital.Name;
+                data.HospitalImagePath = hospital.UploadedFile.FilePath;
+                var s = _mapper.Map<List<SpecializationDto>>(specializations);
+                data.Specializations = s;
 
                 if (dto.Image != null)
                 {
@@ -251,15 +270,6 @@ namespace HealthCare.Services.Services
                             Message = "Max Allowed Size Is 1MB."
                         }; 
                     }
-                }
-
-                var doctor = _mapper.Map<Doctor>(dto);
-                doctor.FullName = dto.FirstName + " " + dto.LastName;
-                doctor.PassWord = HashingService.GetHash(dto.PassWord);
-                var data = _mapper.Map<AddDoctorResponseDto>(doctor);
-
-                if (dto.Image != null)
-                { 
                     var fakeFileName = Path.GetRandomFileName();
                     var uploadedFile = new UploadedFile()
                     {
@@ -296,31 +306,27 @@ namespace HealthCare.Services.Services
                 await _unitOfWork.DoctorRepository.AddAsync(doctor);
                 await _unitOfWork.CompleteAsync();
 
-                var doctorSpecialization = dto.SpecializationId.Select(s => new DoctorSpecialization
+                var doctorSpecialization = specializations.Select(s => new DoctorSpecialization
                 {
-                    SpecializationId = s,
-                    DoctorId = doctor.Id
+                    Specialization = s,
+                    Doctor = doctor
                 });
-                var s = _mapper.Map<List<SpecializationDto>>(specializations);
-                data.SpecializationNames = s;
+                
+                var hospitalDoctor = new HospitalDoctor()
+                {
+                    Hospital = ThisHospitalAdmin.AdminOfHospital.Hospital,
+                    Doctor = doctor
+                };
 
-                var hospitalDoctors = dto.HospitalId.Select(s => new HospitalDoctor
-                {
-                    HospitalId = s,
-                    DoctorId = doctor.Id
-                });
-                var h = _mapper.Map<List<HospitalIdDto>>(hospitals);
-                data.HospitalNames = h;
-               
                 await _unitOfWork.DoctorSpecializationRepository.AddRangeAsync(doctorSpecialization);
-                await _unitOfWork.HospitalDoctorRepository.AddRangeAsync(hospitalDoctors);
+                await _unitOfWork.HospitalDoctorRepository.AddAsync(hospitalDoctor);
                 await _unitOfWork.CompleteAsync();
 
                 var user = _mapper.Map<User>(doctor);
                 user.Role = User.Doctor;
                 user.UploadedFile = doctor.UploadedFile;
                 var userToken = _mapper.Map<UserTokenDto>(user);
-                userToken.Role = "Doctor";
+                userToken.Role = User.Doctor;
                 var Token = TokenServices.CreateJwtToken(userToken);
                 var refreshToken = TokenServices.CreateRefreshToken();
 
@@ -329,8 +335,8 @@ namespace HealthCare.Services.Services
 
                 var userRole = new UserRole()
                 {
-                    UserId = user.Id,
-                    RoleId = 4
+                    User = user,
+                    Role = await _unitOfWork.RoleRepository.SingleOrDefaultAsync(s => s.Name == User.Doctor)
                 };
 
                 await _unitOfWork.UserRoleRepository.AddAsync(userRole);
@@ -352,6 +358,7 @@ namespace HealthCare.Services.Services
                 data.Token = new JwtSecurityTokenHandler().WriteToken(Token);
                 data.ExpiresOn = Token.ValidTo;
 
+                data.DoctorId = doctor.Id;
                 return new GeneralResponse<AddDoctorResponseDto>
                 {
                     IsSuccess = true,
@@ -369,7 +376,7 @@ namespace HealthCare.Services.Services
                 };
             }
         }
-        
+        ////////////
         public async Task<GeneralResponse<string>> DeleteDoctor(int doctorId)
         {
             try
@@ -435,7 +442,7 @@ namespace HealthCare.Services.Services
 
                     var specializationIds = doctor.DoctorSpecialization.Select(ds => ds.SpecializationId);
                     var specia = await _unitOfWork.SpecializationRepository
-                        .Where(s => specializationIds.Contains(s.Id));
+                        .WhereIncludeAsync(s => specializationIds.Contains(s.Id), a=>a.UploadedFile);
                     d.Specializations = _mapper.Map<List<SpecializationDto>>(specia);
 
                     var hospitalIds = doctor.hospitalDoctors.Select(hd => hd.HospitalId);
@@ -461,20 +468,28 @@ namespace HealthCare.Services.Services
                 };
             }
         }
-        public async Task<GeneralResponse<DoctorDto>> DoctorDetails(int doctorId)
+        public async Task<GeneralResponse<DoctorDto>> DoctorDetails()
         {
             try
             {
-                var doctor = await _unitOfWork.DoctorRepository.GetSingleWithIncludesAsync(single: a => a.Id == doctorId, i => i.DoctorSpecialization, s => s.hospitalDoctors, s => s.UploadedFile);
-                if (doctor == null)
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
+                    a => a.Id == userId && a.Role == User.Doctor);
+
+                if (ThisUser == null)
                 {
                     return new GeneralResponse<DoctorDto>
                     {
                         IsSuccess = false,
-                        Message = "No Doctor Found!"
+                        Message = "No doctor Found!"
                     };
-
                 }
+
+                var doctor = await _unitOfWork.DoctorRepository.GetSingleWithIncludesAsync(
+                    a => a.UserName == ThisUser.UserName,
+                    i => i.DoctorSpecialization, s => s.hospitalDoctors, s => s.UploadedFile);
+
                 var data = _mapper.Map<DoctorDto>(doctor);
 
 
@@ -483,7 +498,7 @@ namespace HealthCare.Services.Services
 
                     var specializationIds = doctor.DoctorSpecialization.Select(ds => ds.SpecializationId);
                     var specia = await _unitOfWork.SpecializationRepository
-                        .Where(s => specializationIds.Contains(s.Id));
+                        .WhereIncludeAsync(s => specializationIds.Contains(s.Id), a=>a.UploadedFile);
                     data.Specializations = _mapper.Map<List<SpecializationDto>>(specia);
 
                     var hospitalIds = doctor.hospitalDoctors.Select(hd => hd.HospitalId);
@@ -510,77 +525,25 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public async Task<GeneralResponse<EditDoctorResponseDto>> EditDoctor(int doctorId, [FromForm] EditDoctorDto dto)
+        public async Task<GeneralResponse<DoctorDto>> EditDoctor([FromForm]EditDoctorDto dto)
         {
             try
             {
-                var doctor = await _unitOfWork.DoctorRepository.GetSingleWithIncludesAsync(single: a => a.Id == doctorId, i => i.DoctorSpecialization, s => s.hospitalDoctors);
-                if (doctor == null)
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.Role == User.Doctor);
+                if (ThisUser == null)
                 {
-                    return new GeneralResponse<EditDoctorResponseDto>
+                    return new GeneralResponse<DoctorDto>
                     {
                         IsSuccess = false,
-                        Message = "No Doctor Found!"
-                    };
-
-                }
-                var user = await _unitOfWork.UserRepository.GetSingleWithIncludesAsync(single: s => s.UserName == doctor.UserName, includes: i => i.UploadedFile);
-
-                if(dto.UserName != null)
-                {
-                    var person = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.UserName == dto.UserName);
-                    if(person != null && person != user)
-                    return new GeneralResponse<EditDoctorResponseDto>
-                    {
-                        IsSuccess = false,
-                        Message = "UserName ia already used."
-                    };
-                }
-                if (dto.NationalId != null && !await _unitOfWork.CivilRegestrationRepository.AnyAsync(a => a.NationalId == dto.NationalId))
-                {
-                    return new GeneralResponse<EditDoctorResponseDto>
-                    {
-                        IsSuccess = false,
-                        Message = "NationalId isn't accepted!"
-                    };
-                }
-          
-                var check = await _unitOfWork.DoctorRepository.SingleOrDefaultAsync(s => s.NationalId == dto.NationalId);
-                if(check != null && doctor != check)
-                {
-                    return new GeneralResponse<EditDoctorResponseDto>
-                    {
-                        IsSuccess = false,
-                        Message = "NationalId isn't accepted!"
-                    };
-                }
-                var emailCheck = await _unitOfWork.DoctorRepository.SingleOrDefaultAsync(s => s.Email == dto.Email);
-                if (emailCheck != null && doctor != emailCheck)
-                {
-                    return new GeneralResponse<EditDoctorResponseDto>
-                    {
-                        IsSuccess = false,
-                        Message = "Email isn't accepted!"
+                        Message = "No doctor Found!"
                     };
                 }
 
-                var specializations = new List<Specialization>();
-                if (dto.SpecializationId != null)
-                {
-                    foreach (var id in dto.SpecializationId)
-                    {
-                        var specialization = await _unitOfWork.SpecializationRepository.GetByIdAsync(id);
-                        if (specialization == null)
-                        {
-                            return new GeneralResponse<EditDoctorResponseDto>
-                            {
-                                IsSuccess = false,
-                                Message = "specialization not found!"
-                            };
-                        }
-                        specializations.Add(specialization);
-                    }
-                }
+                var doctor = await _unitOfWork.DoctorRepository.GetSingleWithIncludesAsync(
+                    a => a.UserName == ThisUser.UserName,
+                    i => i.DoctorSpecialization, s => s.hospitalDoctors, s => s.UploadedFile);
 
                 if (dto.Image != null)
                 {
@@ -589,7 +552,7 @@ namespace HealthCare.Services.Services
 
                     if (!AllowedExtenstions.Contains(Path.GetExtension(dto.Image.FileName).ToLower()))
                     {
-                        return new GeneralResponse<EditDoctorResponseDto>
+                        return new GeneralResponse<DoctorDto>
                         {
                             IsSuccess = false,
                             Message = "Only .jpg and .png Images Are Allowed."
@@ -598,7 +561,7 @@ namespace HealthCare.Services.Services
 
                     if (dto.Image.Length > MaxAllowedPosterSize)
                     {
-                        return new GeneralResponse<EditDoctorResponseDto>
+                        return new GeneralResponse<DoctorDto>
                         {
                             IsSuccess = false,
                             Message = "Max Allowed Size Is 1MB."
@@ -606,7 +569,7 @@ namespace HealthCare.Services.Services
                     }
 
                     var fakeFileName = Path.GetRandomFileName();
-                    var uploadedFile = await _unitOfWork.UploadedFileRepository.GetByIdAsync(user.UploadedFileId);
+                    var uploadedFile = await _unitOfWork.UploadedFileRepository.GetByIdAsync(doctor.UploadedFileId);
                     File.Delete(uploadedFile.FilePath);
                     uploadedFile.FileName = dto.Image.FileName;
                     uploadedFile.ContentType = dto.Image.ContentType;
@@ -623,56 +586,29 @@ namespace HealthCare.Services.Services
                 }
 
                 
-
-                if (dto.PassWord != null)
-                {
-                    var pw = HashingService.GetHash(dto.PassWord);
-                    doctor.PassWord = pw;
-                    user.PassWord = pw;
-                }
-                doctor.Email = dto.Email ?? doctor.Email;
-                doctor.UserName = dto.UserName ?? doctor.UserName;
-                doctor.NationalId = dto.NationalId ?? doctor.NationalId;
                 doctor.FullName = dto.FullName ?? doctor.FullName;
                 doctor.Description = dto.Description ?? doctor.Description;
 
-                var data = _mapper.Map<EditDoctorResponseDto>(doctor);
-                if (dto.SpecializationId != null)
-                {
-                    var oldDS = await _unitOfWork.DoctorSpecializationRepository.WhereIncludeAsync(s => s.DoctorId == doctor.Id);
-                    _unitOfWork.DoctorSpecializationRepository.RemoveRange(oldDS);
-                    await _unitOfWork.CompleteAsync();
+                var data = _mapper.Map<DoctorDto>(doctor);
 
-                    var doctorSpecialization = dto.SpecializationId.Select(s => new DoctorSpecialization
-                    {
-                        SpecializationId = s,
-                        DoctorId = doctorId
-                    }).ToList();
-                    await _unitOfWork.DoctorSpecializationRepository.AddRangeAsync(doctorSpecialization);
-                    var s = _mapper.Map<List<SpecializationDto>>(specializations);
-                    data.specializations = s;
-                }
+                var specializationIds = doctor.DoctorSpecialization.Select(ds => ds.SpecializationId);
+                var specia = await _unitOfWork.SpecializationRepository
+                    .WhereIncludeAsync(s => specializationIds.Contains(s.Id), a => a.UploadedFile);
 
-                user.UserName = doctor.UserName;
-                user.Email = doctor.Email;
-                user.NationalId = doctor.NationalId;
+                data.Specializations = _mapper.Map<List<SpecializationDto>>(specia);
+
+                var hospitalIds = doctor.hospitalDoctors.Select(hd => hd.HospitalId);
+                var hospitals = await _unitOfWork.HospitalRepository
+                    .WhereIncludeAsync(filter: h => hospitalIds.Contains(h.Id), i => i.UploadedFile, i => i.HospitalGovernorate.Governorate);
+               
+                data.Hospitals = _mapper.Map<List<ListOfHospitalDto>>(hospitals);
                 
                 _unitOfWork.DoctorRepository.Update(doctor);
-                _unitOfWork.UserRepository.Update(user);
                 await _unitOfWork.CompleteAsync();
                 
-                data.ImagePath = user.UploadedFile.FilePath;
-                if(dto.SpecializationId == null)
-                {
-                    var specializationIds = doctor.DoctorSpecialization.Select(ds => ds.SpecializationId);
-                    var specia = await _unitOfWork.SpecializationRepository
-                        .Where(s => specializationIds.Contains(s.Id));
-                    data.specializations = _mapper.Map<List<SpecializationDto>>(specia);
-                }
-                
+                data.ImagePath = doctor.UploadedFile.FilePath;
 
-
-                return new GeneralResponse<EditDoctorResponseDto>
+                return new GeneralResponse<DoctorDto>
                 {
                     IsSuccess = true,
                     Message = "Doctor Details have been displayed Successfully.",
@@ -681,7 +617,7 @@ namespace HealthCare.Services.Services
             }
             catch (Exception ex)
             {
-                return new GeneralResponse<EditDoctorResponseDto>
+                return new GeneralResponse<DoctorDto>
                 {
                     IsSuccess = false,
                     Message = "Something went wrong.",
@@ -689,12 +625,14 @@ namespace HealthCare.Services.Services
                 };
             }
         }
-
+        
         public async Task<GeneralResponse<List<DoctorDto>>> GetDoctorByName(string FullName)
         {
             try
             {
-                var doctors = await _unitOfWork.DoctorRepository.WhereIncludeAsync(filter: a => a.FullName == FullName, i => i.DoctorSpecialization, s => s.hospitalDoctors);
+                var doctors = await _unitOfWork.DoctorRepository.WhereIncludeAsync(
+                     a => a.FullName == FullName, i => i.DoctorSpecialization, i => i.hospitalDoctors, i => i.UploadedFile);
+                
                 if (doctors.Count() == 0)
                 {
                     return new GeneralResponse<List<DoctorDto>>
@@ -708,14 +646,11 @@ namespace HealthCare.Services.Services
 
                 foreach (var d in data)
                 {
-                    var user = await _unitOfWork.UserRepository.WhereSelectTheFirstAsync(filter: s => s.UserName == d.UserName, select: i => i.UploadedFile);
-                    d.ImagePath = user.FilePath;
-
                     var doctor = doctors.FirstOrDefault(s => s.UserName == d.UserName);
 
                     var specializationIds = doctor.DoctorSpecialization.Select(ds => ds.SpecializationId);
                     var specia = await _unitOfWork.SpecializationRepository
-                        .Where(s => specializationIds.Contains(s.Id));
+                        .WhereIncludeAsync(s => specializationIds.Contains(s.Id), i => i.UploadedFile);
                     d.Specializations = _mapper.Map<List<SpecializationDto>>(specia);
 
                     var hospitalIds = doctor.hospitalDoctors.Select(hd => hd.HospitalId);
@@ -756,9 +691,39 @@ namespace HealthCare.Services.Services
                         Message = "No hospital Found!"
                     };
                 }
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId);
+                if (ThisUser == null)
+                {
+                    return new GeneralResponse<List<DoctorDto>>
+                    {
+                        IsSuccess = false,
+                        Message = "No user Found!"
+                    };
+                }
+                if(ThisUser.Role == User.HospitalAdmin)
+                {
+                    var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(
+                        s => s.UserName == ThisUser.UserName, i => i.AdminOfHospital);
+                    if (hospitalAdmin.AdminOfHospital.HospitalId != hospitalId)
+                    {
+                        return new GeneralResponse<List<DoctorDto>>
+                        {
+                            IsSuccess = false,
+                            Message = "you donot have permission to access this list!!"
+                        };
+                    }
+                }
 
-                var doctorIds = await _unitOfWork.HospitalDoctorRepository.GetSpecificItems(filter: w => w.HospitalId == hospitalId, select: s => s.DoctorId);
-                var doctors = await _unitOfWork.DoctorRepository.WhereIncludeAsync(filter: a => doctorIds.Contains(a.Id), i => i.DoctorSpecialization, s => s.hospitalDoctors);
+
+                var doctorIds = await _unitOfWork.HospitalDoctorRepository.GetSpecificItems(
+                    filter: w => w.HospitalId == hospitalId,
+                    select: s => s.DoctorId);
+
+                var doctors = await _unitOfWork.DoctorRepository.WhereIncludeAsync(
+                    a => doctorIds.Contains(a.Id),
+                    i => i.DoctorSpecialization, i => i.UploadedFile, i => i.hospitalDoctors);
                 if (doctors.Count() == 0)
                 {
                     return new GeneralResponse<List<DoctorDto>>
@@ -772,14 +737,11 @@ namespace HealthCare.Services.Services
 
                 foreach (var d in data)
                 {
-                    var user = await _unitOfWork.UserRepository.WhereSelectTheFirstAsync(filter: s => s.UserName == d.UserName, select: i => i.UploadedFile);
-                    d.ImagePath = user.FilePath;
-
                     var doctor = doctors.FirstOrDefault(s => s.UserName == d.UserName);
 
                     var specializationIds = doctor.DoctorSpecialization.Select(ds => ds.SpecializationId);
                     var specia = await _unitOfWork.SpecializationRepository
-                        .Where(s => specializationIds.Contains(s.Id));
+                        .WhereIncludeAsync(s => specializationIds.Contains(s.Id), i=>i.UploadedFile);
                     d.Specializations = _mapper.Map<List<SpecializationDto>>(specia);
 
                     var hospitalIds = doctor.hospitalDoctors.Select(hd => hd.HospitalId);
@@ -806,32 +768,35 @@ namespace HealthCare.Services.Services
             }
 
         }
-
-        public async Task<GeneralResponse<List<ListOfHospitalDto>>> ListOfHospitalsADoctorWorksin(int doctorId)
+       
+        public async Task<GeneralResponse<List<ListOfHospitalDto>>> ListOfHospitalsADoctorWorksin()
         {
             try
             {
-                var doctor = await _unitOfWork.DoctorRepository.GetByIdAsync(doctorId);
-                if (doctor == null)
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
+                    a => a.Id == userId && a.Role == User.Doctor);
+                if (ThisUser == null)
                 {
                     return new GeneralResponse<List<ListOfHospitalDto>>
                     {
                         IsSuccess = false,
-                        Message = "No Doctor Found!"
+                        Message = "No doctor Found!"
                     };
-
                 }
-                var hospitalIds = await _unitOfWork.HospitalDoctorRepository.GetSpecificItems(filter: w => w.DoctorId == doctorId, select: s => s.HospitalId);
-                var hospitals = await _unitOfWork.HospitalRepository.WhereIncludeAsync(filter: w =>  hospitalIds.Contains(w.Id), i => i.UploadedFile, i => i.HospitalGovernorate.Governorate);
-                if (hospitals.Count() == 0)
-                {
-                    return new GeneralResponse<List<ListOfHospitalDto>>
-                    {
-                        IsSuccess = false,
-                        Message = "No Hospitals Found!!"
-                    };
 
-                }
+                var doctor = await _unitOfWork.DoctorRepository.GetSingleWithIncludesAsync(
+                    s => s.UserName == ThisUser.UserName);
+                
+                var hospitalIds = await _unitOfWork.HospitalDoctorRepository.GetSpecificItems(
+                    filter: w => w.DoctorId == doctor.Id,
+                    select: s => s.HospitalId);
+
+                var hospitals = await _unitOfWork.HospitalRepository
+                    .WhereIncludeAsync(filter: h => hospitalIds.Contains(h.Id),
+                    i => i.UploadedFile, i => i.HospitalGovernorate.Governorate);
+
                 var data = _mapper.Map<List<ListOfHospitalDto>>(hospitals);
 
                 return new GeneralResponse<List<ListOfHospitalDto>>
@@ -852,7 +817,7 @@ namespace HealthCare.Services.Services
             }
         }
         
-        public async Task<GeneralResponse<string>> RateTheDoctor(int doctorId, int PatientId, [FromForm] RateRequestDto dto)
+        public async Task<GeneralResponse<string>> RateTheDoctor(int doctorId, [FromForm] RateRequestDto dto)
         {
             try
             {
@@ -865,15 +830,22 @@ namespace HealthCare.Services.Services
                         Message = "No Doctor Found!"
                     };
                 }
-                var patient = await _unitOfWork.PatientRepository.GetByIdAsync(PatientId);
-                if (patient == null)
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
+                    a => a.Id == userId && a.Role == User.Patient);
+
+                if (ThisUser == null)
                 {
                     return new GeneralResponse<string>
                     {
                         IsSuccess = false,
-                        Message = "No Patient Found!"
+                        Message = "No patient Found!"
                     };
                 }
+
+                var patient = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(s => s.UserName == ThisUser.UserName);
+                
                 if(dto.Rate <= 0 || dto.Rate > 10)
                 {
                     return new GeneralResponse<string>
@@ -883,7 +855,8 @@ namespace HealthCare.Services.Services
                     };
                 }
                 var appliedRate = (float)Math.Round(dto.Rate, 1);
-                var rate = await _unitOfWork.RateDoctorRepository.SingleOrDefaultAsync(w => w.PatientId == PatientId && w.DoctorId == doctorId);
+                var rate = await _unitOfWork.RateDoctorRepository.SingleOrDefaultAsync(
+                    w => w.PatientId == patient.Id && w.DoctorId == doctorId);
                 if(rate != null)
                 {
                     rate.Rate = appliedRate;
@@ -923,7 +896,7 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public async Task<GeneralResponse<string>> AddDoctorToHospital(int doctorId, int hospitalAdminId)
+        public async Task<GeneralResponse<string>> AddDoctorToHospital(int doctorId)
         {
             try
             {
@@ -936,8 +909,10 @@ namespace HealthCare.Services.Services
                         Message = "No Doctor Found!"
                     };
                 }
-                var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetByIdAsync(hospitalAdminId);
-                if (hospitalAdmin == null)
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.Role == User.HospitalAdmin);
+                if (ThisUser == null)
                 {
                     return new GeneralResponse<string>
                     {
@@ -945,10 +920,11 @@ namespace HealthCare.Services.Services
                         Message = "No hospitalAdmin Found!"
                     };
                 }
+                var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(
+                    s=>s.UserName == ThisUser.UserName, i=>i.AdminOfHospital);
 
-                var raw = await _unitOfWork.AdminOfHospitalRepository.SingleOrDefaultAsync(w => w.HospitalAdminId == hospitalAdminId);
-                var hospitalId = raw.HospitalId;
-                if(await _unitOfWork.HospitalDoctorRepository.AnyAsync(s => s.DoctorId == doctorId && s.HospitalId == hospitalId))
+                if(await _unitOfWork.HospitalDoctorRepository.AnyAsync(
+                    s => s.DoctorId == doctorId && s.HospitalId == hospitalAdmin.AdminOfHospital.HospitalId))
                 {
                     return new GeneralResponse<string>
                     {
@@ -958,7 +934,7 @@ namespace HealthCare.Services.Services
                 }
                 var hospitalDoctor = new HospitalDoctor()
                 {
-                    Hospital = await _unitOfWork.HospitalRepository.GetByIdAsync(hospitalId),
+                    Hospital = await _unitOfWork.HospitalRepository.GetByIdAsync(hospitalAdmin.AdminOfHospital.HospitalId),
                     Doctor = doctor
                 };
                 await _unitOfWork.HospitalDoctorRepository.AddAsync(hospitalDoctor);
@@ -980,7 +956,7 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public async Task<GeneralResponse<string>> DeleteDoctorFromHospital(int doctorId, int hospitalAdminId)
+        public async Task<GeneralResponse<string>> DeleteDoctorFromHospital(int doctorId)
         {
             try
             {
@@ -993,8 +969,11 @@ namespace HealthCare.Services.Services
                         Message = "No Doctor Found!"
                     };
                 }
-                var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetByIdAsync(hospitalAdminId);
-                if (hospitalAdmin == null)
+
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.Role == User.HospitalAdmin);
+                if (ThisUser == null)
                 {
                     return new GeneralResponse<string>
                     {
@@ -1002,9 +981,13 @@ namespace HealthCare.Services.Services
                         Message = "No hospitalAdmin Found!"
                     };
                 }
+                var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(
+                    s => s.UserName == ThisUser.UserName, i => i.AdminOfHospital);
 
-                var raw = await _unitOfWork.AdminOfHospitalRepository.SingleOrDefaultAsync(w => w.HospitalAdminId == hospitalAdminId);
-                var hospitalDoctor = await _unitOfWork.HospitalDoctorRepository.SingleOrDefaultAsync(s => s.DoctorId == doctorId && s.HospitalId == raw.HospitalId);
+
+                
+                var hospitalDoctor = await _unitOfWork.HospitalDoctorRepository.SingleOrDefaultAsync(
+                    s => s.DoctorId == doctorId && s.HospitalId == hospitalAdmin.AdminOfHospital.HospitalId);
                 if(hospitalDoctor == null)
                 {
                     return new GeneralResponse<string>
@@ -1013,8 +996,36 @@ namespace HealthCare.Services.Services
                         Message = "The doctor isnot working in this hospital."
                     };
                 }
+                var clinics = await _unitOfWork.ClinicLabRepository.GetSpecificItems(
+                    w => w.HospitalId == hospitalAdmin.AdminOfHospital.HospitalId,
+                    a => a.ClinicAppointments.Where(w=>w.DoctorId == doctorId));
+
+                var clinicAppointments = clinics.SelectMany(appointments => appointments).ToList();
+
+                var xrays = await _unitOfWork.XrayRepository.GetSpecificItems(
+                    w => w.HospitalId == hospitalAdmin.AdminOfHospital.HospitalId,
+                    a => a.XrayAppointments.Where(w => w.DoctorId == doctorId));
+
+                var xrayAppointments = xrays.SelectMany(appointments => appointments).ToList();
+
+                var labs = await _unitOfWork.LabRepository.GetSpecificItems(
+                    w => w.HospitalId == hospitalAdmin.AdminOfHospital.HospitalId,
+                    a => a.LabAppointments.Where(w => w.DoctorId == doctorId));
+
+                var labAppointments = labs.SelectMany(appointments => appointments).ToList();
+
+
+                _unitOfWork.ClinicAppointmentRepository.RemoveRange(clinicAppointments);
+                _unitOfWork.LabAppointmentRepository.RemoveRange(labAppointments);
+                _unitOfWork.XrayAppointmentRepository.RemoveRange(xrayAppointments);
                 _unitOfWork.HospitalDoctorRepository.Remove(hospitalDoctor);
                 await _unitOfWork.CompleteAsync();
+                
+                if(!doctor.hospitalDoctors.Any())
+                {
+                    _unitOfWork.DoctorRepository.Remove(doctor);
+                    await _unitOfWork.CompleteAsync();
+                }
                 return new GeneralResponse<string>
                 {
                     IsSuccess = true,
@@ -1032,9 +1043,90 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public Task<GeneralResponse<List<DoctorDto>>> GetDoctorInSpecificHospitalByName(string FullName)
+        public async Task<GeneralResponse<List<DoctorDto>>> GetDoctorInSpecificHospitalByName(string FullName, int hospitalId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var hospital = await _unitOfWork.HospitalRepository.GetByIdAsync(hospitalId);
+                if (hospital == null)
+                {
+                    return new GeneralResponse<List<DoctorDto>>
+                    {
+                        IsSuccess = false,
+                        Message = "No hospital Found!"
+                    };
+                }
+
+                var doctors = await _unitOfWork.DoctorRepository.WhereIncludeAsync(
+                     a => a.FullName == FullName, i => i.DoctorSpecialization, i => i.hospitalDoctors, i => i.UploadedFile);
+
+                if (doctors.Count() == 0)
+                {
+                    return new GeneralResponse<List<DoctorDto>>
+                    {
+                        IsSuccess = false,
+                        Message = "No Doctors Found!"
+                    };
+                }
+
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId);
+                if (ThisUser == null)
+                {
+                    return new GeneralResponse<List<DoctorDto>>
+                    {
+                        IsSuccess = false,
+                        Message = "No user Found!"
+                    };
+                }
+                if (ThisUser.Role == User.HospitalAdmin)
+                {
+                    var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(
+                        s => s.UserName == ThisUser.UserName, i => i.AdminOfHospital);
+                    if (hospitalAdmin.AdminOfHospital.HospitalId != hospitalId)
+                    {
+                        return new GeneralResponse<List<DoctorDto>>
+                        {
+                            IsSuccess = false,
+                            Message = "you donot have permission to access this list!!"
+                        };
+                    }
+                }
+                
+                var data = _mapper.Map<List<DoctorDto>>(doctors);
+
+                foreach (var d in data)
+                {
+                    var doctor = doctors.FirstOrDefault(s => s.UserName == d.UserName);
+
+                    var specializationIds = doctor.DoctorSpecialization.Select(ds => ds.SpecializationId);
+                    var specia = await _unitOfWork.SpecializationRepository
+                        .Where(s => specializationIds.Contains(s.Id));
+                    d.Specializations = _mapper.Map<List<SpecializationDto>>(specia);
+
+                    var hospitalIds = doctor.hospitalDoctors.Select(hd => hd.HospitalId);
+                    var hospitals = await _unitOfWork.HospitalRepository
+                        .WhereIncludeAsync(filter: h => hospitalIds.Contains(h.Id), i => i.UploadedFile, i => i.HospitalGovernorate.Governorate);
+                    d.Hospitals = _mapper.Map<List<ListOfHospitalDto>>(hospitals);
+                }
+
+                return new GeneralResponse<List<DoctorDto>>
+                {
+                    IsSuccess = true,
+                    Message = "Doctors Listed Successfully.",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<List<DoctorDto>>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
         }
 
 

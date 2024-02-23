@@ -450,7 +450,7 @@ namespace HealthCare.Services.Services
             }
         }
 
-
+         
         public async Task<GeneralResponse<HospitalAdminDto>> AddHospitalAdmin(int hospitalId, [FromForm]HospitalAdminRequestDto dto)
         {
             try

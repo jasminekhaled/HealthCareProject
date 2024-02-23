@@ -1,4 +1,4 @@
-﻿ using AutoMapper;
+﻿  using AutoMapper;
 using HealthCare.Core.DTOS.AuthModule.ResponseDtos;
 using HealthCare.Core.DTOS;
 using HealthCare.Core.IRepositories;
@@ -51,6 +51,16 @@ namespace HealthCare.Services.Services
         {
             try
             {
+                if (await _unitOfWork.PatientRepository.AnyAsync(a => a.UserName == dto.UserName) ||
+                    await _unitOfWork.UserRepository.AnyAsync(a => a.UserName == dto.UserName))
+                {
+                    return new GeneralResponse<SignUpResponse>
+                    {
+                        IsSuccess = false,
+                        Message = "UserName is already used! Please use another UserName.",
+                    };
+                }
+
                 var nationalId = await _unitOfWork.CivilRegestrationRepository.SingleOrDefaultAsync(c => c.NationalId == dto.NationalId);
                 if (nationalId == null)
                 {
@@ -63,7 +73,7 @@ namespace HealthCare.Services.Services
                 var patientWithNId = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(c => c.NationalId == dto.NationalId);
                 if (patientWithNId != null)
                 {
-                    if(patientWithNId.IsEmailConfirmed == true)
+                    if(patientWithNId.IsEmailConfirmed == true && patientWithNId.MedicalHistory != null)
                     {
                         return new GeneralResponse<SignUpResponse>
                         {
@@ -81,7 +91,7 @@ namespace HealthCare.Services.Services
                 var patientWithEmail = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(c => c.Email == dto.Email);
                 if (patientWithEmail != null)
                 {
-                    if (patientWithEmail.IsEmailConfirmed == true)
+                    if (patientWithEmail.IsEmailConfirmed == true && patientWithEmail.MedicalHistory != null)
                     {
                         return new GeneralResponse<SignUpResponse>
                         {
@@ -95,15 +105,6 @@ namespace HealthCare.Services.Services
                         await _unitOfWork.CompleteAsync();
                     }
 
-                }
-
-                if(await _unitOfWork.UserRepository.AnyAsync(a => a.UserName == dto.UserName))
-                {
-                    return new GeneralResponse<SignUpResponse>
-                    {
-                        IsSuccess = false,
-                        Message = "UserName is already used! Please use another UserName.",
-                    };
                 }
 
                 if(!dto.PhoneNumber.All(char.IsDigit) || dto.PhoneNumber.Length != 11)
@@ -202,11 +203,11 @@ namespace HealthCare.Services.Services
       
         }
         
-        public async Task<GeneralResponse<SignUpResponse>> VerifyEmail(string email, string verificationCode)
+        public async Task<GeneralResponse<SignUpResponse>> VerifyEmail(string userName, string verificationCode)
         {
             try
             {
-                var patient = await _unitOfWork.PatientRepository.GetSingleWithIncludesAsync(s => s.Email == email, a=>a.UploadedFile);
+                var patient = await _unitOfWork.PatientRepository.GetSingleWithIncludesAsync(s => s.UserName == userName, a=>a.UploadedFile);
                 if(patient == null)
                 {
                     return new GeneralResponse<SignUpResponse>

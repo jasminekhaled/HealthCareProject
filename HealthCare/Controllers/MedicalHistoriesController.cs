@@ -18,9 +18,9 @@ namespace HealthCare.Controllers
         }
 
         [HttpPost("AddMedicalHistory")]
-        public async Task<IActionResult> AddMedicalHistory(string email, [FromForm]AddMedicalHistoryDto dto)
+        public async Task<IActionResult> AddMedicalHistory(string userName, [FromForm]AddMedicalHistoryDto dto)
         {
-            var result = await _medicalHistoryServices.AddMedicalHistory(email, dto);
+            var result = await _medicalHistoryServices.AddMedicalHistory(userName, dto);
             if (result.Data != null)
             {
                 var CookieOptions = new CookieOptions()

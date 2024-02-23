@@ -14,21 +14,21 @@ namespace HealthCare.Services.IServices
 {
     public interface IDoctorServices
     {
-        Task<GeneralResponse<string>> AddSpecialization([FromForm]SpecializationRequestDto dto);
+        Task<GeneralResponse<string>> AddSpecialization([FromForm]SpecializationRequestDto dto); 
         Task<GeneralResponse<string>> DeleteSpecialization(int specializationId);
         Task<GeneralResponse<List<SpecializationDto>>> ListOfSpecialization();
         Task<GeneralResponse<List<DoctorDto>>> ListOfDoctors();
         Task<GeneralResponse<List<DoctorDto>>> ListOfDoctorsinHospital(int hospitalId);
-        Task<GeneralResponse<List<ListOfHospitalDto>>> ListOfHospitalsADoctorWorksin(int doctorId);
+        Task<GeneralResponse<List<ListOfHospitalDto>>> ListOfHospitalsADoctorWorksin();
         Task<GeneralResponse<List<DoctorDto>>> GetDoctorByName(string FullName);
-        Task<GeneralResponse<List<DoctorDto>>> GetDoctorInSpecificHospitalByName(string FullName);
+        Task<GeneralResponse<List<DoctorDto>>> GetDoctorInSpecificHospitalByName(string FullName, int hospitalId);
         Task<GeneralResponse<AddDoctorResponseDto>> AddDoctor([FromForm]DoctorRequestDto dto);
         Task<GeneralResponse<string>> DeleteDoctor(int doctorId);
-        Task<GeneralResponse<EditDoctorResponseDto>> EditDoctor(int doctorId, [FromForm]EditDoctorDto dto);
-        Task<GeneralResponse<DoctorDto>> DoctorDetails(int doctorId);
-        Task<GeneralResponse<string>> AddDoctorToHospital(int doctorId, int hospitalAdminId);
-        Task<GeneralResponse<string>> DeleteDoctorFromHospital(int doctorId, int hospitalAdminId);
-        Task<GeneralResponse<string>> RateTheDoctor(int doctorId, int PatientId, [FromForm] RateRequestDto dto);
+        Task<GeneralResponse<DoctorDto>> EditDoctor([FromForm]EditDoctorDto dto);
+        Task<GeneralResponse<DoctorDto>> DoctorDetails();
+        Task<GeneralResponse<string>> AddDoctorToHospital(int doctorId);
+        Task<GeneralResponse<string>> DeleteDoctorFromHospital(int doctorId);
+        Task<GeneralResponse<string>> RateTheDoctor(int doctorId, [FromForm] RateRequestDto dto);
 
 
     }

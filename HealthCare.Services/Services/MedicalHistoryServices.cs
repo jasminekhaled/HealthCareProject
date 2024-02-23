@@ -46,20 +46,20 @@ namespace HealthCare.Services.Services
             _configuration = configuration;
         }
 
-        public async Task<GeneralResponse<PatientResponseDto>> AddMedicalHistory(string email, [FromForm]AddMedicalHistoryDto dto)
+        public async Task<GeneralResponse<PatientResponseDto>> AddMedicalHistory(string userName, [FromForm]AddMedicalHistoryDto dto)
         {
             try
             {
                 
                 var patient = await _unitOfWork.PatientRepository.GetSingleWithIncludesAsync(
-                    s => s.Email == email && s.IsEmailConfirmed && s.MedicalHistory == null,
+                    s => s.UserName == userName && s.IsEmailConfirmed && s.MedicalHistory == null,
                     a => a.UploadedFile);
                 if(patient == null)
                 {
                     return new GeneralResponse<PatientResponseDto>
                     {
                         IsSuccess = false,
-                        Message = "No Patient Found with this email!"
+                        Message = "No Patient Found with this userName!"
                     };
                 }
 
