@@ -1091,7 +1091,7 @@
           "buildTransitive/netcoreapp3.1/_._": {}
         }
       },
-      "Microsoft.IdentityModel.Abstractions/6.33.0": {
+      "Microsoft.IdentityModel.Abstractions/6.34.0": {
         "type": "package",
         "compile": {
           "lib/net6.0/Microsoft.IdentityModel.Abstractions.dll": {
@@ -1104,10 +1104,10 @@
           }
         }
       },
-      "Microsoft.IdentityModel.JsonWebTokens/6.33.0": {
+      "Microsoft.IdentityModel.JsonWebTokens/6.34.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Tokens": "6.33.0",
+          "Microsoft.IdentityModel.Tokens": "6.34.0",
           "System.Text.Encoding": "4.3.0",
           "System.Text.Encodings.Web": "4.7.2",
           "System.Text.Json": "4.7.2"
@@ -1123,10 +1123,10 @@
           }
         }
       },
-      "Microsoft.IdentityModel.Logging/6.33.0": {
+      "Microsoft.IdentityModel.Logging/6.34.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Abstractions": "6.33.0"
+          "Microsoft.IdentityModel.Abstractions": "6.34.0"
         },
         "compile": {
           "lib/net6.0/Microsoft.IdentityModel.Logging.dll": {
@@ -1139,11 +1139,11 @@
           }
         }
       },
-      "Microsoft.IdentityModel.Tokens/6.33.0": {
+      "Microsoft.IdentityModel.Tokens/6.34.0": {
         "type": "package",
         "dependencies": {
           "Microsoft.CSharp": "4.5.0",
-          "Microsoft.IdentityModel.Logging": "6.33.0",
+          "Microsoft.IdentityModel.Logging": "6.34.0",
           "System.Security.Cryptography.Cng": "4.5.0"
         },
         "compile": {
@@ -1287,11 +1287,11 @@
           "buildTransitive/net6.0/_._": {}
         }
       },
-      "System.IdentityModel.Tokens.Jwt/6.33.0": {
+      "System.IdentityModel.Tokens.Jwt/6.34.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.JsonWebTokens": "6.33.0",
-          "Microsoft.IdentityModel.Tokens": "6.33.0"
+          "Microsoft.IdentityModel.JsonWebTokens": "6.34.0",
+          "Microsoft.IdentityModel.Tokens": "6.34.0"
         },
         "compile": {
           "lib/net6.0/System.IdentityModel.Tokens.Jwt.dll": {
@@ -1542,9 +1542,9 @@
           "Microsoft.AspNetCore": "2.1.7",
           "Microsoft.AspNetCore.Authentication.Google": "6.0.23",
           "Microsoft.Extensions.Configuration.Abstractions": "6.0.0",
-          "Microsoft.IdentityModel.Tokens": "6.33.0",
+          "Microsoft.IdentityModel.Tokens": "6.34.0",
           "MimeKit": "4.2.0",
-          "System.IdentityModel.Tokens.Jwt": "6.33.0"
+          "System.IdentityModel.Tokens.Jwt": "6.34.0"
         },
         "compile": {
           "bin/placeholder/HealthCare.Core.dll": {}
@@ -2593,10 +2593,10 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "Microsoft.IdentityModel.Abstractions/6.33.0": {
-      "sha512": "ZcR07HQRqpHkQRu5r4Lrt+BEY5PXJX3JFgVN0FyUI2PREAdi8KGiNrrH/xD4VsKNCjgldpKrJqBQ+ZmKVc0kxg==",
+    "Microsoft.IdentityModel.Abstractions/6.34.0": {
+      "sha512": "5nInt1KKSpKQBlhe6gXz4yKxRzRUQa21vCvSIIKKzAI2e1r9PHQOZc7aRzBA8L/JCvBxLbCxelvUqun6qwWPJg==",
       "type": "package",
-      "path": "microsoft.identitymodel.abstractions/6.33.0",
+      "path": "microsoft.identitymodel.abstractions/6.34.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2612,14 +2612,14 @@
         "lib/net6.0/Microsoft.IdentityModel.Abstractions.xml",
         "lib/netstandard2.0/Microsoft.IdentityModel.Abstractions.dll",
         "lib/netstandard2.0/Microsoft.IdentityModel.Abstractions.xml",
-        "microsoft.identitymodel.abstractions.6.33.0.nupkg.sha512",
+        "microsoft.identitymodel.abstractions.6.34.0.nupkg.sha512",
         "microsoft.identitymodel.abstractions.nuspec"
       ]
     },
-    "Microsoft.IdentityModel.JsonWebTokens/6.33.0": {
-      "sha512": "Qe4/vtpp2ws17TiI0U1NIFeDjoj+1mvXa47arHeXc+YEQ5dizggotILTeOhXuEerl7ELhc35OEPaUEPABudACA==",
+    "Microsoft.IdentityModel.JsonWebTokens/6.34.0": {
+      "sha512": "CZMom/ZoWcgjxLMxmCmcEkuoA0OA4swN1CGeMBQyxF/hEZgRbWK9EnWVJ9/oMUq3D1+OGJjnbN+W6gFq9kZcEg==",
       "type": "package",
-      "path": "microsoft.identitymodel.jsonwebtokens/6.33.0",
+      "path": "microsoft.identitymodel.jsonwebtokens/6.34.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2635,14 +2635,14 @@
         "lib/net6.0/Microsoft.IdentityModel.JsonWebTokens.xml",
         "lib/netstandard2.0/Microsoft.IdentityModel.JsonWebTokens.dll",
         "lib/netstandard2.0/Microsoft.IdentityModel.JsonWebTokens.xml",
-        "microsoft.identitymodel.jsonwebtokens.6.33.0.nupkg.sha512",
+        "microsoft.identitymodel.jsonwebtokens.6.34.0.nupkg.sha512",
         "microsoft.identitymodel.jsonwebtokens.nuspec"
       ]
     },
-    "Microsoft.IdentityModel.Logging/6.33.0": {
-      "sha512": "Yio46NE5HL6JxjSVvUXx83Q3aXNaEmhGA/3l7xOL1SnB4dAHNo8evRJh9rUzxtSxSwll8r6RG9sbcOcUaPXI8Q==",
+    "Microsoft.IdentityModel.Logging/6.34.0": {
+      "sha512": "E0AbluNkI30/VKa96PxJhhFZDx/NGYIXFrRIRq1N5/V0TToaiuc3hM90QLFszT2BBQefnp/wjm12ilSudmt9bg==",
       "type": "package",
-      "path": "microsoft.identitymodel.logging/6.33.0",
+      "path": "microsoft.identitymodel.logging/6.34.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2658,14 +2658,14 @@
         "lib/net6.0/Microsoft.IdentityModel.Logging.xml",
         "lib/netstandard2.0/Microsoft.IdentityModel.Logging.dll",
         "lib/netstandard2.0/Microsoft.IdentityModel.Logging.xml",
-        "microsoft.identitymodel.logging.6.33.0.nupkg.sha512",
+        "microsoft.identitymodel.logging.6.34.0.nupkg.sha512",
         "microsoft.identitymodel.logging.nuspec"
       ]
     },
-    "Microsoft.IdentityModel.Tokens/6.33.0": {
-      "sha512": "hOcOovM/A4Q6izXVKX/iqdOPC1AtQB9b+TmQfEM1TfTgCOD4OO99LPGe9rQsEY8JupTM7vzzYrNdXuXYhtQmVA==",
+    "Microsoft.IdentityModel.Tokens/6.34.0": {
+      "sha512": "PEPcGMqbEwEwbpQ6nTld9Nqq6V5BPZSOfk71qXZ7h7DuGuxa13bWvjImhJba5Ko88YvIuZuOBJWFZmjLfwbNXA==",
       "type": "package",
-      "path": "microsoft.identitymodel.tokens/6.33.0",
+      "path": "microsoft.identitymodel.tokens/6.34.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2681,7 +2681,7 @@
         "lib/net6.0/Microsoft.IdentityModel.Tokens.xml",
         "lib/netstandard2.0/Microsoft.IdentityModel.Tokens.dll",
         "lib/netstandard2.0/Microsoft.IdentityModel.Tokens.xml",
-        "microsoft.identitymodel.tokens.6.33.0.nupkg.sha512",
+        "microsoft.identitymodel.tokens.6.34.0.nupkg.sha512",
         "microsoft.identitymodel.tokens.nuspec"
       ]
     },
@@ -2901,10 +2901,10 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "System.IdentityModel.Tokens.Jwt/6.33.0": {
-      "sha512": "wzGyqWYmD+ze1DWXeksDLcQdYyDGvEf0eJGKTrNVJLi0eZS971I+y9GxfjXHDCnBBf99rETrfVhGtqqT2HLy9A==",
+    "System.IdentityModel.Tokens.Jwt/6.34.0": {
+      "sha512": "c0misfmFT3QxKY+a16PGlj+DtiUzoPaf26m2avyPZaLRc9vlIdLtmovfRY5MqN+y/SEoBSRXrgVaeZGPgFQQ6w==",
       "type": "package",
-      "path": "system.identitymodel.tokens.jwt/6.33.0",
+      "path": "system.identitymodel.tokens.jwt/6.34.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2920,7 +2920,7 @@
         "lib/net6.0/System.IdentityModel.Tokens.Jwt.xml",
         "lib/netstandard2.0/System.IdentityModel.Tokens.Jwt.dll",
         "lib/netstandard2.0/System.IdentityModel.Tokens.Jwt.xml",
-        "system.identitymodel.tokens.jwt.6.33.0.nupkg.sha512",
+        "system.identitymodel.tokens.jwt.6.34.0.nupkg.sha512",
         "system.identitymodel.tokens.jwt.nuspec"
       ]
     },
@@ -3528,7 +3528,7 @@
       "Microsoft.AspNetCore.Authentication.Google >= 6.0.23",
       "Microsoft.EntityFrameworkCore.Design >= 6.0.24",
       "Microsoft.EntityFrameworkCore.Tools >= 6.0.24",
-      "System.IdentityModel.Tokens.Jwt >= 6.33.0",
+      "System.IdentityModel.Tokens.Jwt >= 6.34.0",
       "System.Text.Json >= 6.0.8"
     ]
   },
@@ -3597,7 +3597,7 @@
           },
           "System.IdentityModel.Tokens.Jwt": {
             "target": "Package",
-            "version": "[6.33.0, )"
+            "version": "[6.34.0, )"
           },
           "System.Text.Json": {
             "target": "Package",

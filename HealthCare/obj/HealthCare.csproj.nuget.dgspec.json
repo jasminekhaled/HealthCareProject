@@ -70,7 +70,7 @@
             },
             "Microsoft.IdentityModel.Tokens": {
               "target": "Package",
-              "version": "[6.33.0, )"
+              "version": "[6.34.0, )"
             },
             "MimeKit": {
               "target": "Package",
@@ -78,7 +78,7 @@
             },
             "System.IdentityModel.Tokens.Jwt": {
               "target": "Package",
-              "version": "[6.33.0, )"
+              "version": "[6.34.0, )"
             }
           },
           "imports": [
@@ -250,7 +250,7 @@
             },
             "System.IdentityModel.Tokens.Jwt": {
               "target": "Package",
-              "version": "[6.33.0, )"
+              "version": "[6.34.0, )"
             },
             "System.Text.Json": {
               "target": "Package",

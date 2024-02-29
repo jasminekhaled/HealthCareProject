@@ -1,0 +1,17 @@
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.EF\bin\Release\net6.0\HealthCare.EF.deps.json
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.EF\bin\Release\net6.0\HealthCare.EF.runtimeconfig.json
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.EF\bin\Release\net6.0\HealthCare.EF.dll
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.EF\bin\Release\net6.0\HealthCare.EF.pdb
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.EF\bin\Release\net6.0\HealthCare.Core.dll
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.EF\bin\Release\net6.0\HealthCare.Core.pdb
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.EF\obj\Release\net6.0\HealthCare.EF.csproj.AssemblyReference.cache
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.EF\obj\Release\net6.0\HealthCare.EF.GeneratedMSBuildEditorConfig.editorconfig
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.EF\obj\Release\net6.0\HealthCare.EF.AssemblyInfoInputs.cache
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.EF\obj\Release\net6.0\HealthCare.EF.AssemblyInfo.cs
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.EF\obj\Release\net6.0\HealthCare.EF.csproj.CoreCompileInputs.cache
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.EF\obj\Release\net6.0\HealthCare.EF.csproj.CopyComplete
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.EF\obj\Release\net6.0\HealthCare.EF.dll
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.EF\obj\Release\net6.0\refint\HealthCare.EF.dll
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.EF\obj\Release\net6.0\HealthCare.EF.pdb
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.EF\obj\Release\net6.0\HealthCare.EF.genruntimeconfig.cache
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.EF\obj\Release\net6.0\ref\HealthCare.EF.dll

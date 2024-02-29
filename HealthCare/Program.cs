@@ -31,7 +31,6 @@ builder.Services.AddScoped<IAppointmentServices, AppointmentServices>();
 builder.Services.AddScoped<IBandServices, BandServices>();
 builder.Services.AddScoped<IMedicalHistoryServices, MedicalHistoryServices>();
 builder.Services.AddHttpContextAccessor();
-//builder.Services.AddScoped<FileServices>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -110,7 +109,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+ 
 app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");

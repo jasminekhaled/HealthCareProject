@@ -1,0 +1,14 @@
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Core\bin\Release\net6.0\HealthCare.Core.deps.json
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Core\bin\Release\net6.0\HealthCare.Core.runtimeconfig.json
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Core\bin\Release\net6.0\HealthCare.Core.dll
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Core\bin\Release\net6.0\HealthCare.Core.pdb
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Core\obj\Release\net6.0\HealthCare.Core.csproj.AssemblyReference.cache
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Core\obj\Release\net6.0\HealthCare.Core.GeneratedMSBuildEditorConfig.editorconfig
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Core\obj\Release\net6.0\HealthCare.Core.AssemblyInfoInputs.cache
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Core\obj\Release\net6.0\HealthCare.Core.AssemblyInfo.cs
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Core\obj\Release\net6.0\HealthCare.Core.csproj.CoreCompileInputs.cache
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Core\obj\Release\net6.0\HealthCare.Core.dll
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Core\obj\Release\net6.0\refint\HealthCare.Core.dll
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Core\obj\Release\net6.0\HealthCare.Core.pdb
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Core\obj\Release\net6.0\HealthCare.Core.genruntimeconfig.cache
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare.Core\obj\Release\net6.0\ref\HealthCare.Core.dll
