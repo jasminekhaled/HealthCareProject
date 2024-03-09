@@ -40,7 +40,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-       // [Authorize]
+        //[Authorize]
         [HttpGet("ListOfSpecialization")]
         public async Task<IActionResult> ListOfSpecialization()
         {

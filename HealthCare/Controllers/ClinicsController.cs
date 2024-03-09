@@ -62,7 +62,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize]
+      //  [Authorize]
         [HttpGet("ListOfXraySpecialization")]
         public async Task<IActionResult> ListOfXraySpecialization()
         {
@@ -72,7 +72,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize]
+       // [Authorize]
         [HttpGet("ListOfLabSpecialization")]
         public async Task<IActionResult> ListOfLabSpecialization()
         {
@@ -170,7 +170,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize]
+       // [Authorize]
         [HttpGet("ListOfClinicsInHospital")]
         public async Task<IActionResult> ListOfClinicsInHospital(int hospitalId)
         {
@@ -180,7 +180,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize]
+       // [Authorize]
         [HttpGet("ListOfXrayLabsInHospital")]
         public async Task<IActionResult> ListOfXrayLabsInHospital(int hospitalId)
         {
@@ -190,7 +190,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize]
+      //  [Authorize]
         [HttpGet("ListOfLabsInHospital")]
         public async Task<IActionResult> ListOfLabsInHospital(int hospitalId)
         {
@@ -200,7 +200,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize]
+       // [Authorize]
         [HttpGet("ListOfClinicsOfSpecificSpecialization")]
         public async Task<IActionResult> ListOfClinicsOfSpecificSpecialization(int specializationId)
         {
@@ -210,7 +210,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize]
+      //  [Authorize]
         [HttpGet("ListOfXraysOfSpecificSpecialization")]
         public async Task<IActionResult> ListOfXraysOfSpecificSpecialization(int xraySpecializationId)
         {
@@ -220,7 +220,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize]
+       // [Authorize]
         [HttpGet("ListOfLabsOfSpecificSpecialization")]
         public async Task<IActionResult> ListOfLabsOfSpecificSpecialization(int labSpecializationId)
         {
@@ -230,7 +230,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet("FilterClinicsBySpecializeAndGovernorate")]
         public async Task<IActionResult> FilterClinicsBySpecializeAndGovernorate(int SpecializationId, int GovernorateId)
         {
@@ -240,7 +240,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize]
+      //  [Authorize]
         [HttpGet("FilterXraysBySpecializeAndGovernorate")]
         public async Task<IActionResult> FilterXraysBySpecializeAndGovernorate(int xraySpecializationId, int GovernorateId)
         {
@@ -250,7 +250,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize]
+       // [Authorize]
         [HttpGet("FilterLabsBySpecializeAndGovernorate")]
         public async Task<IActionResult> FilterLabsBySpecializeAndGovernorate(int labSpecializationId, int GovernorateId)
         {

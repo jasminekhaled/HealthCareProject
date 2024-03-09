@@ -37,7 +37,7 @@ namespace HealthCare.Controllers
         }
 
         [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromForm] LoginRequest dto)
+        public async Task<IActionResult> Login(LoginRequest dto)
         {
             var result = await _authServices.Login(dto);
             if (!result.IsSuccess)

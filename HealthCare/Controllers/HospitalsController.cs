@@ -28,7 +28,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize]
+       // [Authorize]
         [HttpGet("ListOfHospitals")]
         public async Task<IActionResult> ListOfHospitals()
         {
@@ -48,7 +48,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize]
+       // [Authorize]
         [HttpGet("GetHospitalByName")]
         public async Task<IActionResult> GetHospitalByName(string Name)
         {
@@ -58,7 +58,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize]
+       // [Authorize]
         [HttpGet("GetHospitalByGovernorate")]
         public async Task<IActionResult> GetHospitalByGovernorate(int governoratetId)
         {
@@ -68,7 +68,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize]
+      //  [Authorize]
         [HttpGet("HospitalDetails")]
         public async Task<IActionResult> HospitalDetails(int hospitalId)
         {
@@ -157,7 +157,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize]
+       // [Authorize]
         [HttpGet("ListOfGovernorates")]
         public async Task<IActionResult> ListOfGovernorates()
         {

@@ -200,7 +200,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize]
+       // [Authorize]
         [HttpGet("ListOfAppointmentOfClinic")]
         public async Task<IActionResult> ListOfAppointmentOfClinic(int clinicId)
         {
@@ -210,7 +210,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet("ListOfAppointmentOfLab")]
         public async Task<IActionResult> ListOfAppointmentOfLab(int labId)
         {
@@ -220,7 +220,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize]
+       // [Authorize]
         [HttpGet("ListOfAppointmentOfXray")]
         public async Task<IActionResult> ListOfAppointmentOfXray(int xrayId)
         {
