@@ -79,7 +79,7 @@ namespace HealthCare.Controllers
         }
 
         [Authorize(Roles = "HospitalAdmin")]
-        [HttpPatch("EditHospital")]
+        [HttpPut("EditHospital")]
         public async Task<IActionResult> EditHospital(int hospitalId, [FromForm] EditHospitalDto dto)
         {
             var result = await _hospitalServices.EditHospital(hospitalId, dto);
@@ -128,7 +128,7 @@ namespace HealthCare.Controllers
         }
 
         [Authorize(Roles = "HospitalAdmin")]
-        [HttpPatch("EditHospitalAdmin")]
+        [HttpPut("EditHospitalAdmin")]
         public async Task<IActionResult> EditHospitalAdmin([FromForm] EditHospitalAdminDto dto)
         {
             var result = await _hospitalServices.EditHospitalAdmin(dto);

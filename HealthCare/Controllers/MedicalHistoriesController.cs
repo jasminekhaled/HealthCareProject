@@ -65,21 +65,33 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize(Roles = "Patient, Doctor")]
-        [HttpGet("GetMedicalHistory")]
-        public async Task<IActionResult> GetMedicalHistory(int medicalHistoryId)
+        [Authorize(Roles = "Doctor")]
+        [HttpGet("GetMedicalHistoryByDoctor")]
+        public async Task<IActionResult> GetMedicalHistoryByDoctor(int medicalHistoryId)
         {
-            var result = await _medicalHistoryServices.GetMedicalHistory(medicalHistoryId);
+            var result = await _medicalHistoryServices.GetMedicalHistoryByDoctor(medicalHistoryId);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
         }
 
+
+        [Authorize(Roles = "Patient")]
+        [HttpGet("GetMedicalHistoryByPatient")]
+        public async Task<IActionResult> GetMedicalHistoryByPatient()
+        {
+            var result = await _medicalHistoryServices.GetMedicalHistoryByPatient();
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+
         [Authorize(Roles = "Patient")]
         [HttpPut("EditMedicalHistoryByPatient")]
-        public async Task<IActionResult> EditMedicalHistoryByPatient(int medicalHistoryId, [FromForm] EditMedicalHistoryDto dto)
+        public async Task<IActionResult> EditMedicalHistoryByPatient([FromForm] EditMedicalHistoryDto dto)
         {
-            var result = await _medicalHistoryServices.EditMedicalHistoryByPatient(medicalHistoryId, dto);
+            var result = await _medicalHistoryServices.EditMedicalHistoryByPatient(dto);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);

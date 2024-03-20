@@ -36,6 +36,7 @@ namespace HealthCare.Services.IServices
         Task<GeneralResponse<string>> CancelXrayReservation(int xrayReservationId);
         Task<GeneralResponse<string>> CancelLabReservation(int labReservationId);
         Task<GeneralResponse<string>> DoneReservation(int reservationId);
+        Task<GeneralResponse<string>> CancelReservation(int reservationId);
 
 
 

@@ -260,5 +260,15 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "Patient")]
+        [HttpDelete("CancelReservation")]
+        public async Task<IActionResult> CancelReservation(int reservationId)
+        {
+            var result = await _appointmentServices.CancelReservation(reservationId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
     }
 }

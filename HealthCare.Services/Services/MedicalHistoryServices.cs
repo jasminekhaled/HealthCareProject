@@ -63,7 +63,7 @@ namespace HealthCare.Services.Services
                     };
                 }
 
-                string format = "d/M/yyyy";
+                string format = "mm/dd/yyyy";
                 if (!DateTime.TryParseExact(dto.BirthDate, format, null, System.Globalization.DateTimeStyles.None, out DateTime result) && result.TimeOfDay == TimeSpan.Zero)
                 {
                     return new GeneralResponse<PatientResponseDto>
@@ -522,7 +522,7 @@ namespace HealthCare.Services.Services
                 };
             }
         }
-        public async Task<GeneralResponse<MedicalHistoryResponseDto>> GetMedicalHistory(int medicalHistoryId)
+        public async Task<GeneralResponse<MedicalHistoryResponseDto>> GetMedicalHistoryByDoctor(int medicalHistoryId)
         {
             try
             {
@@ -539,38 +539,29 @@ namespace HealthCare.Services.Services
                 }
                 HttpContext httpContext = _httpContextAccessor.HttpContext;
                 int userId = httpContext.FindFirst();
-                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId);
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId
+                && a.Role == User.Doctor);
                 if (user == null)
                 {
                     return new GeneralResponse<MedicalHistoryResponseDto>
                     {
                         IsSuccess = false,
-                        Message = "No user Found!"
+                        Message = "No doctor Found!"
                     };
                 }
-                if(user.Role == User.Patient && medicalHistory.Patient.UserName != user.UserName)
+                var Doctor = await _unitOfWork.DoctorRepository.GetSingleWithIncludesAsync(s => s.UserName == user.UserName);
+                var doctors = await _unitOfWork.AllReservationsRepository.GetSpecificItems(w => w.PatientId == medicalHistory.Patient.Id, s => s.DoctorId);
+                bool NoneMatch = doctors.All(s => s != Doctor.Id);
+                if (NoneMatch)
                 {
                     return new GeneralResponse<MedicalHistoryResponseDto>
                     {
                         IsSuccess = false,
-                        Message = "you donot have permission to enter this medicalHistory!"
+                        Message = "you donot have permission to modify this medicalHistory!!"
                     };
                 }
-             
-                if (user.Role == User.Doctor)
-                {
-                    var Doctor = await _unitOfWork.DoctorRepository.GetSingleWithIncludesAsync(s => s.UserName == user.UserName);
-                    var doctors = await _unitOfWork.AllReservationsRepository.GetSpecificItems(w => w.PatientId == medicalHistory.Patient.Id, s => s.DoctorId);
-                    bool NoneMatch = doctors.All(s => s != Doctor.Id);
-                    if (NoneMatch)
-                    {
-                        return new GeneralResponse<MedicalHistoryResponseDto>
-                        {
-                            IsSuccess = false,
-                            Message = "you donot have permission to modify this medicalHistory!!"
-                        };
-                    }
-                }
+
+
 
                 var data = _mapper.Map<MedicalHistoryResponseDto>(medicalHistory);
                 var testFiles = await _unitOfWork.MedicalHistoryFileRepository.Where(w => w.MedicalHistoryId == medicalHistoryId && w.Type == MedicalHistoryFile.Test);
@@ -599,7 +590,63 @@ namespace HealthCare.Services.Services
                 };
             }
         }
-        public async Task<GeneralResponse<MedicalHistoryResponseDto>> EditMedicalHistoryByPatient(int medicalHistoryId, [FromForm]EditMedicalHistoryDto dto)
+
+
+
+        public async Task<GeneralResponse<MedicalHistoryResponseDto>> GetMedicalHistoryByPatient()
+        {
+            try
+            {
+
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.Role==User.Patient);
+                if (user == null)
+                {
+                    return new GeneralResponse<MedicalHistoryResponseDto>
+                    {
+                        IsSuccess = false,
+                        Message = "No patient Found!"
+                    };
+                }
+
+                var medicalHistoryId = await _unitOfWork.PatientRepository.WhereSelectTheFirstAsync(
+                    s => s.UserName == user.UserName,
+                    i => i.MedicalHistoryId);
+
+                var medicalHistory = await _unitOfWork.MedicalHistoryRepository.GetSingleWithIncludesAsync(
+                    s => s.Id == medicalHistoryId,
+                    a => a.Patient.UploadedFile, a => a.Patient);
+
+
+                var data = _mapper.Map<MedicalHistoryResponseDto>(medicalHistory);
+                var testFiles = await _unitOfWork.MedicalHistoryFileRepository.Where(w => w.MedicalHistoryId == medicalHistoryId && w.Type == MedicalHistoryFile.Test);
+                var xrayFiles = await _unitOfWork.MedicalHistoryFileRepository.Where(w => w.MedicalHistoryId == medicalHistoryId && w.Type == MedicalHistoryFile.Xray);
+                var testFileDtos = _mapper.Map<List<FileResponseDto>>(testFiles);
+                var xrayFileDtos = _mapper.Map<List<FileResponseDto>>(xrayFiles);
+                data.TestFiles = testFileDtos;
+                data.XrayFiles = xrayFileDtos;
+                if (data.Gender) { data.GenderType = "Female"; }
+                else { data.GenderType = "Male"; }
+
+                return new GeneralResponse<MedicalHistoryResponseDto>
+                {
+                    IsSuccess = true,
+                    Message = "Medical History is displayed sucessfully.",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<MedicalHistoryResponseDto>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+        public async Task<GeneralResponse<MedicalHistoryResponseDto>> EditMedicalHistoryByPatient([FromForm]EditMedicalHistoryDto dto)
         {
             try
             {
@@ -616,26 +663,11 @@ namespace HealthCare.Services.Services
                 }
                 var patient = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(s => s.UserName == user.UserName);
                 var medicalHistory = await _unitOfWork.MedicalHistoryRepository.GetSingleWithIncludesAsync(
-                    s => s.Id == medicalHistoryId && s.Patient == patient,
+                    s => s.Id == patient.MedicalHistoryId && s.Patient == patient,
                     a => a.Patient.UploadedFile, a => a.Patient);
-                if (medicalHistory == null)
-                {
-                    return new GeneralResponse<MedicalHistoryResponseDto>
-                    {
-                        IsSuccess = false,
-                        Message = "No Medical History found!"
-                    };
-                }
 
-                string format = "d/M/yyyy";
-                if (dto.BirthDate != null && !DateTime.TryParseExact(dto.BirthDate, format, null, System.Globalization.DateTimeStyles.None, out DateTime result) && result.TimeOfDay == TimeSpan.Zero)
-                {
-                    return new GeneralResponse<MedicalHistoryResponseDto>
-                    {
-                        IsSuccess = false,
-                        Message = "Invalid BirthDate Formate!"
-                    };
-                }
+
+                
 
                 if(dto.FriendPhoneNum != null)
                 {
@@ -741,8 +773,8 @@ namespace HealthCare.Services.Services
                 await _unitOfWork.CompleteAsync();
 
                 var data = _mapper.Map<MedicalHistoryResponseDto>(medicalHistory);
-                var testFiles = await _unitOfWork.MedicalHistoryFileRepository.Where(w => w.MedicalHistoryId == medicalHistoryId && w.Type == MedicalHistoryFile.Test);
-                var xrayFiles = await _unitOfWork.MedicalHistoryFileRepository.Where(w => w.MedicalHistoryId == medicalHistoryId && w.Type == MedicalHistoryFile.Xray);
+                var testFiles = await _unitOfWork.MedicalHistoryFileRepository.Where(w => w.MedicalHistoryId == patient.MedicalHistoryId && w.Type == MedicalHistoryFile.Test);
+                var xrayFiles = await _unitOfWork.MedicalHistoryFileRepository.Where(w => w.MedicalHistoryId == patient.MedicalHistoryId && w.Type == MedicalHistoryFile.Xray);
                 var testFileDtos = _mapper.Map<List<FileResponseDto>>(testFiles);
                 var xrayFileDtos = _mapper.Map<List<FileResponseDto>>(xrayFiles);
                 data.TestFiles = testFileDtos;

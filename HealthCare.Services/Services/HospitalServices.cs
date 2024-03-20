@@ -304,6 +304,8 @@ namespace HealthCare.Services.Services
                 }
 
                 var data = _mapper.Map<HospitalDto>(hospital);
+                data.GovernorateId = await _unitOfWork.GovernorateRepository.WhereSelectTheFirstAsync(
+                    s => s.Name == hospital.HospitalGovernorate.Governorate.Name, a => a.Id);
 
                 return new GeneralResponse<HospitalDto>
                 {
