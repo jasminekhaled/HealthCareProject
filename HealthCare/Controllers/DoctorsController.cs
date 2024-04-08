@@ -169,6 +169,17 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "HospitalAdmin")]
+        [HttpGet("ListOfDoctorsNotInThisHospital")]
+        public async Task<IActionResult> ListOfDoctorsNotInThisHospital()
+        {
+            var result = await _doctorServices.ListOfDoctorsNotInThisHospital();
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        
 
 
 

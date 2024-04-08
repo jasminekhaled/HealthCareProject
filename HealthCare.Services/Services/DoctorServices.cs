@@ -1020,10 +1020,14 @@ namespace HealthCare.Services.Services
                 _unitOfWork.XrayAppointmentRepository.RemoveRange(xrayAppointments);
                 _unitOfWork.HospitalDoctorRepository.Remove(hospitalDoctor);
                 await _unitOfWork.CompleteAsync();
-                
-                if(!doctor.hospitalDoctors.Any())
+
+                var CheckHospitalDoctor = await _unitOfWork.HospitalDoctorRepository.SingleOrDefaultAsync(
+                    s => s.DoctorId == doctorId);
+                if (CheckHospitalDoctor == null)
                 {
+                    var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(s => s.UserName == doctor.UserName);
                     _unitOfWork.DoctorRepository.Remove(doctor);
+                    _unitOfWork.UserRepository.Remove(user);
                     await _unitOfWork.CompleteAsync();
                 }
                 return new GeneralResponse<string>
@@ -1103,6 +1107,77 @@ namespace HealthCare.Services.Services
                     var specializationIds = doctor.DoctorSpecialization.Select(ds => ds.SpecializationId);
                     var specia = await _unitOfWork.SpecializationRepository
                         .Where(s => specializationIds.Contains(s.Id));
+                    d.Specializations = _mapper.Map<List<SpecializationDto>>(specia);
+
+                    var hospitalIds = doctor.hospitalDoctors.Select(hd => hd.HospitalId);
+                    var hospitals = await _unitOfWork.HospitalRepository
+                        .WhereIncludeAsync(filter: h => hospitalIds.Contains(h.Id), i => i.UploadedFile, i => i.HospitalGovernorate.Governorate);
+                    d.Hospitals = _mapper.Map<List<ListOfHospitalDto>>(hospitals);
+                }
+
+                return new GeneralResponse<List<DoctorDto>>
+                {
+                    IsSuccess = true,
+                    Message = "Doctors Listed Successfully.",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<List<DoctorDto>>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+        public async Task<GeneralResponse<List<DoctorDto>>> ListOfDoctorsNotInThisHospital()
+        {
+            try
+            {
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
+                    a => a.Id == userId && a.Role == User.HospitalAdmin);
+                if (ThisUser == null)
+                {
+                    return new GeneralResponse<List<DoctorDto>>
+                    {
+                        IsSuccess = false,
+                        Message = "No user Found!"
+                    };
+                }
+                var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(
+                       s => s.UserName == ThisUser.UserName, i => i.AdminOfHospital);
+
+
+                var doctorIds = await _unitOfWork.HospitalDoctorRepository.GetSpecificItems(
+                   filter: w => w.HospitalId == hospitalAdmin.AdminOfHospital.HospitalId,
+                   select: s => s.DoctorId);
+
+                var doctors = await _unitOfWork.DoctorRepository.WhereIncludeAsync(
+                    a => !doctorIds.Contains(a.Id),
+                    i => i.DoctorSpecialization, i => i.UploadedFile, i => i.hospitalDoctors);
+                if (doctors.Count() == 0)
+                {
+                    return new GeneralResponse<List<DoctorDto>>
+                    {
+                        IsSuccess = false,
+                        Message = "No Doctors Found!"
+                    };
+
+                }
+                var data = _mapper.Map<List<DoctorDto>>(doctors);
+
+                foreach (var d in data)
+                {
+                    var doctor = doctors.FirstOrDefault(s => s.UserName == d.UserName);
+
+                    var specializationIds = doctor.DoctorSpecialization.Select(ds => ds.SpecializationId);
+                    var specia = await _unitOfWork.SpecializationRepository
+                        .WhereIncludeAsync(s => specializationIds.Contains(s.Id), i => i.UploadedFile);
                     d.Specializations = _mapper.Map<List<SpecializationDto>>(specia);
 
                     var hospitalIds = doctor.hospitalDoctors.Select(hd => hd.HospitalId);

@@ -1,4 +1,6 @@
-﻿using HealthCare.Core.DTOS.AppointmentModule.RequestDto;
+﻿using HealthCare.Core.DTOS;
+using HealthCare.Core.DTOS.AppointmentModule.RequestDto;
+using HealthCare.Core.DTOS.AppointmentModule.ResponseDto;
 using HealthCare.Core.DTOS.ClinicModule.RequestDto;
 using HealthCare.Core.Models.AppointmentModule;
 using HealthCare.Services.IServices;
@@ -230,11 +232,11 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize(Roles = "Doctor")]
+        [Authorize(Roles = "Doctor, HospitalAdmin")]
         [HttpGet("ListOfReservationsOfDoctor")]
-        public async Task<IActionResult> ListOfReservationsOfDoctor(int hospitalId)
+        public async Task<IActionResult> ListOfReservationsOfDoctor(int doctorId, int hospitalId)
         {
-            var result = await _appointmentServices.ListOfReservationsOfDoctor(hospitalId);
+            var result = await _appointmentServices.ListOfReservationsOfDoctor(doctorId, hospitalId);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
@@ -250,7 +252,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize(Roles = "Doctor")]
+        [Authorize(Roles = "Doctor, HospitalAdmin")]
         [HttpDelete("DoneReservation")]
         public async Task<IActionResult> DoneReservation(int reservationId)
         {
@@ -269,6 +271,16 @@ namespace HealthCare.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
+
+        [HttpGet("ListOfDays")]
+        public async Task<IActionResult> ListOfDays()
+        {
+            var result = await _appointmentServices.ListOfDays();
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
 
     }
 }

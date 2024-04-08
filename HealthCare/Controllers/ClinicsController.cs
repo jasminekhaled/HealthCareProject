@@ -42,7 +42,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize(Roles = "SuperAdmin")]
+        //[Authorize(Roles = "SuperAdmin")]
         [HttpPost("AddLabSpecialization")]
         public async Task<IActionResult> AddLabSpecialization([FromForm] LabSpecializationRequestDto dto)
         {

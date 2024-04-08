@@ -15,7 +15,7 @@ namespace HealthCare.Services.IServices
         Task<GeneralResponse<List<ListAppointmentDto>>> ListOfAppointmentOfClinic(int clinicId);
         Task<GeneralResponse<List<ListAppointmentDto>>> ListOfAppointmentOfLab(int labId);
         Task<GeneralResponse<List<ListAppointmentDto>>> ListOfAppointmentOfXray(int xrayId);
-        Task<GeneralResponse<List<ReservationResponseDto>>> ListOfReservationsOfDoctor(int hospitalId);
+        Task<GeneralResponse<List<ReservationResponseDto>>> ListOfReservationsOfDoctor(int doctorId, int hospitalId);
         Task<GeneralResponse<List<PatientReservationDto>>> ListOfReservationsOfPatient();
         Task<GeneralResponse<AppointmentResponseDto>> AddClinicAppointment(int clinicId, [FromForm]AddAppointmentRequestDto dto);
         Task<GeneralResponse<ListAppointmentDto>> AddClinicAppointmentDatesToAnAppointment(int clinicAppointmentId, AddAppointmentDateRequestDto dto);
@@ -37,6 +37,7 @@ namespace HealthCare.Services.IServices
         Task<GeneralResponse<string>> CancelLabReservation(int labReservationId);
         Task<GeneralResponse<string>> DoneReservation(int reservationId);
         Task<GeneralResponse<string>> CancelReservation(int reservationId);
+        Task<GeneralResponse<List<DayDto>>> ListOfDays();
 
 
 

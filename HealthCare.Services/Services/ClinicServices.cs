@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿ using AutoMapper;
 using HealthCare.Core.DTOS;
 using HealthCare.Core.DTOS.ClinicModule.RequestDto;
 using HealthCare.Core.DTOS.ClinicModule.ResponseDto;
@@ -130,10 +130,10 @@ namespace HealthCare.Services.Services
             {
                 var uploadedFile = new UploadedFile()
                 {
-                    FileName = "chemical - analysis(1).png",
+                    FileName = "chemical-analysis (1).png",
                     ContentType = "image/png",
-                    StoredFileName = "1z5ysxnp.th1",
-                    FilePath = "G:\\WEB DEVELOPMENT\\HealthCareProject\\HealthCareAPIs\\HealthCare\\Uploads\\LabSpecializationImages\\1z5ysxnp.th1"
+                    StoredFileName = "pp55czhl.dua",
+                    FilePath = "G:\\WEB DEVELOPMENT\\HealthCareProject\\HealthCareAPIs\\HealthCare\\Uploads\\LabSpecializationImages\\pp55czhl.dua"
                 };
                 await _unitOfWork.UploadedFileRepository.AddAsync(uploadedFile);
                 await _unitOfWork.CompleteAsync();

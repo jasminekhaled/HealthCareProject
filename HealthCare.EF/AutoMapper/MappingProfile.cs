@@ -88,15 +88,12 @@ namespace HealthCare.EF.AutoMapper
             CreateMap<Governorate, GovernorateDto>();
 
             CreateMap<DoctorRequestDto, Doctor>();
-               /* .ForMember(src => src.Id, opt => opt.Ignore())
-                .ForMember(src => src.hospitalDoctors, opt => opt.Ignore())
-                .ForMember(src => src.RateDoctor, opt => opt.Ignore())
-                .ForMember(src => src.clinicLabDoctors, opt => opt.Ignore())
-                .ForMember(src => src.DoctorSpecialization, opt => opt.Ignore());*/
 
             CreateMap<Doctor, User>()
                 .ForMember(src => src.Id, opt => opt.Ignore());
-             
+
+            CreateMap<Day, DayDto>();
+
             CreateMap<Doctor, AddDoctorResponseDto>()
                 .ForMember(dest => dest.DoctorId, opt => opt.MapFrom(src => src.Id));
 

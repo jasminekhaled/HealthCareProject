@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using static Org.BouncyCastle.Bcpg.Attr.ImageAttrib;
@@ -106,7 +107,7 @@ namespace HealthCare.Services.Services
                         Message = "Wrong Price"
                     };
                 }
-                string[] format = { "h:mm tt" };
+                string[] format = { "hh:mm tt" };
                 if (!DateTime.TryParseExact(dto.FromTime, format, null, System.Globalization.DateTimeStyles.None, out DateTime parsedTime) ||
                     !DateTime.TryParseExact(dto.FromTime, format, null, System.Globalization.DateTimeStyles.None, out DateTime ParsedTime))
                 {
@@ -1642,16 +1643,12 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public async Task<GeneralResponse<List<ReservationResponseDto>>> ListOfReservationsOfDoctor(int hospitalId)
+        public async Task<GeneralResponse<List<ReservationResponseDto>>> ListOfReservationsOfDoctor(int doctorId, int hospitalId)
         {
             try
             {
-                HttpContext httpContext = _httpContextAccessor.HttpContext;
-                int userId = httpContext.FindFirst();
-                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
-                    a => a.Id == userId && a.Role == User.Doctor);
-
-                if (ThisUser == null)
+                var doctor = await _unitOfWork.DoctorRepository.SingleOrDefaultAsync(s => s.Id == doctorId);
+                if (doctor == null)
                 {
                     return new GeneralResponse<List<ReservationResponseDto>>
                     {
@@ -1659,7 +1656,6 @@ namespace HealthCare.Services.Services
                         Message = "No doctor Found!"
                     };
                 }
-                var doctor = await _unitOfWork.DoctorRepository.SingleOrDefaultAsync(s => s.UserName == ThisUser.UserName);
 
                 var hospital = await _unitOfWork.HospitalRepository.GetSingleWithIncludesAsync(s => s.Id == hospitalId);
                 if (hospital == null)
@@ -1687,7 +1683,7 @@ namespace HealthCare.Services.Services
                 var available = all.Where(a => DateTime.Parse(a.Date) >= DateTime.Now).ToList();
                
                 var data = _mapper.Map<List<ReservationResponseDto>>(available.OrderBy(available => DateTime.Parse(available.Date)));
-               
+                
                 var unAvailable = all.Where(a => DateTime.Parse(a.Date) < DateTime.Now).ToList();
 
                 var clinicReservationIds = unAvailable.Where(w => w.Type == AllReservations.Clinic)
@@ -1831,28 +1827,47 @@ namespace HealthCare.Services.Services
                 HttpContext httpContext = _httpContextAccessor.HttpContext;
                 int userId = httpContext.FindFirst();
                 var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
-                    a => a.Id == userId && a.Role == User.Doctor);
+                    a => a.Id == userId);
 
-                if (ThisUser == null)
+                if (ThisUser.Role!= User.Doctor && ThisUser.Role!= User.HospitalAdmin)
                 {
                     return new GeneralResponse<string>
                     {
                         IsSuccess = false,
-                        Message = "No doctor Found!"
+                        Message = "No user Found!"
                     };
                 }
-                var doctor = await _unitOfWork.DoctorRepository.SingleOrDefaultAsync(s => s.UserName == ThisUser.UserName);
-
-                var reservation = await _unitOfWork.AllReservationsRepository.GetSingleWithIncludesAsync(
-                    s => s.Id == reservationId && s.DoctorId == doctor.Id);
-                if (reservation == null)
+                AllReservations reservation;
+                if(ThisUser.Role == User.Doctor)
                 {
-                    return new GeneralResponse<string>
+                    var doctor = await _unitOfWork.DoctorRepository.SingleOrDefaultAsync(s => s.UserName == ThisUser.UserName);
+
+                     reservation = await _unitOfWork.AllReservationsRepository.GetSingleWithIncludesAsync(
+                        s => s.Id == reservationId && s.DoctorId == doctor.Id);
+                    if (reservation == null)
                     {
-                        IsSuccess = false,
-                        Message = "No reservation Found!"
-                    };
+                        return new GeneralResponse<string>
+                        {
+                            IsSuccess = false,
+                            Message = "No reservation Found!"
+                        };
+                    }
                 }
+                else
+                {
+                    reservation = await _unitOfWork.AllReservationsRepository.GetSingleWithIncludesAsync(
+                       s => s.Id == reservationId);
+                    if (reservation == null)
+                    {
+                        return new GeneralResponse<string>
+                        {
+                            IsSuccess = false,
+                            Message = "No reservation Found!"
+                        };
+                    }
+
+                }
+
                 if (reservation.Type == AllReservations.Clinic)
                 {
                     var clinicReservation = await _unitOfWork.ClinicReservationRepository.GetByIdAsync(reservation.RoomReservationId);
@@ -1951,6 +1966,31 @@ namespace HealthCare.Services.Services
             catch (Exception ex)
             {
                 return new GeneralResponse<string>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+        public async Task<GeneralResponse<List<DayDto>>> ListOfDays() 
+        {
+            try
+            {
+                var Days = await _unitOfWork.DayRepository.GetAllAsync();
+                var data = _mapper.Map<List<DayDto>>(Days);
+
+                return new GeneralResponse<List<DayDto>>
+                {
+                    IsSuccess = true,
+                    Message = "This Reservation is canceled .",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<List<DayDto>>
                 {
                     IsSuccess = false,
                     Message = "Something went wrong",
