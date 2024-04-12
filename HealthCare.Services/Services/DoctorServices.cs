@@ -725,7 +725,7 @@ namespace HealthCare.Services.Services
                 var doctors = await _unitOfWork.DoctorRepository.WhereIncludeAsync(
                     a => doctorIds.Contains(a.Id),
                     i => i.DoctorSpecialization, i => i.UploadedFile, i => i.hospitalDoctors);
-                if (doctors.Count() == 0)
+             /*   if (doctors.Count() == 0)
                 {
                     return new GeneralResponse<List<DoctorDto>>
                     {
@@ -733,7 +733,7 @@ namespace HealthCare.Services.Services
                         Message = "No Doctors Found!"
                     };
 
-                }
+                }*/
                 var data = _mapper.Map<List<DoctorDto>>(doctors);
 
                 foreach (var d in data)

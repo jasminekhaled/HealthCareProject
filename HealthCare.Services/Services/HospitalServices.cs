@@ -26,6 +26,7 @@ using System.IdentityModel.Tokens.Jwt;
 using HealthCare.Core.DTOS.DoctorModule.ResponseDtos;
 using Microsoft.AspNetCore.Http;
 using HealthCare.Core.DTOS.BandModule.ResponseDtos;
+using HealthCare.Core.Models.AppointmentModule;
 
 namespace HealthCare.Services.Services
 {
@@ -179,11 +180,32 @@ namespace HealthCare.Services.Services
                         Message = "No hospital Found ."
                     };
                 }
+
+                var clinicIds = await _unitOfWork.ClinicLabRepository.GetSpecificItems(w => w.HospitalId == hospitalId,
+                    s => s.Id);
+                var clinicReservations = await _unitOfWork.AllReservationsRepository.Where(
+                    s => s.Type == AllReservations.Clinic && clinicIds.Contains(s.RoomId));
+
+                var labIds = await _unitOfWork.LabRepository.GetSpecificItems(w => w.HospitalId == hospitalId,
+                    s => s.Id);
+                var labReservations = await _unitOfWork.AllReservationsRepository.Where(
+                    s => s.Type == AllReservations.Lab && labIds.Contains(s.RoomId));
+
+
+                var xrayIds = await _unitOfWork.XrayRepository.GetSpecificItems(w => w.HospitalId == hospitalId,
+                    s => s.Id);
+                var xrayReservations = await _unitOfWork.AllReservationsRepository.Where(
+                    s => s.Type == AllReservations.Xray && xrayIds.Contains(s.RoomId));
+
+
                 var upload = await _unitOfWork.UploadedFileRepository.GetByIdAsync(hospital.UploadedFileId);
                 File.Delete(upload.FilePath);
                 _unitOfWork.UploadedFileRepository.Remove(upload);
                 
                 _unitOfWork.HospitalRepository.Remove(hospital);
+                _unitOfWork.AllReservationsRepository.RemoveRange(clinicReservations);
+                _unitOfWork.AllReservationsRepository.RemoveRange(labReservations);
+                _unitOfWork.AllReservationsRepository.RemoveRange(xrayReservations);
                 await _unitOfWork.CompleteAsync();
                 
 
