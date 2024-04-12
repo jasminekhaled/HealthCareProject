@@ -23,7 +23,7 @@ namespace HealthCare.Services.IServices
         Task<GeneralResponse<List<DoctorDto>>> GetDoctorByName(string FullName);
         Task<GeneralResponse<List<DoctorDto>>> GetDoctorInSpecificHospitalByName(string FullName, int hospitalId);
         Task<GeneralResponse<AddDoctorResponseDto>> AddDoctor([FromForm]DoctorRequestDto dto);
-        Task<GeneralResponse<string>> DeleteDoctor(int doctorId);
+       // Task<GeneralResponse<string>> DeleteDoctor(int doctorId);
         Task<GeneralResponse<DoctorDto>> EditDoctor([FromForm]EditDoctorDto dto);
         Task<GeneralResponse<DoctorDto>> DoctorDetails();
         Task<GeneralResponse<string>> AddDoctorToHospital(int doctorId);

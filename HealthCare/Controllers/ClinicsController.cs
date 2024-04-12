@@ -22,7 +22,7 @@ namespace HealthCare.Controllers
             _clinicServices = clinicServices;
         }
 
-        [Authorize(Roles = "SuperAdmin")]
+      //  [Authorize(Roles = "SuperAdmin")]
         [HttpPost("AddXraySpecialization")]
         public async Task<IActionResult> AddXraySpecialization([FromForm]SpecializationRequestDto dto)
         {
@@ -32,7 +32,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize(Roles = "SuperAdmin")]
+       // [Authorize(Roles = "SuperAdmin")]
         [HttpDelete("DeleteXraySpecialization")]
         public async Task<IActionResult> DeleteXraySpecialization(int xraySpecializationId)
         {
@@ -42,7 +42,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        //[Authorize(Roles = "SuperAdmin")]
+        [Authorize(Roles = "SuperAdmin")]
         [HttpPost("AddLabSpecialization")]
         public async Task<IActionResult> AddLabSpecialization([FromForm] LabSpecializationRequestDto dto)
         {

@@ -690,11 +690,9 @@ namespace HealthCare.Services.Services
                 var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(s => s.UserName == admin.UserName);
                 var refreshToken = await _unitOfWork.RefreshTokenRepository.Where(s => s.userId == user.Id);
                 var uploadedFile = await _unitOfWork.UploadedFileRepository.GetByIdAsync(admin.UploadedFileId);
-                if(uploadedFile.FilePath != UploadedFile.DefaultImagePath)
-                {
-                    File.Delete(uploadedFile.FilePath);
-                }
-                
+                if (uploadedFile.StoredFileName != "DefaultImage")
+                { File.Delete(uploadedFile.FilePath); }
+
                 _unitOfWork.RefreshTokenRepository.RemoveRange(refreshToken);
                 _unitOfWork.UserRepository.Remove(user);
                 _unitOfWork.HospitalAdminRepository.Remove(admin);

@@ -376,7 +376,7 @@ namespace HealthCare.Services.Services
                 };
             }
         }
-        ////////////
+        /*
         public async Task<GeneralResponse<string>> DeleteDoctor(int doctorId)
         {
             try
@@ -392,7 +392,8 @@ namespace HealthCare.Services.Services
                 }
                 var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(s => s.UserName == doctor.UserName);
                 var upload = await _unitOfWork.UploadedFileRepository.GetByIdAsync(user.UploadedFileId);
-                if(upload.StoredFileName != "DefaultImage") File.Delete(upload.FilePath);
+                if (upload.StoredFileName != "DefaultImage")
+                { File.Delete(upload.FilePath); }
 
                 _unitOfWork.UserRepository.Remove(user);
                 _unitOfWork.UploadedFileRepository.Remove(upload);
@@ -415,7 +416,7 @@ namespace HealthCare.Services.Services
                     Error = ex
                 };
             }
-        }
+        }*/
         
         public async Task<GeneralResponse<List<DoctorDto>>> ListOfDoctors()
         {
@@ -1025,9 +1026,15 @@ namespace HealthCare.Services.Services
                     s => s.DoctorId == doctorId);
                 if (CheckHospitalDoctor == null)
                 {
-                    var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(s => s.UserName == doctor.UserName);
+                    var user = await _unitOfWork.UserRepository.GetSingleWithIncludesAsync(
+                        s => s.UserName == doctor.UserName);
+                    var upload = await _unitOfWork.UploadedFileRepository.GetByIdAsync(user.UploadedFileId);
+                    
                     _unitOfWork.DoctorRepository.Remove(doctor);
                     _unitOfWork.UserRepository.Remove(user);
+                    if (upload.StoredFileName != "DefaultImage")
+                    { File.Delete(upload.FilePath); }
+                    _unitOfWork.UploadedFileRepository.Remove(upload);
                     await _unitOfWork.CompleteAsync();
                 }
                 return new GeneralResponse<string>

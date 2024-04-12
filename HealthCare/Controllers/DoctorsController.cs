@@ -69,7 +69,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize(Roles = "HospitalAdmin")]
+       /* [Authorize(Roles = "HospitalAdmin")]
         [HttpDelete("DeleteDoctor")]
         public async Task<IActionResult> DeleteDoctor(int doctorId)
         {
@@ -77,7 +77,7 @@ namespace HealthCare.Controllers
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
-        }
+        }*/
 
         [Authorize]
         [HttpGet("ListOfDoctors")]

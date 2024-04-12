@@ -164,7 +164,8 @@ namespace HealthCare.Services.Services
                 var medicalHistory = await _unitOfWork.MedicalHistoryRepository.SingleOrDefaultAsync(s => s.Id == patient.MedicalHistoryId);
                 var uploadedfile = await _unitOfWork.UploadedFileRepository.GetByIdAsync(user.UploadedFileId);
 
-                if (uploadedfile.StoredFileName != "DefaultImage") File.Delete(uploadedfile.FilePath);
+                if (uploadedfile.StoredFileName != "DefaultImage")
+                { File.Delete(uploadedfile.FilePath); }
 
                 _unitOfWork.RefreshTokenRepository.RemoveRange(refreshTokens);
                 _unitOfWork.UserRepository.Remove(user);
