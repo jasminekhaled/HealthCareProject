@@ -73,7 +73,7 @@ namespace HealthCare.Services.Services
                 var patientWithNId = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(c => c.NationalId == dto.NationalId);
                 if (patientWithNId != null)
                 {
-                    if(patientWithNId.IsEmailConfirmed == true && patientWithNId.MedicalHistory != null)
+                    if(patientWithNId.IsEmailConfirmed == true && patientWithNId.MedicalHistoryId != null)
                     {
                         return new GeneralResponse<SignUpResponse>
                         {
@@ -91,7 +91,7 @@ namespace HealthCare.Services.Services
                 var patientWithEmail = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(c => c.Email == dto.Email);
                 if (patientWithEmail != null)
                 {
-                    if (patientWithEmail.IsEmailConfirmed == true && patientWithEmail.MedicalHistory != null)
+                    if (patientWithEmail.IsEmailConfirmed == true && patientWithEmail.MedicalHistoryId != null)
                     {
                         return new GeneralResponse<SignUpResponse>
                         {
@@ -452,15 +452,25 @@ namespace HealthCare.Services.Services
             try
             {
                 var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(s => s.UserName == userName);
-                if (user == null || user.VerificationCode != dto.VerificationCode)
+                if (user == null)
                 {
                     return new GeneralResponse<string>()
                     {
                         IsSuccess = false,
-                        Message = "Wrong UserName or verificationCode."
+                        Message = "no user found, you canot change password"
                     };
                 }
-                if(dto.NewPassWord != dto.ConfirmPassWord)
+
+                if (user.VerificationCode != dto.VerificationCode)
+                {
+                    return new GeneralResponse<string>()
+                    {
+                        IsSuccess = false,
+                        Message = "wrong verification code"
+                    };
+                }
+
+                if (dto.NewPassWord != dto.ConfirmPassWord)
                 {
                     return new GeneralResponse<string>()
                     {

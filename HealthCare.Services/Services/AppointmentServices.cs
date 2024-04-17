@@ -1683,7 +1683,8 @@ namespace HealthCare.Services.Services
                 var available = all.Where(a => DateTime.Parse(a.Date) >= DateTime.Now).ToList();
                
                 var data = _mapper.Map<List<ReservationResponseDto>>(available.OrderBy(available => DateTime.Parse(available.Date)));
-                
+
+
                 var unAvailable = all.Where(a => DateTime.Parse(a.Date) < DateTime.Now).ToList();
 
                 var clinicReservationIds = unAvailable.Where(w => w.Type == AllReservations.Clinic)
@@ -1708,6 +1709,8 @@ namespace HealthCare.Services.Services
                 _unitOfWork.AllReservationsRepository.RemoveRange(unAvailable);
                 await _unitOfWork.CompleteAsync();
                 
+                
+
                 return new GeneralResponse<List<ReservationResponseDto>>
                 {
                     IsSuccess = true,

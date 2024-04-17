@@ -250,6 +250,7 @@ namespace HealthCare.EF.AutoMapper
                 .ForMember(dest => dest.Id, opt => opt.Ignore()); 
 
             CreateMap<AllReservations, ReservationResponseDto>()
+                .ForMember(dest => dest.MedicalHistoryId, opt => opt.MapFrom(src => src.Patient.MedicalHistoryId))
                .ForMember(dest => dest.PatientPhoneNum, opt => opt.MapFrom(src => src.Patient.PhoneNumber))
                .ForMember(dest => dest.PatientName, opt => opt.MapFrom(src => src.Patient.FullName));
 

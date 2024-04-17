@@ -78,5 +78,55 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "SuperAdmin")]
+        [HttpGet("NumOfPatient")]
+        public async Task<IActionResult> NumOfPatient()
+        {
+            var result = await _patientServices.NumOfPatient();
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [Authorize(Roles = "SuperAdmin")]
+        [HttpGet("NumOfAdmins")]
+        public async Task<IActionResult> NumOfAdmins()
+        {
+            var result = await _patientServices.NumOfAdmins();
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [Authorize(Roles = "SuperAdmin")]
+        [HttpGet("NumOfDoctors")]
+        public async Task<IActionResult> NumOfDoctors()
+        {
+            var result = await _patientServices.NumOfDoctors();
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [Authorize(Roles = "SuperAdmin")]
+        [HttpGet("NumOfHospitals")]
+        public async Task<IActionResult> NumOfHospitals()
+        {
+            var result = await _patientServices.NumOfHospitals();
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [Authorize(Roles = "SuperAdmin")]
+        [HttpGet("NumOfBands")]
+        public async Task<IActionResult> NumOfBands()
+        {
+            var result = await _patientServices.NumOfBands();
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
     }
 }

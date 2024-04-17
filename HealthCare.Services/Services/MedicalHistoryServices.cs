@@ -63,16 +63,7 @@ namespace HealthCare.Services.Services
                     };
                 }
 
-                string format = "mm/dd/yyyy";
-                if (!DateTime.TryParseExact(dto.BirthDate, format, null, System.Globalization.DateTimeStyles.None, out DateTime result) && result.TimeOfDay == TimeSpan.Zero)
-                {
-                    return new GeneralResponse<PatientResponseDto>
-                    {
-                        IsSuccess = false,
-                        Message = "Invalid BirthDate Formate!"
-                    };
-                }
-
+                
                 if (!dto.FriendPhoneNum.All(char.IsDigit) || dto.FriendPhoneNum.Length != 11)
                 {
                     return new GeneralResponse<PatientResponseDto>
@@ -701,6 +692,14 @@ namespace HealthCare.Services.Services
                         };
                     }
                 }
+                if (dto.AnyDiseases == true && dto.DiseasesDescribtion == null)
+                {
+                        return new GeneralResponse<MedicalHistoryResponseDto>
+                        {
+                            IsSuccess = false,
+                            Message = "Please write a good description for Diseases with length from 3 to 255 characters, this description may save your life later."
+                        };
+                }
 
                 if (medicalHistory.AnySurgery == false && dto.AnySurgery == true)
                 {
@@ -715,6 +714,18 @@ namespace HealthCare.Services.Services
                     }
                 }
 
+                if (dto.AnySurgery == true && dto.SurgeryDescribtion == null)
+                {
+                    return new GeneralResponse<MedicalHistoryResponseDto>
+                    {
+                        IsSuccess = false,
+                        Message = "Please write a good description for Surgery with length from 5 to 255 characters, this description may save your life later."
+                    };
+                }
+
+
+
+
                 if (medicalHistory.AnyAllergy == false && dto.AnyAllergy == true)
                 {
                     if (dto.AllergyDescribtion == null ||
@@ -726,6 +737,15 @@ namespace HealthCare.Services.Services
                             Message = "Please write a good description for Allergy with length from 5 to 255 characters, this description may save your life later."
                         };
                     }
+                }
+
+                if (dto.AnyAllergy == true && dto.AllergyDescribtion == null)
+                {
+                    return new GeneralResponse<MedicalHistoryResponseDto>
+                    {
+                        IsSuccess = false,
+                        Message = "Please write a good description for Allergy with length from 5 to 255 characters, this description may save your life later."
+                    };
                 }
 
                 if (medicalHistory.AnyMedicine == false && dto.AnyMedicine == true)
@@ -741,6 +761,15 @@ namespace HealthCare.Services.Services
                     }
                 }
 
+                if (dto.AnyMedicine == true && dto.MedicineDescribtion == null)
+                {
+                    return new GeneralResponse<MedicalHistoryResponseDto>
+                    {
+                        IsSuccess = false,
+                        Message = "Please write a good description for Medicines with length from 5 to 255 characters, this description may save your life later."
+                    };
+                }
+
                 if (medicalHistory.MedicalInsurance == false && dto.MedicalInsurance == true)
                 {
                     if (dto.MedicalInsuranceDescribtion == null ||
@@ -753,21 +782,74 @@ namespace HealthCare.Services.Services
                         };
                     }
                 }
+
+                if (dto.MedicalInsurance == true && dto.MedicalInsuranceDescribtion == null)
+                {
+                    return new GeneralResponse<MedicalHistoryResponseDto>
+                        {
+                            IsSuccess = false,
+                            Message = "Please write a good description for MedicalInsurance with length from 10 to 255 characters, this description may save your life later."
+                        };
+                }
+
+
+                if (dto.MedicalInsurance == false)
+                {
+                    medicalHistory.MedicalInsuranceDescribtion = null;
+                    dto.MedicalInsuranceDescribtion = null;
+                }
+                   
+
+                if (dto.AnyDiseases == false)
+                {
+                    medicalHistory.DiseasesDescribtion = null;
+                    dto.DiseasesDescribtion = null;
+                }
+                   
+
+                if (dto.AnyAllergy == false)
+                {
+                    medicalHistory.AllergyDescribtion = null;
+                    dto.AllergyDescribtion = null;
+                }
+                    
+
+                if (dto.AnyMedicine == false)
+                {
+                    medicalHistory.MedicineDescribtion = null;
+                    dto.MedicineDescribtion = null;
+                }
+                    
+
+                if (dto.AnySurgery == false)
+                {
+                    medicalHistory.SurgeryDescribtion = null;
+                    dto.SurgeryDescribtion = null;
+                }
+                    
+                   
+
+                _unitOfWork.MedicalHistoryRepository.Update(medicalHistory);
+                await _unitOfWork.CompleteAsync();
+
+
                 medicalHistory.Address = dto.Address ?? medicalHistory.Address;
+                medicalHistory.BloodType = dto.BloodType ?? medicalHistory.BloodType;
                 medicalHistory.FriendAddress = dto.FriendAddress ?? medicalHistory.FriendAddress;
                 medicalHistory.FriendPhoneNum = dto.FriendPhoneNum ?? medicalHistory.FriendPhoneNum;
                 medicalHistory.FriendName = dto.FriendName ?? medicalHistory.FriendName;
                 medicalHistory.AnyMedicine = dto.AnyMedicine ?? medicalHistory.AnyMedicine;
-                medicalHistory.MedicineDescribtion = dto.MedicineDescribtion ?? medicalHistory.MedicineDescribtion;
                 medicalHistory.AnyAllergy = dto.AnyAllergy ?? medicalHistory.AnyAllergy;
-                medicalHistory.AllergyDescribtion = dto.AllergyDescribtion ?? medicalHistory.AllergyDescribtion;
                 medicalHistory.AnySurgery = dto.AnySurgery ?? medicalHistory.AnySurgery;
-                medicalHistory.SurgeryDescribtion = dto.SurgeryDescribtion ?? medicalHistory.SurgeryDescribtion;
                 medicalHistory.AnyDiseases = dto.AnyDiseases ?? medicalHistory.AnyDiseases;
-                medicalHistory.DiseasesDescribtion = dto.DiseasesDescribtion ?? medicalHistory.DiseasesDescribtion;
                 medicalHistory.BirthDate = dto.BirthDate ?? medicalHistory.BirthDate;
                 medicalHistory.Gender = dto.Gender ?? medicalHistory.Gender;
                 medicalHistory.MedicalInsurance = dto.MedicalInsurance ?? medicalHistory.MedicalInsurance;
+
+                medicalHistory.MedicineDescribtion = dto.MedicineDescribtion ?? medicalHistory.MedicineDescribtion;
+                medicalHistory.AllergyDescribtion = dto.AllergyDescribtion ?? medicalHistory.AllergyDescribtion;              
+                medicalHistory.SurgeryDescribtion = dto.SurgeryDescribtion ?? medicalHistory.SurgeryDescribtion;
+                medicalHistory.DiseasesDescribtion = dto.DiseasesDescribtion ?? medicalHistory.DiseasesDescribtion;
                 medicalHistory.MedicalInsuranceDescribtion = dto.MedicalInsuranceDescribtion ?? medicalHistory.MedicalInsuranceDescribtion;
                 _unitOfWork.MedicalHistoryRepository.Update(medicalHistory);
                 await _unitOfWork.CompleteAsync();

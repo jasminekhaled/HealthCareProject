@@ -326,6 +326,124 @@ namespace HealthCare.Services.Services
             }
         }
 
-        
+        public async Task<GeneralResponse<string>> NumOfPatient()
+        {
+            try
+            {
+                var num = await _unitOfWork.PatientRepository.GetAllAsync();
+                var numOfPatient = num.Count();
+
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = true,
+                    Data = numOfPatient.ToString()
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+        public async Task<GeneralResponse<string>> NumOfDoctors()
+        {
+            try
+            {
+                var num = await _unitOfWork.DoctorRepository.GetAllAsync();
+                var numOfDoctors = num.Count();
+
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = true,
+                    Data = numOfDoctors.ToString()
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+        public async Task<GeneralResponse<string>> NumOfHospitals()
+        {
+            try
+            {
+                var num = await _unitOfWork.HospitalRepository.GetAllAsync();
+                var NumOfHospitals = num.Count();
+
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = true,
+                    Data = NumOfHospitals.ToString()
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+        public async Task<GeneralResponse<string>> NumOfBands()
+        {
+            try
+            {
+                var num = await _unitOfWork.BandRepository.GetAllAsync();
+                var NumOfBands = num.Count();
+
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = true,
+                    Data = NumOfBands.ToString()
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+        public async Task<GeneralResponse<string>> NumOfAdmins()
+        {
+            try
+            {
+                var num = await _unitOfWork.BandRepository.GetAllAsync();
+                var NumOfAdmins = num.Count();
+
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = true,
+                    Data = NumOfAdmins.ToString()
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
     }
 }

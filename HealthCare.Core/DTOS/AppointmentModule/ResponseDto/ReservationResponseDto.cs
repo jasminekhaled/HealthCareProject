@@ -15,5 +15,6 @@ namespace HealthCare.Core.DTOS.AppointmentModule.ResponseDto
         public string ToTime { get; set; }
         public string PatientName { get; set; }
         public string PatientPhoneNum { get; set; }
+        public int MedicalHistoryId { get; set; }
     }
 }

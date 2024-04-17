@@ -1168,6 +1168,10 @@ namespace HealthCare.EF.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("BloodType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("DiseasesDescribtion")
                         .HasColumnType("nvarchar(max)");
 

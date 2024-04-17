@@ -17,6 +17,7 @@ namespace HealthCare.Core.DTOS.PatientModule.ResponseDto
         public string GenderType { get; set; }
         public bool Gender { get; set; }
         public string BirthDate { get; set; }
+        public string BloodType { get; set; }
         public string FriendName { get; set; }
         public string FriendPhoneNum { get; set; }
         public string FriendAddress { get; set; }

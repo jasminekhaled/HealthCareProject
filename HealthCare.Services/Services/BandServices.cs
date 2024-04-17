@@ -555,6 +555,14 @@ namespace HealthCare.Services.Services
                         };
                     }
                 }
+                if (user.Role == User.Patient)
+                {
+                    return new GeneralResponse<List<BandResponseDto>>
+                    {
+                        IsSuccess = false,
+                        Message = "You donot have the permissions to access this band informations!"
+                    };
+                }
 
                 var bands = await _unitOfWork.BandRepository.WhereIncludeAsync(
                     w => w.HospitalId == hospitalId && w.Type == Band.Private,
@@ -948,6 +956,14 @@ namespace HealthCare.Services.Services
                             Message = "You donot have the permissions to access this band informations!"
                         };
                     }
+                }
+                if (user.Role == User.Patient)
+                {
+                    return new GeneralResponse<BandResponseDto>
+                    {
+                        IsSuccess = false,
+                        Message = "You donot have the permissions to access this band informations!"
+                    };
                 }
 
                 var data = _mapper.Map<BandResponseDto>(band);

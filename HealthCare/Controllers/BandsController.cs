@@ -100,7 +100,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize(Roles = "Doctor, HospitalAdmin")]
+        [Authorize(Roles = "Doctor, HospitalAdmin, SuperAdmin")]
         [HttpGet("GetHospitalPrivateBands")]
         public async Task<IActionResult> GetHospitalPrivateBands(int hospitalId)
         {
@@ -170,7 +170,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize(Roles = "HospitalAdmin, Doctor")]
+        [Authorize(Roles = "HospitalAdmin, Doctor, SuperAdmin")]
         [HttpGet("GetPrivateBandByUniqueId")]
         public async Task<IActionResult> GetPrivateBandByUniqueId(string uniqueId)
         {
