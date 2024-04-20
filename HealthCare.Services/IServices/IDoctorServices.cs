@@ -30,6 +30,7 @@ namespace HealthCare.Services.IServices
         Task<GeneralResponse<string>> DeleteDoctorFromHospital(int doctorId);
         Task<GeneralResponse<string>> RateTheDoctor(int doctorId, [FromForm] RateRequestDto dto);
         Task<GeneralResponse<List<DoctorDto>>> ListOfDoctorsNotInThisHospital();
+        Task<GeneralResponse<List<DoctorDto>>> TopThreeDoctors();
 
     }
 }

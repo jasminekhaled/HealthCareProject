@@ -74,6 +74,16 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
+        [Authorize]
+        [HttpGet("WhichRole")]
+        public async Task<IActionResult> WhichRole()
+        {
+            var result = await _authServices.WhichRole();
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
 
         [HttpPost("AddNationalId")]
         public async Task<IActionResult> AddNationalId(string nationalId, string name)

@@ -179,7 +179,16 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        
+        [HttpGet("TopThreeDoctors")]
+        public async Task<IActionResult> TopThreeDoctors()
+        {
+            var result = await _doctorServices.TopThreeDoctors();
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+
 
 
 

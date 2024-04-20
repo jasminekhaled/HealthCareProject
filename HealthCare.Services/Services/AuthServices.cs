@@ -606,6 +606,42 @@ namespace HealthCare.Services.Services
             await _unitOfWork.CompleteAsync();
         }
 
-        
+        public async Task<GeneralResponse<string>> WhichRole()
+        {
+            try
+            {
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
+                    a => a.Id == userId);
+                if (ThisUser == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No user Found!"
+                    };
+                }
+                var data = ThisUser.Role;
+
+                return new GeneralResponse<string>()
+                {
+                    IsSuccess = true,
+                    Message = "Token Refreshed Successfully.",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<string>()
+                {
+                    IsSuccess = false,
+                    Message = "Something Went Wrong.",
+                    Error = ex
+                };
+            }
+        }
+
+
     }
 }

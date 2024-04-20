@@ -13,6 +13,7 @@ namespace HealthCare.Core.Models.AppointmentModule
         public int Id { get; set; } 
         public int DoctorId { get; set; }
         public Doctor Doctor { get; set; }
+        public int HospitalId { get; set; }
         public int RoomId { get; set; }
         public string Type { get; set; }
         public string price { get; set; }

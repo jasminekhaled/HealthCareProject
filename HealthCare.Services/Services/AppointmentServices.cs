@@ -754,6 +754,14 @@ namespace HealthCare.Services.Services
                         Message = "the selected date isn't accepted because it's after more than Month"
                     };
                 }
+                if (DateTime.Now > selectedDate)
+                {
+                    return new GeneralResponse<PatientReservationDto>
+                    {
+                        IsSuccess = false,
+                        Message = "the selected date isn't accepted !!"
+                    };
+                }
                 var reservation = new ClinicReservation()
                 {
                     Patient = patient,
@@ -765,6 +773,7 @@ namespace HealthCare.Services.Services
                 await _unitOfWork.CompleteAsync();
                 var all = _mapper.Map<AllReservations>(reservation);
                 all.Type = AllReservations.Clinic;
+                all.HospitalId = clinicAppointmentDate.ClinicAppointment.ClinicLab.HospitalId;
                 await _unitOfWork.AllReservationsRepository.AddAsync(all);
                 await _unitOfWork.CompleteAsync();
                 var data = _mapper.Map<PatientReservationDto>(reservation);
@@ -854,6 +863,14 @@ namespace HealthCare.Services.Services
                         Message = "the selected date isn't accepted because it's after more than Month"
                     };
                 }
+                if (DateTime.Now > selectedDate)
+                {
+                    return new GeneralResponse<PatientReservationDto>
+                    {
+                        IsSuccess = false,
+                        Message = "the selected date isn't accepted !!"
+                    };
+                }
                 var reservation = new LabReservation()
                 {
                     Patient = patient,
@@ -865,6 +882,7 @@ namespace HealthCare.Services.Services
                 await _unitOfWork.CompleteAsync();
                 var all = _mapper.Map<AllReservations>(reservation);
                 all.Type = AllReservations.Lab;
+                all.HospitalId = labAppointmentDate.LabAppointment.Lab.HospitalId;
 
                 await _unitOfWork.AllReservationsRepository.AddAsync(all);
                 await _unitOfWork.CompleteAsync();
@@ -955,6 +973,14 @@ namespace HealthCare.Services.Services
                         Message = "the selected date isn't accepted because it's after more than Month"
                     };
                 }
+                if (DateTime.Now > selectedDate)
+                {
+                    return new GeneralResponse<PatientReservationDto>
+                    {
+                        IsSuccess = false,
+                        Message = "the selected date isn't accepted !!"
+                    };
+                }
                 var reservation = new XrayReservation()
                 {
                     Patient = patient,
@@ -966,6 +992,7 @@ namespace HealthCare.Services.Services
                 await _unitOfWork.XrayReservationRepository.AddAsync(reservation);
                 await _unitOfWork.CompleteAsync();
                 all.Type = AllReservations.Xray;
+                all.HospitalId = xrayAppointmentDate.XrayAppointment.Xray.HospitalId;
 
                 await _unitOfWork.AllReservationsRepository.AddAsync(all);
                 await _unitOfWork.CompleteAsync();
@@ -1666,7 +1693,7 @@ namespace HealthCare.Services.Services
                         Message = "No Hospital Found!"
                     };
                 }
-
+                 
                 if (!await _unitOfWork.HospitalDoctorRepository.AnyAsync(
                     a=>a.HospitalId==hospitalId && a.DoctorId==doctor.Id))
                 {
@@ -1678,7 +1705,8 @@ namespace HealthCare.Services.Services
                 }
 
                 var all = await _unitOfWork.AllReservationsRepository.WhereIncludeAsync(
-                    w => w.DoctorId == doctor.Id, a=>a.Patient);
+                    w => w.DoctorId == doctor.Id && w.HospitalId == hospitalId, a=>a.Patient);
+                
              
                 var available = all.Where(a => DateTime.Parse(a.Date) >= DateTime.Now).ToList();
                
