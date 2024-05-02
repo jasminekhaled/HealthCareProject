@@ -60,25 +60,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize(Roles = "HospitalAdmin")]
-        [HttpPut("PrivateBandActivation")]
-        public async Task<IActionResult> PrivateBandActivation(int bandId)
-        {
-            var result = await _bandServices.PrivateBandActivation(bandId);
-            if (result.IsSuccess)
-                return Ok(result);
-            return BadRequest(result);
-        }
-
-        [Authorize(Roles = "Patient")]
-        [HttpPut("PublicBandActivation")]
-        public async Task<IActionResult> PublicBandActivation(int bandId)
-        {
-            var result = await _bandServices.PublicBandActivation(bandId);
-            if (result.IsSuccess)
-                return Ok(result);
-            return BadRequest(result);
-        }
+        
 
         [Authorize(Roles = "Doctor")]
         [HttpPost("BandSaved")]
@@ -150,11 +132,10 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize(Roles = "HospitalAdmin, Doctor, Patient")]
-        [HttpGet("BandCurrentState")]
-        public async Task<IActionResult> BandCurrentState(int bandId)
+        [HttpPost("BandCurrentState")]
+        public async Task<IActionResult> BandCurrentState(int bandId, BandStateDto dto)
         {
-            var result = await _bandServices.BandCurrentState(bandId);
+            var result = await _bandServices.BandCurrentState(bandId, dto);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
@@ -175,6 +156,25 @@ namespace HealthCare.Controllers
         public async Task<IActionResult> GetPrivateBandByUniqueId(string uniqueId)
         {
             var result = await _bandServices.GetPrivateBandByUniqueId(uniqueId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+
+        [HttpGet("BandAlarm")]
+        public async Task<IActionResult> BandAlarm(string uniqueId, bool bandAlarm)
+        {
+            var result = await _bandServices.BandAlarm(uniqueId, bandAlarm);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpPut("ChangePatientFromBand")]
+        public async Task<IActionResult> ChangePatientFromBand(string uniqueId, ChangeBandPatientDto dto)
+        {
+            var result = await _bandServices.ChangePatientFromBand(uniqueId, dto);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);

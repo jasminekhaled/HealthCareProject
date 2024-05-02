@@ -10,10 +10,11 @@ namespace HealthCare.Core.Models.BandModule
     public class CurrentState
     {
         public int Id { get; set; }
-        public int? OxygenLevel { get; set; }
+        public int? Oxygen { get; set; }
         public int? HeartRate { get; set; }
-        public int? BodyTemperature { get; set; }
+        public int? Temperature { get; set; }
         public int? BloodPressure { get; set; }
+        public int? BloodSugar { get; set; }
         public Band Band { get; set; }
     }
 }

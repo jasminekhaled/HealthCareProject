@@ -60,7 +60,7 @@ namespace HealthCare.Services.Services
                     UniqueId = BandIdService.GenerateUniqueString(),
                     Type = Band.Private,
                     Hospital = hospitalAdmin.AdminOfHospital.Hospital,
-                    IsActive = false
+                    IsActive = true
                 };
                 var currentState = new CurrentState()
                 {
@@ -128,7 +128,7 @@ namespace HealthCare.Services.Services
                     UniqueId = BandIdService.GenerateUniqueString(),
                     Type = Band.Public,
                     Hospital = hospitalAdmin.AdminOfHospital.Hospital,
-                    IsActive = false,
+                    IsActive = true,
                     Patient = patient,
                 };
                 var currentState = new CurrentState()
@@ -259,35 +259,27 @@ namespace HealthCare.Services.Services
         }
 
 
-        public async Task<GeneralResponse<string>> PrivateBandActivation(int bandId)
+        public async Task<GeneralResponse<string>> BandAlarm(string uniqueId, bool bandAlarm)
         {
             try
             {
-                HttpContext httpContext = _httpContextAccessor.HttpContext;
-                int userId = httpContext.FindFirst();
-                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.Role == User.HospitalAdmin);
-                if (user == null)
-                {
-                    return new GeneralResponse<string>
-                    {
-                        IsSuccess = false,
-                        Message = "No HospitalAdmin Found!"
-                    };
-                }
-                var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(
-                    a => a.UserName == user.UserName, i => i.AdminOfHospital.Hospital);
-
-                var band = await _unitOfWork.BandRepository.SingleOrDefaultAsync(a => a.Id == bandId && a.Type == Band.Private && a.HospitalId == hospitalAdmin.AdminOfHospital.HospitalId);
+                var band = await _unitOfWork.BandRepository.SingleOrDefaultAsync(u => u.UniqueId == uniqueId);
                 if (band == null)
                 {
                     return new GeneralResponse<string>
                     {
                         IsSuccess = false,
-                        Message = "No Private band belong to your hospital Found!"
+                        Message = "No band Found!"
                     };
                 }
-                if (band.IsActive) { band.IsActive = false; }
-                else { band.IsActive = true; }
+                if (bandAlarm == false)
+                { 
+                    band.IsActive = false; 
+                }
+                else 
+                {
+                    band.IsActive = true; 
+                }
 
                 _unitOfWork.BandRepository.Update(band);
                 await _unitOfWork.CompleteAsync();
@@ -308,54 +300,7 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public async Task<GeneralResponse<string>> PublicBandActivation(int bandId)
-        {
-            try
-            {
-                HttpContext httpContext = _httpContextAccessor.HttpContext;
-                int userId = httpContext.FindFirst();
-                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId && a.Role == User.Patient);
-                if (user == null)
-                {
-                    return new GeneralResponse<string>
-                    {
-                        IsSuccess = false,
-                        Message = "No Patient Found!"
-                    };
-                }
-                var patient = await _unitOfWork.PatientRepository.GetSingleWithIncludesAsync(
-                    a => a.UserName == user.UserName);
-
-                var band = await _unitOfWork.BandRepository.SingleOrDefaultAsync(a => a.Id == bandId && a.Type == Band.Public && a.Patient == patient);
-                if (band == null)
-                {
-                    return new GeneralResponse<string>
-                    {
-                        IsSuccess = false,
-                        Message = "No band belongs to you had been Found!"
-                    };
-                }
-                if (band.IsActive) { band.IsActive = false; }
-                else { band.IsActive = true; }
-
-                _unitOfWork.BandRepository.Update(band);
-                await _unitOfWork.CompleteAsync();
-                return new GeneralResponse<string>
-                {
-                    IsSuccess = true,
-                    Data = band.IsActive.ToString()
-                };
-            }
-            catch (Exception ex)
-            {
-                return new GeneralResponse<string>
-                {
-                    IsSuccess = false,
-                    Message = "Something went wrong",
-                    Error = ex
-                };
-            }
-        }
+        
 
         public async Task<GeneralResponse<string>> BandSaved(int bandId)
         {
@@ -770,86 +715,31 @@ namespace HealthCare.Services.Services
 
         }
         
-        public async Task<GeneralResponse<CurrentStateDto>> BandCurrentState(int bandId)
+        public async Task<GeneralResponse<CurrentStateDto>> BandCurrentState(int bandId, BandStateDto dto)
         {
             try
             {
-                HttpContext httpContext = _httpContextAccessor.HttpContext;
-                int userId = httpContext.FindFirst();
-                var user = await _unitOfWork.UserRepository.SingleOrDefaultAsync(a => a.Id == userId);
-                if (user == null)
+
+                var band = await _unitOfWork.BandRepository.GetByIdAsync(bandId);
+                if(band == null)
                 {
                     return new GeneralResponse<CurrentStateDto>
                     {
                         IsSuccess = false,
-                        Message = "No user Found!"
+                        Message = "No Band Found with this Id"
                     };
                 }
-                CurrentStateDto data = null;
-                if(user.Role == User.Patient)
-                {
-                    var patient = await _unitOfWork.PatientRepository.SingleOrDefaultAsync(s => s.UserName == user.UserName);
-                    var band = await _unitOfWork.BandRepository.GetSingleWithIncludesAsync(
-                        s => s.Id == bandId && s.Type == Band.Public && s.PatientId == patient.Id, i => i.CurrentState);
-                    if(band == null)
-                    {
-                        return new GeneralResponse<CurrentStateDto>
-                        {
-                            IsSuccess = false,
-                            Message = "No Puplic Band belong to you had been Found!"
-                        };
-                    }
-                    data = _mapper.Map<CurrentStateDto>(band.CurrentState);
-                }
+                var currentState = await _unitOfWork.CurrentStateRepository.GetByIdAsync(band.CurrentStateId);
+                currentState.Temperature = dto.Temperature;
+                currentState.BloodPressure = dto.BloodPressure;
+                currentState.BloodSugar = dto.BloodSugar;
+                currentState.HeartRate = dto.HeartRate;
+                currentState.Oxygen = dto.Oxygen;
+                _unitOfWork.CurrentStateRepository.Update(currentState);
+                await _unitOfWork.CompleteAsync();
 
-                if(user.Role == User.Doctor)
-                {
-                    var doctor = await _unitOfWork.DoctorRepository.SingleOrDefaultAsync(s => s.UserName == user.UserName);
-                    var doctorHospitals = await _unitOfWork.HospitalDoctorRepository.GetSpecificItems(a => a.DoctorId == doctor.Id, s=>s.HospitalId);
-                    var hospitalIds = doctorHospitals.ToList();
-                    var band = await _unitOfWork.BandRepository.GetSingleWithIncludesAsync(a => a.Id == bandId, i => i.CurrentState);
-                    if(band==null)
-                    {
-                        return new GeneralResponse<CurrentStateDto>
-                        {
-                            IsSuccess = false,
-                            Message = "No band Found!"
-                        };
-                    }
-                    if(band.Type == Band.Private && !hospitalIds.Contains(band.HospitalId))
-                    {
-                        return new GeneralResponse<CurrentStateDto>
-                        {
-                            IsSuccess = false,
-                            Message = "You donot have the permissions to access this band informations!"
-                        };
-                    }
-                    data = _mapper.Map<CurrentStateDto>(band.CurrentState);
-                }
-
-                if(user.Role == User.HospitalAdmin)
-                {
-                    var hospitalAdmin = await _unitOfWork.HospitalAdminRepository.GetSingleWithIncludesAsync(s => s.UserName == user.UserName, a=>a.AdminOfHospital);
-                    var band = await _unitOfWork.BandRepository.GetSingleWithIncludesAsync(a => a.Id == bandId, i => i.CurrentState);
-                    if (band == null)
-                    {
-                        return new GeneralResponse<CurrentStateDto>
-                        {
-                            IsSuccess = false,
-                            Message = "No band Found!"
-                        };
-                    }
-                    if (band.Type == Band.Private && band.HospitalId != hospitalAdmin.AdminOfHospital.HospitalId)
-                    {
-                        return new GeneralResponse<CurrentStateDto>
-                        {
-                            IsSuccess = false,
-                            Message = "You donot have the permissions to access this band informations!"
-                        };
-                    }
-                    data = _mapper.Map<CurrentStateDto>(band.CurrentState);
-                }
-               
+                var data = _mapper.Map<CurrentStateDto>(dto);
+                data.Id = currentState.Id;
 
                 return new GeneralResponse<CurrentStateDto>
                 {
@@ -984,5 +874,122 @@ namespace HealthCare.Services.Services
                 };
             }
         }
+
+        public async Task<GeneralResponse<string>> ChangePatientFromBand(string uniqueId, ChangeBandPatientDto dto)
+        {
+            try
+            {
+                
+                var band = await _unitOfWork.BandRepository.SingleOrDefaultAsync(a => a.UniqueId == uniqueId && a.Type == Band.Private);
+                if (band == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No Private band Found!"
+                    };
+                }
+                var patient = await _unitOfWork.PatientRepository.GetSingleWithIncludesAsync(s => s.NationalId == dto.PatientNationalId);
+                if (patient == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No patient Found with this nationalId!"
+                    };
+                }
+                if (await _unitOfWork.BandRepository.AnyAsync(
+                    a => a.Type == Band.Private &&
+                    a.PatientId == patient.Id &&
+                    a.HospitalId == band.HospitalId))
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "This patient is already have another private band from this hospital!"
+                    };
+                }
+                band.Patient = patient;
+                band.RoomNum = dto.RoomNum ?? null;
+                _unitOfWork.BandRepository.Update(band);
+                await _unitOfWork.CompleteAsync();
+                var user = await _unitOfWork.CivilRegestrationRepository.SingleOrDefaultAsync(s => s.NationalId == dto.PatientNationalId);
+                var data = user.Name;
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = true,
+                    Message = "The patient is changed successfully",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+        public async Task<GeneralResponse<string>> BandFlag(string uniqueId, ChangeBandPatientDto dto)
+        {
+            try
+            {
+
+                var band = await _unitOfWork.BandRepository.SingleOrDefaultAsync(a => a.UniqueId == uniqueId && a.Type == Band.Private);
+                if (band == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No Private band Found!"
+                    };
+                }
+                var patient = await _unitOfWork.PatientRepository.GetSingleWithIncludesAsync(s => s.NationalId == dto.PatientNationalId);
+                if (patient == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No patient Found with this nationalId!"
+                    };
+                }
+                if (await _unitOfWork.BandRepository.AnyAsync(
+                    a => a.Type == Band.Private &&
+                    a.PatientId == patient.Id &&
+                    a.HospitalId == band.HospitalId))
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "This patient is already have another private band from this hospital!"
+                    };
+                }
+                band.Patient = patient;
+                band.RoomNum = dto.RoomNum ?? null;
+                _unitOfWork.BandRepository.Update(band);
+                await _unitOfWork.CompleteAsync();
+                var user = await _unitOfWork.CivilRegestrationRepository.SingleOrDefaultAsync(s => s.NationalId == dto.PatientNationalId);
+                var data = user.Name;
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = true,
+                    Message = "The patient is changed successfully",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
     }
+
 }

@@ -3,6 +3,7 @@ using HealthCare.Core.DTOS.AppointmentModule.RequestDto;
 using HealthCare.Core.DTOS.AppointmentModule.ResponseDto;
 using HealthCare.Core.DTOS.AuthModule.RequestDtos;
 using HealthCare.Core.DTOS.AuthModule.ResponseDtos;
+using HealthCare.Core.DTOS.BandModule.RequestDtos;
 using HealthCare.Core.DTOS.BandModule.ResponseDtos;
 using HealthCare.Core.DTOS.ClinicModule.ResponseDto;
 using HealthCare.Core.DTOS.DoctorModule.RequestDtos;
@@ -324,6 +325,8 @@ namespace HealthCare.EF.AutoMapper
                 .ForMember(dest => dest.HospitalGovernorate, opt => opt.MapFrom(src => src.Hospital.HospitalGovernorate.Governorate.Name))
                 .ForMember(dest => dest.HospitalName, opt => opt.MapFrom(src => src.Hospital.Name));
 
+            CreateMap<BandStateDto, CurrentStateDto>()
+                .ForMember(src => src.Id, opt => opt.Ignore());
         }
     }
 }

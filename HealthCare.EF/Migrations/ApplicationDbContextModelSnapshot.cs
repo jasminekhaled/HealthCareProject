@@ -614,13 +614,16 @@ namespace HealthCare.EF.Migrations
                     b.Property<int?>("BloodPressure")
                         .HasColumnType("int");
 
-                    b.Property<int?>("BodyTemperature")
+                    b.Property<int?>("BloodSugar")
                         .HasColumnType("int");
 
                     b.Property<int?>("HeartRate")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OxygenLevel")
+                    b.Property<int?>("Oxygen")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Temperature")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

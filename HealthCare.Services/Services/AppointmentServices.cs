@@ -988,9 +988,9 @@ namespace HealthCare.Services.Services
                     XrayAppointmentDate = xrayAppointmentDate,
                     XrayAppointment = xrayAppointmentDate.XrayAppointment
                 };
-                var all = _mapper.Map<AllReservations>(reservation);
                 await _unitOfWork.XrayReservationRepository.AddAsync(reservation);
                 await _unitOfWork.CompleteAsync();
+                var all = _mapper.Map<AllReservations>(reservation);
                 all.Type = AllReservations.Xray;
                 all.HospitalId = xrayAppointmentDate.XrayAppointment.Xray.HospitalId;
 
