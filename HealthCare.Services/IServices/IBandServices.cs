@@ -25,8 +25,11 @@ namespace HealthCare.Services.IServices
         Task<GeneralResponse<List<BandResponseDto>>> GetSavedPrivateBands(int hospitalId); //doctor
         Task<GeneralResponse<BandResponseDto>> GetPrivateBandByUniqueId(string uniqueId); //doctor, hospitalAdmin
         Task<GeneralResponse<BandResponseDto>> GetPublicBandByUniqueId(string uniqueId);
-        Task<GeneralResponse<CurrentStateDto>> BandCurrentState(int bandId, BandStateDto dto);
+        Task<GeneralResponse<CurrentStateDto>> BandCurrentState(string uniqueId, BandStateDto dto);
         Task<GeneralResponse<string>> ChangePatientFromBand(string uniqueId, ChangeBandPatientDto dto);
         Task<GeneralResponse<string>> BandAlarm(string uniqueId, bool bandAlarm);
+        Task<GeneralResponse<string>> FlagStatus(string uniqueId);
+        Task<GeneralResponse<string>> ChangeFlag(string uniqueId);
+        Task<GeneralResponse<CurrentStateDto>> GetBandCurrentState(string uniqueId);
     }
 }

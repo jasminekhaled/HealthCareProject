@@ -715,50 +715,8 @@ namespace HealthCare.Services.Services
 
         }
         
-        public async Task<GeneralResponse<CurrentStateDto>> BandCurrentState(int bandId, BandStateDto dto)
-        {
-            try
-            {
-
-                var band = await _unitOfWork.BandRepository.GetByIdAsync(bandId);
-                if(band == null)
-                {
-                    return new GeneralResponse<CurrentStateDto>
-                    {
-                        IsSuccess = false,
-                        Message = "No Band Found with this Id"
-                    };
-                }
-                var currentState = await _unitOfWork.CurrentStateRepository.GetByIdAsync(band.CurrentStateId);
-                currentState.Temperature = dto.Temperature;
-                currentState.BloodPressure = dto.BloodPressure;
-                currentState.BloodSugar = dto.BloodSugar;
-                currentState.HeartRate = dto.HeartRate;
-                currentState.Oxygen = dto.Oxygen;
-                _unitOfWork.CurrentStateRepository.Update(currentState);
-                await _unitOfWork.CompleteAsync();
-
-                var data = _mapper.Map<CurrentStateDto>(dto);
-                data.Id = currentState.Id;
-
-                return new GeneralResponse<CurrentStateDto>
-                {
-                    IsSuccess = true,
-                    Message = "Current State has been displayed successfully",
-                    Data = data
-                };
-            }
-            catch (Exception ex)
-            {
-                return new GeneralResponse<CurrentStateDto>
-                {
-                    IsSuccess = false,
-                    Message = "Something went wrong",
-                    Error = ex
-                };
-            }
-        }
-
+        
+        
         public async Task<GeneralResponse<BandResponseDto>> GetPublicBandByUniqueId(string uniqueId)
         {
             try
@@ -933,51 +891,25 @@ namespace HealthCare.Services.Services
             }
         }
 
-        public async Task<GeneralResponse<string>> BandFlag(string uniqueId, ChangeBandPatientDto dto)
+        public async Task<GeneralResponse<string>> FlagStatus(string uniqueId)
         {
             try
             {
 
-                var band = await _unitOfWork.BandRepository.SingleOrDefaultAsync(a => a.UniqueId == uniqueId && a.Type == Band.Private);
+                var band = await _unitOfWork.BandRepository.SingleOrDefaultAsync(a => a.UniqueId == uniqueId);
                 if (band == null)
                 {
                     return new GeneralResponse<string>
                     {
                         IsSuccess = false,
-                        Message = "No Private band Found!"
+                        Message = "No band Found!"
                     };
                 }
-                var patient = await _unitOfWork.PatientRepository.GetSingleWithIncludesAsync(s => s.NationalId == dto.PatientNationalId);
-                if (patient == null)
-                {
-                    return new GeneralResponse<string>
-                    {
-                        IsSuccess = false,
-                        Message = "No patient Found with this nationalId!"
-                    };
-                }
-                if (await _unitOfWork.BandRepository.AnyAsync(
-                    a => a.Type == Band.Private &&
-                    a.PatientId == patient.Id &&
-                    a.HospitalId == band.HospitalId))
-                {
-                    return new GeneralResponse<string>
-                    {
-                        IsSuccess = false,
-                        Message = "This patient is already have another private band from this hospital!"
-                    };
-                }
-                band.Patient = patient;
-                band.RoomNum = dto.RoomNum ?? null;
-                _unitOfWork.BandRepository.Update(band);
-                await _unitOfWork.CompleteAsync();
-                var user = await _unitOfWork.CivilRegestrationRepository.SingleOrDefaultAsync(s => s.NationalId == dto.PatientNationalId);
-                var data = user.Name;
+
                 return new GeneralResponse<string>
                 {
                     IsSuccess = true,
-                    Message = "The patient is changed successfully",
-                    Data = data
+                    Data = band.Flag.ToString()
                 };
             }
             catch (Exception ex)
@@ -990,6 +922,126 @@ namespace HealthCare.Services.Services
                 };
             }
         }
+
+        public async Task<GeneralResponse<string>> ChangeFlag(string uniqueId)
+        {
+            try
+            {
+
+                var band = await _unitOfWork.BandRepository.SingleOrDefaultAsync(a => a.UniqueId == uniqueId);
+                if (band == null)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No band Found!"
+                    };
+                }
+                band.Flag = true;
+                _unitOfWork.BandRepository.Update(band);
+                await _unitOfWork.CompleteAsync();
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = true,
+                    Message = "Flag is true now"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+        public async Task<GeneralResponse<CurrentStateDto>> BandCurrentState(string uniqueId, BandStateDto dto)
+        {
+            try
+            {
+
+                var band = await _unitOfWork.BandRepository.SingleOrDefaultAsync(s => s.UniqueId == uniqueId && s.Flag == true);
+                if (band == null)
+                {
+                    return new GeneralResponse<CurrentStateDto>
+                    {
+                        IsSuccess = false,
+                        Message = "No Band Found with this Id"
+                    };
+                }
+                var currentState = await _unitOfWork.CurrentStateRepository.GetByIdAsync(band.CurrentStateId);
+                currentState.Temperature = dto.Temperature;
+                currentState.BloodPressure = dto.BloodPressure;
+                currentState.BloodSugar = dto.BloodSugar;
+                currentState.HeartRate = dto.HeartRate;
+                currentState.Oxygen = dto.Oxygen;
+                _unitOfWork.CurrentStateRepository.Update(currentState);
+                await _unitOfWork.CompleteAsync();
+
+                band.Flag = false;
+                _unitOfWork.BandRepository.Update(band);
+                await _unitOfWork.CompleteAsync();
+
+                var data = _mapper.Map<CurrentStateDto>(dto);
+                data.Id = currentState.Id;
+
+                return new GeneralResponse<CurrentStateDto>
+                {
+                    IsSuccess = true,
+                    Message = "Current State has been send successfully",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<CurrentStateDto>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+        public async Task<GeneralResponse<CurrentStateDto>> GetBandCurrentState(string uniqueId)
+        {
+            try
+            {
+
+                var band = await _unitOfWork.BandRepository.SingleOrDefaultAsync(s => s.UniqueId == uniqueId);
+                if (band == null)
+                {
+                    return new GeneralResponse<CurrentStateDto>
+                    {
+                        IsSuccess = false,
+                        Message = "No Band Found with this Id"
+                    };
+                }
+                var currentState = await _unitOfWork.CurrentStateRepository.GetByIdAsync(band.CurrentStateId);
+
+                var data = _mapper.Map<CurrentStateDto>(currentState);
+
+                return new GeneralResponse<CurrentStateDto>
+                {
+                    IsSuccess = true,
+                    Message = "Current State has been displayed successfully",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<CurrentStateDto>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+
     }
 
 }

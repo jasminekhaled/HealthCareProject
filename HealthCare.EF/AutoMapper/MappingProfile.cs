@@ -327,6 +327,8 @@ namespace HealthCare.EF.AutoMapper
 
             CreateMap<BandStateDto, CurrentStateDto>()
                 .ForMember(src => src.Id, opt => opt.Ignore());
+
+            CreateMap<CurrentState, CurrentStateDto>();
         }
     }
 }

@@ -16,6 +16,7 @@ namespace HealthCare.Core.Models.BandModule
         public string Type { get; set; }
         public int? RoomNum { get; set; }
         public bool IsActive { get; set; }
+        public bool Flag { get; set; }
         public int? PatientId { get; set; }
         public Patient Patient { get; set; }
         public int HospitalId { get; set; }

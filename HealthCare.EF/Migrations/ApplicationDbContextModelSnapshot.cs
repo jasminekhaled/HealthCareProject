@@ -571,6 +571,9 @@ namespace HealthCare.EF.Migrations
                     b.Property<int>("CurrentStateId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("Flag")
+                        .HasColumnType("bit");
+
                     b.Property<int>("HospitalId")
                         .HasColumnType("int");
 

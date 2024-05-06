@@ -132,14 +132,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("BandCurrentState")]
-        public async Task<IActionResult> BandCurrentState(int bandId, BandStateDto dto)
-        {
-            var result = await _bandServices.BandCurrentState(bandId, dto);
-            if (result.IsSuccess)
-                return Ok(result);
-            return BadRequest(result);
-        }
+        
 
         [Authorize(Roles = "HospitalAdmin, Doctor, SuperAdmin")]
         [HttpGet("GetPublicBandByUniqueId")]
@@ -175,6 +168,43 @@ namespace HealthCare.Controllers
         public async Task<IActionResult> ChangePatientFromBand(string uniqueId, ChangeBandPatientDto dto)
         {
             var result = await _bandServices.ChangePatientFromBand(uniqueId, dto);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpGet("FlagStatus")]
+        public async Task<IActionResult> FlagStatus(string uniqueId)
+        {
+            var result = await _bandServices.FlagStatus(uniqueId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpPut("ChangeFlag")]
+        public async Task<IActionResult> ChangeFlag(string uniqueId)
+        {
+            var result = await _bandServices.ChangeFlag(uniqueId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+
+        [HttpPost("BandCurrentState")]
+        public async Task<IActionResult> BandCurrentState(string uniqueId, BandStateDto dto)
+        {
+            var result = await _bandServices.BandCurrentState(uniqueId, dto);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpGet("GetBandCurrentState")]
+        public async Task<IActionResult> GetBandCurrentState(string uniqueId)
+        {
+            var result = await _bandServices.GetBandCurrentState(uniqueId);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
