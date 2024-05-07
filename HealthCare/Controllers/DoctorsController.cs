@@ -14,10 +14,12 @@ namespace HealthCare.Controllers
     public class DoctorsController : ControllerBase
     {
         private readonly IDoctorServices _doctorServices;
+        private readonly ILogger<DoctorsController> _logger;
 
-        public DoctorsController(IDoctorServices doctorServices)
+        public DoctorsController(IDoctorServices doctorServices, ILogger<DoctorsController> logger)
         {
             _doctorServices = doctorServices;
+            _logger = logger;
         }
 
         [Authorize(Roles = "SuperAdmin")]
@@ -44,10 +46,20 @@ namespace HealthCare.Controllers
         [HttpGet("ListOfSpecialization")]
         public async Task<IActionResult> ListOfSpecialization()
         {
-            var result = await _doctorServices.ListOfSpecialization();
-            if (result.IsSuccess)
-                return Ok(result);
-            return BadRequest(result);
+            try
+            {
+                //throw new Exception("Testing logger");
+                var result = await _doctorServices.ListOfSpecialization();
+                if (result.IsSuccess)
+                    return Ok(result);
+                return BadRequest(result);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest();
+            }
+            
         }
 
         [Authorize(Roles = "HospitalAdmin")]

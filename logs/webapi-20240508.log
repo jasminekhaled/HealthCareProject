@@ -1,0 +1,35 @@
+2024-05-08 01:20:41.561 +03:00  INF  User profile is available. Using 'C:\Users\com\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-05-08 01:20:41.676 +03:00  INF  Now listening on: http://localhost:7101
+2024-05-08 01:20:41.677 +03:00  INF  Now listening on: http://localhost:5146
+2024-05-08 01:20:41.680 +03:00  INF  Application started. Press Ctrl+C to shut down.
+2024-05-08 01:20:41.680 +03:00  INF  Hosting environment: Development
+2024-05-08 01:20:41.681 +03:00  INF  Content root path: G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare\
+2024-05-08 01:20:41.817 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/swagger/index.html - -
+2024-05-08 01:20:41.957 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/swagger/index.html - - - 200 - text/html;charset=utf-8 142.4611ms
+2024-05-08 01:20:41.957 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/_vs/browserLink - -
+2024-05-08 01:20:41.960 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/_framework/aspnetcore-browser-refresh.js - -
+2024-05-08 01:20:41.962 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/_framework/aspnetcore-browser-refresh.js - - - 200 12352 application/javascript;+charset=utf-8 1.4188ms
+2024-05-08 01:20:41.967 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 10.0874ms
+2024-05-08 01:20:42.084 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/swagger/v1/swagger.json - -
+2024-05-08 01:20:42.176 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 91.8088ms
+2024-05-08 01:21:43.987 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/swagger/index.html - -
+2024-05-08 01:21:43.992 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/swagger/index.html - - - 200 - text/html;charset=utf-8 5.3973ms
+2024-05-08 01:21:44.005 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/_framework/aspnetcore-browser-refresh.js - -
+2024-05-08 01:21:44.005 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/_framework/aspnetcore-browser-refresh.js - - - 200 12352 application/javascript;+charset=utf-8 0.3421ms
+2024-05-08 01:21:44.010 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/_vs/browserLink - -
+2024-05-08 01:21:44.013 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 2.3474ms
+2024-05-08 01:21:44.227 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/swagger/v1/swagger.json - -
+2024-05-08 01:21:44.246 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 19.6539ms
+2024-05-08 01:21:54.964 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/api/Doctors/ListOfSpecialization - -
+2024-05-08 01:21:55.808 +03:00  INF  Executing endpoint 'HealthCare.Controllers.DoctorsController.ListOfSpecialization (HealthCare)'
+2024-05-08 01:21:55.818 +03:00  INF  Route matched with {action = "ListOfSpecialization", controller = "Doctors"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ListOfSpecialization() on controller HealthCare.Controllers.DoctorsController (HealthCare).
+2024-05-08 01:21:56.621 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-05-08 01:21:56.788 +03:00  ERR  Testing logger
+2024-05-08 01:21:58.754 +03:00  INF  Executed DbCommand (26ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id], [s].[Name], [s].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName]
+FROM [Specializations] AS [s]
+INNER JOIN [UploadedFiles] AS [u] ON [s].[UploadedFileId] = [u].[Id]
+2024-05-08 01:21:58.836 +03:00  INF  Executing OkObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[System.Collections.Generic.List`1[[HealthCare.Core.DTOS.DoctorModule.ResponseDtos.SpecializationDto, HealthCare.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2024-05-08 01:21:58.843 +03:00  INF  Executed action HealthCare.Controllers.DoctorsController.ListOfSpecialization (HealthCare) in 3020.2867ms
+2024-05-08 01:21:58.843 +03:00  INF  Executed endpoint 'HealthCare.Controllers.DoctorsController.ListOfSpecialization (HealthCare)'
+2024-05-08 01:21:58.846 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/api/Doctors/ListOfSpecialization - - - 200 - application/json;+charset=utf-8 3881.5740ms

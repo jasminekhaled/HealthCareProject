@@ -272,3 +272,13 @@ G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare\bin\Debug\net6.0\
 G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
 G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare\bin\Debug\net6.0\Microsoft.AspNetCore.Server.Kestrel.Https.dll
 G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare\bin\Debug\net6.0\Microsoft.AspNetCore.Server.Kestrel.Transport.Abstractions.dll
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare\bin\Debug\net6.0\Microsoft.Extensions.DependencyModel.dll
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare\bin\Debug\net6.0\Serilog.dll
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare\bin\Debug\net6.0\Serilog.AspNetCore.dll
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare\bin\Debug\net6.0\Serilog.Extensions.Hosting.dll
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare\bin\Debug\net6.0\Serilog.Extensions.Logging.dll
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare\bin\Debug\net6.0\Serilog.Formatting.Compact.dll
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare\bin\Debug\net6.0\Serilog.Settings.Configuration.dll
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare\bin\Debug\net6.0\Serilog.Sinks.Console.dll
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare\bin\Debug\net6.0\Serilog.Sinks.Debug.dll
+G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare\bin\Debug\net6.0\Serilog.Sinks.File.dll
