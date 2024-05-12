@@ -1938,6 +1938,115 @@ namespace HealthCare.Services.Services
         }
 
 
+        public async Task<GeneralResponse<string>> CancelReservationByDoctor(int reservationId)
+        {
+            try
+            {
+                HttpContext httpContext = _httpContextAccessor.HttpContext;
+                int userId = httpContext.FindFirst();
+                var ThisUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(
+                    a => a.Id == userId);
+
+                if (ThisUser.Role != User.Doctor && ThisUser.Role != User.HospitalAdmin)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "No user Found!"
+                    };
+                }
+                AllReservations reservation;
+                if (ThisUser.Role == User.Doctor)
+                {
+                    var doctor = await _unitOfWork.DoctorRepository.SingleOrDefaultAsync(s => s.UserName == ThisUser.UserName);
+
+                    reservation = await _unitOfWork.AllReservationsRepository.GetSingleWithIncludesAsync(
+                       s => s.Id == reservationId && s.DoctorId == doctor.Id, x=>x.Patient);
+                    if (reservation == null)
+                    {
+                        return new GeneralResponse<string>
+                        {
+                            IsSuccess = false,
+                            Message = "No reservation Found!"
+                        };
+                    }
+                }
+                else
+                {
+                    reservation = await _unitOfWork.AllReservationsRepository.GetSingleWithIncludesAsync(
+                       s => s.Id == reservationId, x => x.Patient);
+                    if (reservation == null)
+                    {
+                        return new GeneralResponse<string>
+                        {
+                            IsSuccess = false,
+                            Message = "No reservation Found!"
+                        };
+                    }
+
+                }
+
+                var email = reservation.Patient.Email;
+                var hospital = await _unitOfWork.HospitalRepository.GetByIdAsync(reservation.HospitalId);
+                var doctorData = await _unitOfWork.DoctorRepository.GetByIdAsync(reservation.DoctorId);
+                string patientData = 
+                    "<p style=\"font-size: 14px;\">Hi ' " + reservation.Patient.FullName + "',</p><br>" +
+                    "<p style=\"font-size: 14px;\">I hope this message finds you well. </p><br>" +
+                     "<p style=\"font-size: 14px;\">We regret to inform you that due to unforeseen circumstances, we have had to cancel your reservation in the "
+                     +hospital.Name +" with Dr: "+doctorData.FullName+" on "+reservation.Date+ " . We understand that this may be inconvenient for you, and we sincerely apologize for any inconvenience caused.</p><br>" +
+                     "<p style=\"font-size: 14px;\">Thank you for your understanding and patience.</p><br>"+
+                     "<p style=\"font-size: 14px;\">Best regards</p><br>";
+
+                if (!await MailServices.SendEmailAsync(email, "Canceled Reservation", patientData))
+                {
+                    return new GeneralResponse<string>()
+                    {
+                        IsSuccess = false,
+                        Message = "Sending the Mail is Failed"
+                    };
+                }
+
+
+
+                if (reservation.Type == AllReservations.Clinic)
+                {
+                    var clinicReservation = await _unitOfWork.ClinicReservationRepository.GetByIdAsync(reservation.RoomReservationId);
+                    _unitOfWork.ClinicReservationRepository.Remove(clinicReservation);
+                    await _unitOfWork.CompleteAsync();
+                }
+                if (reservation.Type == AllReservations.Lab)
+                {
+                    var labReservation = await _unitOfWork.LabReservationRepository.GetByIdAsync(reservation.RoomReservationId);
+                    _unitOfWork.LabReservationRepository.Remove(labReservation);
+                    await _unitOfWork.CompleteAsync();
+                }
+                if (reservation.Type == AllReservations.Xray)
+                {
+                    var xrayReservation = await _unitOfWork.XrayReservationRepository.GetByIdAsync(reservation.RoomReservationId);
+                    _unitOfWork.XrayReservationRepository.Remove(xrayReservation);
+                    await _unitOfWork.CompleteAsync();
+                }
+                _unitOfWork.AllReservationsRepository.Remove(reservation);
+                await _unitOfWork.CompleteAsync();
+
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = true,
+                    Message = "This Reservation is Done ."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<string>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+
         public async Task<GeneralResponse<string>> CancelReservation(int reservationId)
         {
             try

@@ -13,7 +13,7 @@ namespace HealthCare.Core.Helpers
     public static class MailServices
     {
 
-        public static string DisplayName = "Testingmailservice";
+        public static string DisplayName = "Health Care";
         public static string Password = "aujh ueet cxdo npar";
         public static string Email = "jemyjemy1212@gmail.com";
         public static string Host = "smtp.gmail.com";
@@ -69,6 +69,9 @@ namespace HealthCare.Core.Helpers
             }
             return lowerCase ? builder.ToString().ToLower() : builder.ToString();
         }
+
+
+
 
     }
 }

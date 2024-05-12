@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using HealthCare.Core.DTOS;
 using HealthCare.Core.DTOS.AppointmentModule.ResponseDto;
+using HealthCare.Core.DTOS.AuthModule.ResponseDtos;
 using HealthCare.Core.DTOS.BandModule.RequestDtos;
 using HealthCare.Core.DTOS.BandModule.ResponseDtos;
 using HealthCare.Core.Helpers;
@@ -263,7 +264,8 @@ namespace HealthCare.Services.Services
         {
             try
             {
-                var band = await _unitOfWork.BandRepository.SingleOrDefaultAsync(u => u.UniqueId == uniqueId);
+                var band = await _unitOfWork.BandRepository.GetSingleWithIncludesAsync(
+                    u => u.UniqueId == uniqueId , a=>a.Patient);
                 if (band == null)
                 {
                     return new GeneralResponse<string>
@@ -281,6 +283,32 @@ namespace HealthCare.Services.Services
                     band.IsActive = true; 
                 }
 
+                if (band.IsActive == false)
+                {
+                    var email = band.Patient.Email;
+                    string room;
+                    if (band.RoomNum != null)
+                    {
+                        room = band.RoomNum.ToString();
+                    }
+                    else
+                    {
+                        room = "N/A";
+                    }
+                    
+                    string patientData = "<p style=\"font-size: 16px;\">Patient  ' " + band.Patient.FullName + "'  is in Danger</p><br>" +
+                     "<p style=\"font-size: 16px;\">Band Id: " + band.UniqueId + "</p><br>" +
+                     "<p style=\"font-size: 16px;\">Room Num: " + room + "</p>";
+
+                    if (!await MailServices.SendEmailAsync(email, "Band Alarm", patientData))
+                    {
+                        return new GeneralResponse<string>()
+                        {
+                            IsSuccess = false,
+                            Message = "Sending the Mail is Failed"
+                        };
+                    }
+                }
                 _unitOfWork.BandRepository.Update(band);
                 await _unitOfWork.CompleteAsync();
                 return new GeneralResponse<string>

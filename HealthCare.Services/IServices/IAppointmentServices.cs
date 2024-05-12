@@ -38,7 +38,7 @@ namespace HealthCare.Services.IServices
         Task<GeneralResponse<string>> DoneReservation(int reservationId);
         Task<GeneralResponse<string>> CancelReservation(int reservationId);
         Task<GeneralResponse<List<DayDto>>> ListOfDays();
-
+        Task<GeneralResponse<string>> CancelReservationByDoctor(int reservationId);
 
 
     }
