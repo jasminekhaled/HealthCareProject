@@ -1,0 +1,920 @@
+2024-06-16 16:26:39.703 +03:00  INF  User profile is available. Using 'C:\Users\com\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-06-16 16:26:39.812 +03:00  INF  Creating key {88ee0c78-9297-429e-9e00-77d8e0e01af7} with creation date 2024-06-16 13:26:39Z, activation date 2024-06-16 13:26:39Z, and expiration date 2024-09-14 13:26:39Z.
+2024-06-16 16:26:39.817 +03:00  INF  Writing data to file 'C:\Users\com\AppData\Local\ASP.NET\DataProtection-Keys\key-88ee0c78-9297-429e-9e00-77d8e0e01af7.xml'.
+2024-06-16 16:26:39.887 +03:00  INF  Now listening on: http://localhost:7101
+2024-06-16 16:26:39.887 +03:00  INF  Now listening on: http://localhost:5146
+2024-06-16 16:26:39.900 +03:00  INF  Application started. Press Ctrl+C to shut down.
+2024-06-16 16:26:39.900 +03:00  INF  Hosting environment: Development
+2024-06-16 16:26:39.900 +03:00  INF  Content root path: G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare\
+2024-06-16 16:26:41.586 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/swagger - -
+2024-06-16 16:26:41.697 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/swagger - - - 301 0 - 114.3009ms
+2024-06-16 16:26:41.704 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/swagger/index.html - -
+2024-06-16 16:26:41.870 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/swagger/swagger-ui.css - -
+2024-06-16 16:26:41.871 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/swagger/index.html - - - 200 - text/html;charset=utf-8 167.4161ms
+2024-06-16 16:26:41.879 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/swagger/swagger-ui-bundle.js - -
+2024-06-16 16:26:41.880 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/swagger/swagger-ui-standalone-preset.js - -
+2024-06-16 16:26:41.880 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/_framework/aspnetcore-browser-refresh.js - -
+2024-06-16 16:26:41.882 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/_framework/aspnetcore-browser-refresh.js - - - 200 12352 application/javascript;+charset=utf-8 1.5396ms
+2024-06-16 16:26:41.884 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/_vs/browserLink - -
+2024-06-16 16:26:41.889 +03:00  INF  Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2024-06-16 16:26:41.889 +03:00  INF  Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2024-06-16 16:26:41.889 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/swagger/swagger-ui-standalone-preset.js - - - 200 312163 application/javascript 9.2695ms
+2024-06-16 16:26:41.889 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/swagger/swagger-ui.css - - - 200 144929 text/css 19.1832ms
+2024-06-16 16:26:41.898 +03:00  INF  Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2024-06-16 16:26:41.898 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/swagger/swagger-ui-bundle.js - - - 200 1061536 application/javascript 19.0297ms
+2024-06-16 16:26:41.918 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 34.3093ms
+2024-06-16 16:26:42.087 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/swagger/v1/swagger.json - -
+2024-06-16 16:26:42.122 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/swagger/favicon-32x32.png - -
+2024-06-16 16:26:42.122 +03:00  INF  Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2024-06-16 16:26:42.122 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/swagger/favicon-32x32.png - - - 200 628 image/png 0.3873ms
+2024-06-16 16:26:42.197 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 110.0770ms
+2024-06-16 16:59:13.409 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/api/Doctors/TopThreeDoctors - -
+2024-06-16 16:59:13.414 +03:00  INF  CORS policy execution successful.
+2024-06-16 16:59:14.357 +03:00  INF  Executing endpoint 'HealthCare.Controllers.DoctorsController.TopThreeDoctors (HealthCare)'
+2024-06-16 16:59:14.372 +03:00  INF  Route matched with {action = "TopThreeDoctors", controller = "Doctors"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] TopThreeDoctors() on controller HealthCare.Controllers.DoctorsController (HealthCare).
+2024-06-16 16:59:15.768 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-16 16:59:16.718 +03:00  WRN  Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2024-06-16 16:59:19.131 +03:00  INF  Executed DbCommand (35ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [d].[Id], [d].[Description], [d].[Email], [d].[FullName], [d].[NationalId], [d].[PassWord], [d].[Rate], [d].[UploadedFileId], [d].[UserName], [d0].[Id], [d0].[DoctorId], [d0].[SpecializationId], [h].[Id], [h].[DoctorId], [h].[HospitalId]
+FROM [Doctors] AS [d]
+LEFT JOIN [DoctorSpecializations] AS [d0] ON [d].[Id] = [d0].[DoctorId]
+LEFT JOIN [HospitalDoctors] AS [h] ON [d].[Id] = [h].[DoctorId]
+ORDER BY [d].[Id], [d0].[Id]
+2024-06-16 16:59:19.271 +03:00  INF  Executed DbCommand (18ms) [Parameters=[@__d_UserName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u0].[Id], [u0].[ContentType], [u0].[FileName], [u0].[FilePath], [u0].[StoredFileName]
+FROM [Users] AS [u]
+INNER JOIN [UploadedFiles] AS [u0] ON [u].[UploadedFileId] = [u0].[Id]
+WHERE [u].[UserName] = @__d_UserName_0
+2024-06-16 16:59:19.301 +03:00  INF  Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id], [s].[Name], [s].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName]
+FROM [Specializations] AS [s]
+INNER JOIN [UploadedFiles] AS [u] ON [s].[UploadedFileId] = [u].[Id]
+WHERE [s].[Id] = 44
+2024-06-16 16:59:19.338 +03:00  INF  Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [h].[Id], [h].[Address], [h].[Description], [h].[Name], [h].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName], [h0].[Id], [h0].[GovernorateId], [h0].[HospitalId], [g].[Id], [g].[Name]
+FROM [Hospitals] AS [h]
+INNER JOIN [UploadedFiles] AS [u] ON [h].[UploadedFileId] = [u].[Id]
+LEFT JOIN [HospitalGovernorates] AS [h0] ON [h].[Id] = [h0].[HospitalId]
+LEFT JOIN [Governorates] AS [g] ON [h0].[GovernorateId] = [g].[Id]
+WHERE [h].[Id] IN (12, 30)
+2024-06-16 16:59:19.365 +03:00  INF  Executed DbCommand (0ms) [Parameters=[@__d_UserName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u0].[Id], [u0].[ContentType], [u0].[FileName], [u0].[FilePath], [u0].[StoredFileName]
+FROM [Users] AS [u]
+INNER JOIN [UploadedFiles] AS [u0] ON [u].[UploadedFileId] = [u0].[Id]
+WHERE [u].[UserName] = @__d_UserName_0
+2024-06-16 16:59:19.367 +03:00  INF  Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id], [s].[Name], [s].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName]
+FROM [Specializations] AS [s]
+INNER JOIN [UploadedFiles] AS [u] ON [s].[UploadedFileId] = [u].[Id]
+WHERE [s].[Id] = 51
+2024-06-16 16:59:19.369 +03:00  INF  Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [h].[Id], [h].[Address], [h].[Description], [h].[Name], [h].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName], [h0].[Id], [h0].[GovernorateId], [h0].[HospitalId], [g].[Id], [g].[Name]
+FROM [Hospitals] AS [h]
+INNER JOIN [UploadedFiles] AS [u] ON [h].[UploadedFileId] = [u].[Id]
+LEFT JOIN [HospitalGovernorates] AS [h0] ON [h].[Id] = [h0].[HospitalId]
+LEFT JOIN [Governorates] AS [g] ON [h0].[GovernorateId] = [g].[Id]
+WHERE [h].[Id] IN (12, 28)
+2024-06-16 16:59:19.370 +03:00  INF  Executed DbCommand (0ms) [Parameters=[@__d_UserName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u0].[Id], [u0].[ContentType], [u0].[FileName], [u0].[FilePath], [u0].[StoredFileName]
+FROM [Users] AS [u]
+INNER JOIN [UploadedFiles] AS [u0] ON [u].[UploadedFileId] = [u0].[Id]
+WHERE [u].[UserName] = @__d_UserName_0
+2024-06-16 16:59:19.386 +03:00  INF  Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id], [s].[Name], [s].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName]
+FROM [Specializations] AS [s]
+INNER JOIN [UploadedFiles] AS [u] ON [s].[UploadedFileId] = [u].[Id]
+WHERE [s].[Id] = 51
+2024-06-16 16:59:19.390 +03:00  INF  Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [h].[Id], [h].[Address], [h].[Description], [h].[Name], [h].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName], [h0].[Id], [h0].[GovernorateId], [h0].[HospitalId], [g].[Id], [g].[Name]
+FROM [Hospitals] AS [h]
+INNER JOIN [UploadedFiles] AS [u] ON [h].[UploadedFileId] = [u].[Id]
+LEFT JOIN [HospitalGovernorates] AS [h0] ON [h].[Id] = [h0].[HospitalId]
+LEFT JOIN [Governorates] AS [g] ON [h0].[GovernorateId] = [g].[Id]
+WHERE [h].[Id] IN (12, 29)
+2024-06-16 16:59:19.394 +03:00  INF  Executing OkObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[System.Collections.Generic.List`1[[HealthCare.Core.DTOS.DoctorModule.ResponseDtos.DoctorDto, HealthCare.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2024-06-16 16:59:19.404 +03:00  INF  Executed action HealthCare.Controllers.DoctorsController.TopThreeDoctors (HealthCare) in 5028.4031ms
+2024-06-16 16:59:19.405 +03:00  INF  Executed endpoint 'HealthCare.Controllers.DoctorsController.TopThreeDoctors (HealthCare)'
+2024-06-16 16:59:19.407 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/api/Doctors/TopThreeDoctors - - - 0 - application/json;+charset=utf-8 5998.1782ms
+2024-06-16 16:59:19.986 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/api/Doctors/TopThreeDoctors - -
+2024-06-16 16:59:19.991 +03:00  INF  CORS policy execution successful.
+2024-06-16 16:59:19.991 +03:00  INF  Executing endpoint 'HealthCare.Controllers.DoctorsController.TopThreeDoctors (HealthCare)'
+2024-06-16 16:59:19.991 +03:00  INF  Route matched with {action = "TopThreeDoctors", controller = "Doctors"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] TopThreeDoctors() on controller HealthCare.Controllers.DoctorsController (HealthCare).
+2024-06-16 16:59:20.033 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-16 16:59:20.034 +03:00  INF  Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [d].[Id], [d].[Description], [d].[Email], [d].[FullName], [d].[NationalId], [d].[PassWord], [d].[Rate], [d].[UploadedFileId], [d].[UserName], [d0].[Id], [d0].[DoctorId], [d0].[SpecializationId], [h].[Id], [h].[DoctorId], [h].[HospitalId]
+FROM [Doctors] AS [d]
+LEFT JOIN [DoctorSpecializations] AS [d0] ON [d].[Id] = [d0].[DoctorId]
+LEFT JOIN [HospitalDoctors] AS [h] ON [d].[Id] = [h].[DoctorId]
+ORDER BY [d].[Id], [d0].[Id]
+2024-06-16 16:59:20.035 +03:00  INF  Executed DbCommand (0ms) [Parameters=[@__d_UserName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u0].[Id], [u0].[ContentType], [u0].[FileName], [u0].[FilePath], [u0].[StoredFileName]
+FROM [Users] AS [u]
+INNER JOIN [UploadedFiles] AS [u0] ON [u].[UploadedFileId] = [u0].[Id]
+WHERE [u].[UserName] = @__d_UserName_0
+2024-06-16 16:59:20.036 +03:00  INF  Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id], [s].[Name], [s].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName]
+FROM [Specializations] AS [s]
+INNER JOIN [UploadedFiles] AS [u] ON [s].[UploadedFileId] = [u].[Id]
+WHERE [s].[Id] = 44
+2024-06-16 16:59:20.037 +03:00  INF  Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [h].[Id], [h].[Address], [h].[Description], [h].[Name], [h].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName], [h0].[Id], [h0].[GovernorateId], [h0].[HospitalId], [g].[Id], [g].[Name]
+FROM [Hospitals] AS [h]
+INNER JOIN [UploadedFiles] AS [u] ON [h].[UploadedFileId] = [u].[Id]
+LEFT JOIN [HospitalGovernorates] AS [h0] ON [h].[Id] = [h0].[HospitalId]
+LEFT JOIN [Governorates] AS [g] ON [h0].[GovernorateId] = [g].[Id]
+WHERE [h].[Id] IN (12, 30)
+2024-06-16 16:59:20.037 +03:00  INF  Executed DbCommand (0ms) [Parameters=[@__d_UserName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u0].[Id], [u0].[ContentType], [u0].[FileName], [u0].[FilePath], [u0].[StoredFileName]
+FROM [Users] AS [u]
+INNER JOIN [UploadedFiles] AS [u0] ON [u].[UploadedFileId] = [u0].[Id]
+WHERE [u].[UserName] = @__d_UserName_0
+2024-06-16 16:59:20.038 +03:00  INF  Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id], [s].[Name], [s].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName]
+FROM [Specializations] AS [s]
+INNER JOIN [UploadedFiles] AS [u] ON [s].[UploadedFileId] = [u].[Id]
+WHERE [s].[Id] = 51
+2024-06-16 16:59:20.038 +03:00  INF  Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [h].[Id], [h].[Address], [h].[Description], [h].[Name], [h].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName], [h0].[Id], [h0].[GovernorateId], [h0].[HospitalId], [g].[Id], [g].[Name]
+FROM [Hospitals] AS [h]
+INNER JOIN [UploadedFiles] AS [u] ON [h].[UploadedFileId] = [u].[Id]
+LEFT JOIN [HospitalGovernorates] AS [h0] ON [h].[Id] = [h0].[HospitalId]
+LEFT JOIN [Governorates] AS [g] ON [h0].[GovernorateId] = [g].[Id]
+WHERE [h].[Id] IN (12, 28)
+2024-06-16 16:59:20.039 +03:00  INF  Executed DbCommand (0ms) [Parameters=[@__d_UserName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u0].[Id], [u0].[ContentType], [u0].[FileName], [u0].[FilePath], [u0].[StoredFileName]
+FROM [Users] AS [u]
+INNER JOIN [UploadedFiles] AS [u0] ON [u].[UploadedFileId] = [u0].[Id]
+WHERE [u].[UserName] = @__d_UserName_0
+2024-06-16 16:59:20.039 +03:00  INF  Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id], [s].[Name], [s].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName]
+FROM [Specializations] AS [s]
+INNER JOIN [UploadedFiles] AS [u] ON [s].[UploadedFileId] = [u].[Id]
+WHERE [s].[Id] = 51
+2024-06-16 16:59:20.040 +03:00  INF  Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [h].[Id], [h].[Address], [h].[Description], [h].[Name], [h].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName], [h0].[Id], [h0].[GovernorateId], [h0].[HospitalId], [g].[Id], [g].[Name]
+FROM [Hospitals] AS [h]
+INNER JOIN [UploadedFiles] AS [u] ON [h].[UploadedFileId] = [u].[Id]
+LEFT JOIN [HospitalGovernorates] AS [h0] ON [h].[Id] = [h0].[HospitalId]
+LEFT JOIN [Governorates] AS [g] ON [h0].[GovernorateId] = [g].[Id]
+WHERE [h].[Id] IN (12, 29)
+2024-06-16 16:59:20.040 +03:00  INF  Executing OkObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[System.Collections.Generic.List`1[[HealthCare.Core.DTOS.DoctorModule.ResponseDtos.DoctorDto, HealthCare.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2024-06-16 16:59:20.040 +03:00  INF  Executed action HealthCare.Controllers.DoctorsController.TopThreeDoctors (HealthCare) in 49.1152ms
+2024-06-16 16:59:20.041 +03:00  INF  Executed endpoint 'HealthCare.Controllers.DoctorsController.TopThreeDoctors (HealthCare)'
+2024-06-16 16:59:20.041 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/api/Doctors/TopThreeDoctors - - - 200 - application/json;+charset=utf-8 54.1403ms
+2024-06-16 17:00:15.775 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/api/Doctors/ListOfSpecialization - -
+2024-06-16 17:00:15.776 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:00:15.777 +03:00  INF  Executing endpoint 'HealthCare.Controllers.DoctorsController.ListOfSpecialization (HealthCare)'
+2024-06-16 17:00:15.779 +03:00  INF  Route matched with {action = "ListOfSpecialization", controller = "Doctors"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ListOfSpecialization() on controller HealthCare.Controllers.DoctorsController (HealthCare).
+2024-06-16 17:00:15.788 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-16 17:00:15.826 +03:00  INF  Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id], [s].[Name], [s].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName]
+FROM [Specializations] AS [s]
+INNER JOIN [UploadedFiles] AS [u] ON [s].[UploadedFileId] = [u].[Id]
+2024-06-16 17:00:15.828 +03:00  INF  Executing OkObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[System.Collections.Generic.List`1[[HealthCare.Core.DTOS.DoctorModule.ResponseDtos.SpecializationDto, HealthCare.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2024-06-16 17:00:15.829 +03:00  INF  Executed action HealthCare.Controllers.DoctorsController.ListOfSpecialization (HealthCare) in 49.5318ms
+2024-06-16 17:00:15.829 +03:00  INF  Executed endpoint 'HealthCare.Controllers.DoctorsController.ListOfSpecialization (HealthCare)'
+2024-06-16 17:00:15.829 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/api/Doctors/ListOfSpecialization - - - 200 - application/json;+charset=utf-8 53.3973ms
+2024-06-16 17:00:21.588 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/api/Clinics/ListOfClinicsOfSpecificSpecialization?specializationId=45 - -
+2024-06-16 17:00:21.588 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:00:21.588 +03:00  INF  Executing endpoint 'HealthCare.Controllers.ClinicsController.ListOfClinicsOfSpecificSpecialization (HealthCare)'
+2024-06-16 17:00:21.599 +03:00  INF  Route matched with {action = "ListOfClinicsOfSpecificSpecialization", controller = "Clinics"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ListOfClinicsOfSpecificSpecialization(Int32) on controller HealthCare.Controllers.ClinicsController (HealthCare).
+2024-06-16 17:00:21.600 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-16 17:00:21.645 +03:00  INF  Executed DbCommand (1ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [s].[Id], [s].[Name], [s].[UploadedFileId]
+FROM [Specializations] AS [s]
+WHERE [s].[Id] = @__p_0
+2024-06-16 17:00:21.666 +03:00  INF  Executed DbCommand (6ms) [Parameters=[@__specializationId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[Id], [c].[HospitalId], [c].[SpecializationId], [h].[Id], [h].[Address], [h].[Description], [h].[Name], [h].[UploadedFileId], [h0].[Id], [h0].[GovernorateId], [h0].[HospitalId], [g].[Id], [g].[Name], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName], [s].[Id], [s].[Name], [s].[UploadedFileId], [u0].[Id], [u0].[ContentType], [u0].[FileName], [u0].[FilePath], [u0].[StoredFileName]
+FROM [ClinicLabs] AS [c]
+INNER JOIN [Hospitals] AS [h] ON [c].[HospitalId] = [h].[Id]
+LEFT JOIN [HospitalGovernorates] AS [h0] ON [h].[Id] = [h0].[HospitalId]
+LEFT JOIN [Governorates] AS [g] ON [h0].[GovernorateId] = [g].[Id]
+INNER JOIN [UploadedFiles] AS [u] ON [h].[UploadedFileId] = [u].[Id]
+INNER JOIN [Specializations] AS [s] ON [c].[SpecializationId] = [s].[Id]
+INNER JOIN [UploadedFiles] AS [u0] ON [s].[UploadedFileId] = [u0].[Id]
+WHERE [c].[SpecializationId] = @__specializationId_0
+2024-06-16 17:00:21.675 +03:00  INF  Executing OkObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[System.Collections.Generic.List`1[[HealthCare.Core.DTOS.ClinicModule.ResponseDto.ListOfSpecificClinics, HealthCare.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2024-06-16 17:00:21.677 +03:00  INF  Executed action HealthCare.Controllers.ClinicsController.ListOfClinicsOfSpecificSpecialization (HealthCare) in 77.2752ms
+2024-06-16 17:00:21.677 +03:00  INF  Executed endpoint 'HealthCare.Controllers.ClinicsController.ListOfClinicsOfSpecificSpecialization (HealthCare)'
+2024-06-16 17:00:21.677 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/api/Clinics/ListOfClinicsOfSpecificSpecialization?specializationId=45 - - - 200 - application/json;+charset=utf-8 88.5455ms
+2024-06-16 17:00:25.753 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/api/Doctors/TopThreeDoctors - -
+2024-06-16 17:00:25.753 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:00:25.753 +03:00  INF  Executing endpoint 'HealthCare.Controllers.DoctorsController.TopThreeDoctors (HealthCare)'
+2024-06-16 17:00:25.753 +03:00  INF  Route matched with {action = "TopThreeDoctors", controller = "Doctors"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] TopThreeDoctors() on controller HealthCare.Controllers.DoctorsController (HealthCare).
+2024-06-16 17:00:25.754 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-16 17:00:25.755 +03:00  INF  Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [d].[Id], [d].[Description], [d].[Email], [d].[FullName], [d].[NationalId], [d].[PassWord], [d].[Rate], [d].[UploadedFileId], [d].[UserName], [d0].[Id], [d0].[DoctorId], [d0].[SpecializationId], [h].[Id], [h].[DoctorId], [h].[HospitalId]
+FROM [Doctors] AS [d]
+LEFT JOIN [DoctorSpecializations] AS [d0] ON [d].[Id] = [d0].[DoctorId]
+LEFT JOIN [HospitalDoctors] AS [h] ON [d].[Id] = [h].[DoctorId]
+ORDER BY [d].[Id], [d0].[Id]
+2024-06-16 17:00:25.755 +03:00  INF  Executed DbCommand (0ms) [Parameters=[@__d_UserName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u0].[Id], [u0].[ContentType], [u0].[FileName], [u0].[FilePath], [u0].[StoredFileName]
+FROM [Users] AS [u]
+INNER JOIN [UploadedFiles] AS [u0] ON [u].[UploadedFileId] = [u0].[Id]
+WHERE [u].[UserName] = @__d_UserName_0
+2024-06-16 17:00:25.756 +03:00  INF  Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id], [s].[Name], [s].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName]
+FROM [Specializations] AS [s]
+INNER JOIN [UploadedFiles] AS [u] ON [s].[UploadedFileId] = [u].[Id]
+WHERE [s].[Id] = 44
+2024-06-16 17:00:25.757 +03:00  INF  Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [h].[Id], [h].[Address], [h].[Description], [h].[Name], [h].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName], [h0].[Id], [h0].[GovernorateId], [h0].[HospitalId], [g].[Id], [g].[Name]
+FROM [Hospitals] AS [h]
+INNER JOIN [UploadedFiles] AS [u] ON [h].[UploadedFileId] = [u].[Id]
+LEFT JOIN [HospitalGovernorates] AS [h0] ON [h].[Id] = [h0].[HospitalId]
+LEFT JOIN [Governorates] AS [g] ON [h0].[GovernorateId] = [g].[Id]
+WHERE [h].[Id] IN (12, 30)
+2024-06-16 17:00:25.757 +03:00  INF  Executed DbCommand (0ms) [Parameters=[@__d_UserName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u0].[Id], [u0].[ContentType], [u0].[FileName], [u0].[FilePath], [u0].[StoredFileName]
+FROM [Users] AS [u]
+INNER JOIN [UploadedFiles] AS [u0] ON [u].[UploadedFileId] = [u0].[Id]
+WHERE [u].[UserName] = @__d_UserName_0
+2024-06-16 17:00:25.758 +03:00  INF  Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id], [s].[Name], [s].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName]
+FROM [Specializations] AS [s]
+INNER JOIN [UploadedFiles] AS [u] ON [s].[UploadedFileId] = [u].[Id]
+WHERE [s].[Id] = 51
+2024-06-16 17:00:25.758 +03:00  INF  Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [h].[Id], [h].[Address], [h].[Description], [h].[Name], [h].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName], [h0].[Id], [h0].[GovernorateId], [h0].[HospitalId], [g].[Id], [g].[Name]
+FROM [Hospitals] AS [h]
+INNER JOIN [UploadedFiles] AS [u] ON [h].[UploadedFileId] = [u].[Id]
+LEFT JOIN [HospitalGovernorates] AS [h0] ON [h].[Id] = [h0].[HospitalId]
+LEFT JOIN [Governorates] AS [g] ON [h0].[GovernorateId] = [g].[Id]
+WHERE [h].[Id] IN (12, 28)
+2024-06-16 17:00:25.759 +03:00  INF  Executed DbCommand (0ms) [Parameters=[@__d_UserName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u0].[Id], [u0].[ContentType], [u0].[FileName], [u0].[FilePath], [u0].[StoredFileName]
+FROM [Users] AS [u]
+INNER JOIN [UploadedFiles] AS [u0] ON [u].[UploadedFileId] = [u0].[Id]
+WHERE [u].[UserName] = @__d_UserName_0
+2024-06-16 17:00:25.760 +03:00  INF  Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id], [s].[Name], [s].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName]
+FROM [Specializations] AS [s]
+INNER JOIN [UploadedFiles] AS [u] ON [s].[UploadedFileId] = [u].[Id]
+WHERE [s].[Id] = 51
+2024-06-16 17:00:25.760 +03:00  INF  Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [h].[Id], [h].[Address], [h].[Description], [h].[Name], [h].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName], [h0].[Id], [h0].[GovernorateId], [h0].[HospitalId], [g].[Id], [g].[Name]
+FROM [Hospitals] AS [h]
+INNER JOIN [UploadedFiles] AS [u] ON [h].[UploadedFileId] = [u].[Id]
+LEFT JOIN [HospitalGovernorates] AS [h0] ON [h].[Id] = [h0].[HospitalId]
+LEFT JOIN [Governorates] AS [g] ON [h0].[GovernorateId] = [g].[Id]
+WHERE [h].[Id] IN (12, 29)
+2024-06-16 17:00:25.760 +03:00  INF  Executing OkObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[System.Collections.Generic.List`1[[HealthCare.Core.DTOS.DoctorModule.ResponseDtos.DoctorDto, HealthCare.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2024-06-16 17:00:25.761 +03:00  INF  Executed action HealthCare.Controllers.DoctorsController.TopThreeDoctors (HealthCare) in 7.2464ms
+2024-06-16 17:00:25.761 +03:00  INF  Executed endpoint 'HealthCare.Controllers.DoctorsController.TopThreeDoctors (HealthCare)'
+2024-06-16 17:00:25.761 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/api/Doctors/TopThreeDoctors - - - 200 - application/json;+charset=utf-8 7.7390ms
+2024-06-16 17:01:46.793 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/api/Clinics/ListOfXraySpecialization - -
+2024-06-16 17:01:46.801 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:01:46.801 +03:00  INF  Executing endpoint 'HealthCare.Controllers.ClinicsController.ListOfXraySpecialization (HealthCare)'
+2024-06-16 17:01:46.803 +03:00  INF  Route matched with {action = "ListOfXraySpecialization", controller = "Clinics"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ListOfXraySpecialization() on controller HealthCare.Controllers.ClinicsController (HealthCare).
+2024-06-16 17:01:46.804 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-16 17:01:46.816 +03:00  INF  Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [x].[Id], [x].[Name], [x].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName]
+FROM [XraySpecializations] AS [x]
+INNER JOIN [UploadedFiles] AS [u] ON [x].[UploadedFileId] = [u].[Id]
+2024-06-16 17:01:46.825 +03:00  INF  Executing OkObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[System.Collections.Generic.List`1[[HealthCare.Core.DTOS.ClinicModule.ResponseDto.AddClinicResponseDto, HealthCare.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2024-06-16 17:01:46.827 +03:00  INF  Executed action HealthCare.Controllers.ClinicsController.ListOfXraySpecialization (HealthCare) in 23.8505ms
+2024-06-16 17:01:46.827 +03:00  INF  Executed endpoint 'HealthCare.Controllers.ClinicsController.ListOfXraySpecialization (HealthCare)'
+2024-06-16 17:01:46.827 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/api/Clinics/ListOfXraySpecialization - - - 200 - application/json;+charset=utf-8 34.7278ms
+2024-06-16 17:01:51.972 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/api/Clinics/ListOfXraysOfSpecificSpecialization?xraySpecializationId=7 - -
+2024-06-16 17:01:51.972 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:01:51.972 +03:00  INF  Executing endpoint 'HealthCare.Controllers.ClinicsController.ListOfXraysOfSpecificSpecialization (HealthCare)'
+2024-06-16 17:01:51.975 +03:00  INF  Route matched with {action = "ListOfXraysOfSpecificSpecialization", controller = "Clinics"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ListOfXraysOfSpecificSpecialization(Int32) on controller HealthCare.Controllers.ClinicsController (HealthCare).
+2024-06-16 17:01:51.976 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-16 17:01:51.984 +03:00  INF  Executed DbCommand (2ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [x].[Id], [x].[Name], [x].[UploadedFileId]
+FROM [XraySpecializations] AS [x]
+WHERE [x].[Id] = @__p_0
+2024-06-16 17:01:52.013 +03:00  INF  Executed DbCommand (13ms) [Parameters=[@__xraySpecializationId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [x].[Id], [x].[HospitalId], [x].[XraySpecializationId], [h].[Id], [h].[Address], [h].[Description], [h].[Name], [h].[UploadedFileId], [h0].[Id], [h0].[GovernorateId], [h0].[HospitalId], [g].[Id], [g].[Name], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName], [x0].[Id], [x0].[Name], [x0].[UploadedFileId], [u0].[Id], [u0].[ContentType], [u0].[FileName], [u0].[FilePath], [u0].[StoredFileName]
+FROM [Xrays] AS [x]
+INNER JOIN [Hospitals] AS [h] ON [x].[HospitalId] = [h].[Id]
+LEFT JOIN [HospitalGovernorates] AS [h0] ON [h].[Id] = [h0].[HospitalId]
+LEFT JOIN [Governorates] AS [g] ON [h0].[GovernorateId] = [g].[Id]
+INNER JOIN [UploadedFiles] AS [u] ON [h].[UploadedFileId] = [u].[Id]
+INNER JOIN [XraySpecializations] AS [x0] ON [x].[XraySpecializationId] = [x0].[Id]
+INNER JOIN [UploadedFiles] AS [u0] ON [x0].[UploadedFileId] = [u0].[Id]
+WHERE [x].[XraySpecializationId] = @__xraySpecializationId_0
+2024-06-16 17:01:52.021 +03:00  INF  Executing OkObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[System.Collections.Generic.List`1[[HealthCare.Core.DTOS.ClinicModule.ResponseDto.ListOfSpecificClinics, HealthCare.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2024-06-16 17:01:52.021 +03:00  INF  Executed action HealthCare.Controllers.ClinicsController.ListOfXraysOfSpecificSpecialization (HealthCare) in 46.3944ms
+2024-06-16 17:01:52.021 +03:00  INF  Executed endpoint 'HealthCare.Controllers.ClinicsController.ListOfXraysOfSpecificSpecialization (HealthCare)'
+2024-06-16 17:01:52.021 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/api/Clinics/ListOfXraysOfSpecificSpecialization?xraySpecializationId=7 - - - 200 - application/json;+charset=utf-8 49.6117ms
+2024-06-16 17:01:53.506 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/api/Doctors/TopThreeDoctors - -
+2024-06-16 17:01:53.507 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:01:53.507 +03:00  INF  Executing endpoint 'HealthCare.Controllers.DoctorsController.TopThreeDoctors (HealthCare)'
+2024-06-16 17:01:53.507 +03:00  INF  Route matched with {action = "TopThreeDoctors", controller = "Doctors"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] TopThreeDoctors() on controller HealthCare.Controllers.DoctorsController (HealthCare).
+2024-06-16 17:01:53.507 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-16 17:01:53.508 +03:00  INF  Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [d].[Id], [d].[Description], [d].[Email], [d].[FullName], [d].[NationalId], [d].[PassWord], [d].[Rate], [d].[UploadedFileId], [d].[UserName], [d0].[Id], [d0].[DoctorId], [d0].[SpecializationId], [h].[Id], [h].[DoctorId], [h].[HospitalId]
+FROM [Doctors] AS [d]
+LEFT JOIN [DoctorSpecializations] AS [d0] ON [d].[Id] = [d0].[DoctorId]
+LEFT JOIN [HospitalDoctors] AS [h] ON [d].[Id] = [h].[DoctorId]
+ORDER BY [d].[Id], [d0].[Id]
+2024-06-16 17:01:53.509 +03:00  INF  Executed DbCommand (0ms) [Parameters=[@__d_UserName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u0].[Id], [u0].[ContentType], [u0].[FileName], [u0].[FilePath], [u0].[StoredFileName]
+FROM [Users] AS [u]
+INNER JOIN [UploadedFiles] AS [u0] ON [u].[UploadedFileId] = [u0].[Id]
+WHERE [u].[UserName] = @__d_UserName_0
+2024-06-16 17:01:53.510 +03:00  INF  Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id], [s].[Name], [s].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName]
+FROM [Specializations] AS [s]
+INNER JOIN [UploadedFiles] AS [u] ON [s].[UploadedFileId] = [u].[Id]
+WHERE [s].[Id] = 44
+2024-06-16 17:01:53.512 +03:00  INF  Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [h].[Id], [h].[Address], [h].[Description], [h].[Name], [h].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName], [h0].[Id], [h0].[GovernorateId], [h0].[HospitalId], [g].[Id], [g].[Name]
+FROM [Hospitals] AS [h]
+INNER JOIN [UploadedFiles] AS [u] ON [h].[UploadedFileId] = [u].[Id]
+LEFT JOIN [HospitalGovernorates] AS [h0] ON [h].[Id] = [h0].[HospitalId]
+LEFT JOIN [Governorates] AS [g] ON [h0].[GovernorateId] = [g].[Id]
+WHERE [h].[Id] IN (12, 30)
+2024-06-16 17:01:53.514 +03:00  INF  Executed DbCommand (1ms) [Parameters=[@__d_UserName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u0].[Id], [u0].[ContentType], [u0].[FileName], [u0].[FilePath], [u0].[StoredFileName]
+FROM [Users] AS [u]
+INNER JOIN [UploadedFiles] AS [u0] ON [u].[UploadedFileId] = [u0].[Id]
+WHERE [u].[UserName] = @__d_UserName_0
+2024-06-16 17:01:53.515 +03:00  INF  Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id], [s].[Name], [s].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName]
+FROM [Specializations] AS [s]
+INNER JOIN [UploadedFiles] AS [u] ON [s].[UploadedFileId] = [u].[Id]
+WHERE [s].[Id] = 51
+2024-06-16 17:01:53.515 +03:00  INF  Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [h].[Id], [h].[Address], [h].[Description], [h].[Name], [h].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName], [h0].[Id], [h0].[GovernorateId], [h0].[HospitalId], [g].[Id], [g].[Name]
+FROM [Hospitals] AS [h]
+INNER JOIN [UploadedFiles] AS [u] ON [h].[UploadedFileId] = [u].[Id]
+LEFT JOIN [HospitalGovernorates] AS [h0] ON [h].[Id] = [h0].[HospitalId]
+LEFT JOIN [Governorates] AS [g] ON [h0].[GovernorateId] = [g].[Id]
+WHERE [h].[Id] IN (12, 28)
+2024-06-16 17:01:53.516 +03:00  INF  Executed DbCommand (0ms) [Parameters=[@__d_UserName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u0].[Id], [u0].[ContentType], [u0].[FileName], [u0].[FilePath], [u0].[StoredFileName]
+FROM [Users] AS [u]
+INNER JOIN [UploadedFiles] AS [u0] ON [u].[UploadedFileId] = [u0].[Id]
+WHERE [u].[UserName] = @__d_UserName_0
+2024-06-16 17:01:53.517 +03:00  INF  Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id], [s].[Name], [s].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName]
+FROM [Specializations] AS [s]
+INNER JOIN [UploadedFiles] AS [u] ON [s].[UploadedFileId] = [u].[Id]
+WHERE [s].[Id] = 51
+2024-06-16 17:01:53.517 +03:00  INF  Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [h].[Id], [h].[Address], [h].[Description], [h].[Name], [h].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName], [h0].[Id], [h0].[GovernorateId], [h0].[HospitalId], [g].[Id], [g].[Name]
+FROM [Hospitals] AS [h]
+INNER JOIN [UploadedFiles] AS [u] ON [h].[UploadedFileId] = [u].[Id]
+LEFT JOIN [HospitalGovernorates] AS [h0] ON [h].[Id] = [h0].[HospitalId]
+LEFT JOIN [Governorates] AS [g] ON [h0].[GovernorateId] = [g].[Id]
+WHERE [h].[Id] IN (12, 29)
+2024-06-16 17:01:53.517 +03:00  INF  Executing OkObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[System.Collections.Generic.List`1[[HealthCare.Core.DTOS.DoctorModule.ResponseDtos.DoctorDto, HealthCare.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2024-06-16 17:01:53.517 +03:00  INF  Executed action HealthCare.Controllers.DoctorsController.TopThreeDoctors (HealthCare) in 10.4432ms
+2024-06-16 17:01:53.517 +03:00  INF  Executed endpoint 'HealthCare.Controllers.DoctorsController.TopThreeDoctors (HealthCare)'
+2024-06-16 17:01:53.518 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/api/Doctors/TopThreeDoctors - - - 200 - application/json;+charset=utf-8 11.4491ms
+2024-06-16 17:37:32.270 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/api/Doctors/TopThreeDoctors - -
+2024-06-16 17:37:32.271 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:37:32.271 +03:00  INF  Executing endpoint 'HealthCare.Controllers.DoctorsController.TopThreeDoctors (HealthCare)'
+2024-06-16 17:37:32.271 +03:00  INF  Route matched with {action = "TopThreeDoctors", controller = "Doctors"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] TopThreeDoctors() on controller HealthCare.Controllers.DoctorsController (HealthCare).
+2024-06-16 17:37:32.272 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-16 17:37:33.313 +03:00  INF  Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [d].[Id], [d].[Description], [d].[Email], [d].[FullName], [d].[NationalId], [d].[PassWord], [d].[Rate], [d].[UploadedFileId], [d].[UserName], [d0].[Id], [d0].[DoctorId], [d0].[SpecializationId], [h].[Id], [h].[DoctorId], [h].[HospitalId]
+FROM [Doctors] AS [d]
+LEFT JOIN [DoctorSpecializations] AS [d0] ON [d].[Id] = [d0].[DoctorId]
+LEFT JOIN [HospitalDoctors] AS [h] ON [d].[Id] = [h].[DoctorId]
+ORDER BY [d].[Id], [d0].[Id]
+2024-06-16 17:37:33.318 +03:00  INF  Executed DbCommand (4ms) [Parameters=[@__d_UserName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u0].[Id], [u0].[ContentType], [u0].[FileName], [u0].[FilePath], [u0].[StoredFileName]
+FROM [Users] AS [u]
+INNER JOIN [UploadedFiles] AS [u0] ON [u].[UploadedFileId] = [u0].[Id]
+WHERE [u].[UserName] = @__d_UserName_0
+2024-06-16 17:37:33.320 +03:00  INF  Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id], [s].[Name], [s].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName]
+FROM [Specializations] AS [s]
+INNER JOIN [UploadedFiles] AS [u] ON [s].[UploadedFileId] = [u].[Id]
+WHERE [s].[Id] = 44
+2024-06-16 17:37:33.325 +03:00  INF  Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [h].[Id], [h].[Address], [h].[Description], [h].[Name], [h].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName], [h0].[Id], [h0].[GovernorateId], [h0].[HospitalId], [g].[Id], [g].[Name]
+FROM [Hospitals] AS [h]
+INNER JOIN [UploadedFiles] AS [u] ON [h].[UploadedFileId] = [u].[Id]
+LEFT JOIN [HospitalGovernorates] AS [h0] ON [h].[Id] = [h0].[HospitalId]
+LEFT JOIN [Governorates] AS [g] ON [h0].[GovernorateId] = [g].[Id]
+WHERE [h].[Id] IN (12, 30)
+2024-06-16 17:37:33.326 +03:00  INF  Executed DbCommand (0ms) [Parameters=[@__d_UserName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u0].[Id], [u0].[ContentType], [u0].[FileName], [u0].[FilePath], [u0].[StoredFileName]
+FROM [Users] AS [u]
+INNER JOIN [UploadedFiles] AS [u0] ON [u].[UploadedFileId] = [u0].[Id]
+WHERE [u].[UserName] = @__d_UserName_0
+2024-06-16 17:37:33.329 +03:00  INF  Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id], [s].[Name], [s].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName]
+FROM [Specializations] AS [s]
+INNER JOIN [UploadedFiles] AS [u] ON [s].[UploadedFileId] = [u].[Id]
+WHERE [s].[Id] = 51
+2024-06-16 17:37:33.333 +03:00  INF  Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [h].[Id], [h].[Address], [h].[Description], [h].[Name], [h].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName], [h0].[Id], [h0].[GovernorateId], [h0].[HospitalId], [g].[Id], [g].[Name]
+FROM [Hospitals] AS [h]
+INNER JOIN [UploadedFiles] AS [u] ON [h].[UploadedFileId] = [u].[Id]
+LEFT JOIN [HospitalGovernorates] AS [h0] ON [h].[Id] = [h0].[HospitalId]
+LEFT JOIN [Governorates] AS [g] ON [h0].[GovernorateId] = [g].[Id]
+WHERE [h].[Id] IN (12, 28)
+2024-06-16 17:37:33.333 +03:00  INF  Executed DbCommand (0ms) [Parameters=[@__d_UserName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u0].[Id], [u0].[ContentType], [u0].[FileName], [u0].[FilePath], [u0].[StoredFileName]
+FROM [Users] AS [u]
+INNER JOIN [UploadedFiles] AS [u0] ON [u].[UploadedFileId] = [u0].[Id]
+WHERE [u].[UserName] = @__d_UserName_0
+2024-06-16 17:37:33.334 +03:00  INF  Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id], [s].[Name], [s].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName]
+FROM [Specializations] AS [s]
+INNER JOIN [UploadedFiles] AS [u] ON [s].[UploadedFileId] = [u].[Id]
+WHERE [s].[Id] = 51
+2024-06-16 17:37:33.337 +03:00  INF  Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [h].[Id], [h].[Address], [h].[Description], [h].[Name], [h].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName], [h0].[Id], [h0].[GovernorateId], [h0].[HospitalId], [g].[Id], [g].[Name]
+FROM [Hospitals] AS [h]
+INNER JOIN [UploadedFiles] AS [u] ON [h].[UploadedFileId] = [u].[Id]
+LEFT JOIN [HospitalGovernorates] AS [h0] ON [h].[Id] = [h0].[HospitalId]
+LEFT JOIN [Governorates] AS [g] ON [h0].[GovernorateId] = [g].[Id]
+WHERE [h].[Id] IN (12, 29)
+2024-06-16 17:37:33.337 +03:00  INF  Executing OkObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[System.Collections.Generic.List`1[[HealthCare.Core.DTOS.DoctorModule.ResponseDtos.DoctorDto, HealthCare.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2024-06-16 17:37:33.337 +03:00  INF  Executed action HealthCare.Controllers.DoctorsController.TopThreeDoctors (HealthCare) in 1066.1214ms
+2024-06-16 17:37:33.337 +03:00  INF  Executed endpoint 'HealthCare.Controllers.DoctorsController.TopThreeDoctors (HealthCare)'
+2024-06-16 17:37:33.337 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/api/Doctors/TopThreeDoctors - - - 200 - application/json;+charset=utf-8 1067.0070ms
+2024-06-16 17:38:16.485 +03:00  INF  Request starting HTTP/1.1 OPTIONS http://localhost:7101/api/Auth/Login - -
+2024-06-16 17:38:16.485 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:38:16.485 +03:00  INF  Request finished HTTP/1.1 OPTIONS http://localhost:7101/api/Auth/Login - - - 204 - - 0.6452ms
+2024-06-16 17:38:16.487 +03:00  INF  Request starting HTTP/1.1 POST http://localhost:7101/api/Auth/Login application/json 98
+2024-06-16 17:38:16.489 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:38:16.489 +03:00  INF  Executing endpoint 'HealthCare.Controllers.AuthController.Login (HealthCare)'
+2024-06-16 17:38:16.491 +03:00  INF  Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(HealthCare.Core.DTOS.AuthModule.RequestDtos.LoginRequest) on controller HealthCare.Controllers.AuthController (HealthCare).
+2024-06-16 17:38:16.491 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-16 17:38:16.652 +03:00  INF  Executed DbCommand (4ms) [Parameters=[@__dto_UserName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [u].[Id], [u].[Email], [u].[NationalId], [u].[PassWord], [u].[Role], [u].[UploadedFileId], [u].[UserName], [u].[VerificationCode], [u0].[Id], [u0].[ContentType], [u0].[FileName], [u0].[FilePath], [u0].[StoredFileName]
+FROM [Users] AS [u]
+INNER JOIN [UploadedFiles] AS [u0] ON [u].[UploadedFileId] = [u0].[Id]
+WHERE [u].[UserName] = @__dto_UserName_0
+2024-06-16 17:38:16.835 +03:00  INF  Executed DbCommand (2ms) [Parameters=[@__user_Id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [r].[Id], [r].[CreatedOn], [r].[ExpiresOn], [r].[Token], [r].[userId]
+FROM [RefreshTokens] AS [r]
+WHERE ([r].[userId] = @__user_Id_0) AND ([r].[ExpiresOn] > GETDATE())
+2024-06-16 17:38:16.941 +03:00  INF  Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = DateTime2), @p1='?' (DbType = DateTime2), @p2='?' (Size = 4000), @p3='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+INSERT INTO [RefreshTokens] ([CreatedOn], [ExpiresOn], [Token], [userId])
+VALUES (@p0, @p1, @p2, @p3);
+SELECT [Id]
+FROM [RefreshTokens]
+WHERE @@ROWCOUNT = 1 AND [Id] = scope_identity();
+2024-06-16 17:38:16.984 +03:00  INF  Executing OkObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[HealthCare.Core.DTOS.AuthModule.ResponseDtos.LogInResponse, HealthCare.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2024-06-16 17:38:16.988 +03:00  INF  Executed action HealthCare.Controllers.AuthController.Login (HealthCare) in 497.0849ms
+2024-06-16 17:38:16.988 +03:00  INF  Executed endpoint 'HealthCare.Controllers.AuthController.Login (HealthCare)'
+2024-06-16 17:38:16.988 +03:00  INF  Request finished HTTP/1.1 POST http://localhost:7101/api/Auth/Login application/json 98 - 200 - application/json;+charset=utf-8 501.5464ms
+2024-06-16 17:38:17.935 +03:00  INF  Request starting HTTP/1.1 OPTIONS http://localhost:7101/api/Hospitals/HospitalAdminDetails - -
+2024-06-16 17:38:17.935 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:38:17.935 +03:00  INF  Request finished HTTP/1.1 OPTIONS http://localhost:7101/api/Hospitals/HospitalAdminDetails - - - 204 - - 0.3337ms
+2024-06-16 17:38:17.936 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/api/Hospitals/HospitalAdminDetails - -
+2024-06-16 17:38:17.939 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:38:17.992 +03:00  INF  Executing endpoint 'HealthCare.Controllers.HospitalsController.HospitalAdminDetails (HealthCare)'
+2024-06-16 17:38:17.994 +03:00  INF  Route matched with {action = "HospitalAdminDetails", controller = "Hospitals"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] HospitalAdminDetails() on controller HealthCare.Controllers.HospitalsController (HealthCare).
+2024-06-16 17:38:17.994 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-16 17:38:18.001 +03:00  INF  Executed DbCommand (1ms) [Parameters=[@__userId_0='?' (DbType = Int32), @__HospitalAdmin_1='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [u].[Id], [u].[Email], [u].[NationalId], [u].[PassWord], [u].[Role], [u].[UploadedFileId], [u].[UserName], [u].[VerificationCode]
+FROM [Users] AS [u]
+WHERE ([u].[Id] = @__userId_0) AND ([u].[Role] = @__HospitalAdmin_1)
+2024-06-16 17:38:18.016 +03:00  INF  Executed DbCommand (4ms) [Parameters=[@__ThisUser_UserName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [h].[Id], [h].[Email], [h].[NationalId], [h].[PassWord], [h].[UploadedFileId], [h].[UserName], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName], [a].[Id], [a].[HospitalAdminId], [a].[HospitalId], [h0].[Id], [h0].[Address], [h0].[Description], [h0].[Name], [h0].[UploadedFileId], [u0].[Id], [u0].[ContentType], [u0].[FileName], [u0].[FilePath], [u0].[StoredFileName]
+FROM [HospitalAdmins] AS [h]
+INNER JOIN [UploadedFiles] AS [u] ON [h].[UploadedFileId] = [u].[Id]
+LEFT JOIN [AdminOfHospitals] AS [a] ON [h].[Id] = [a].[HospitalAdminId]
+LEFT JOIN [Hospitals] AS [h0] ON [a].[HospitalId] = [h0].[Id]
+LEFT JOIN [UploadedFiles] AS [u0] ON [h0].[UploadedFileId] = [u0].[Id]
+WHERE [h].[UserName] = @__ThisUser_UserName_0
+2024-06-16 17:38:18.029 +03:00  INF  Executing OkObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[HealthCare.Core.DTOS.HospitalModule.ResponseDto.EditHospitalAdminResponse, HealthCare.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2024-06-16 17:38:18.030 +03:00  INF  Executed action HealthCare.Controllers.HospitalsController.HospitalAdminDetails (HealthCare) in 36.2383ms
+2024-06-16 17:38:18.030 +03:00  INF  Executed endpoint 'HealthCare.Controllers.HospitalsController.HospitalAdminDetails (HealthCare)'
+2024-06-16 17:38:18.030 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/api/Hospitals/HospitalAdminDetails - - - 200 - application/json;+charset=utf-8 94.1797ms
+2024-06-16 17:38:23.078 +03:00  INF  Request starting HTTP/1.1 OPTIONS http://localhost:7101/api/Hospitals/HospitalAdminDetails - -
+2024-06-16 17:38:23.078 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:38:23.078 +03:00  INF  Request finished HTTP/1.1 OPTIONS http://localhost:7101/api/Hospitals/HospitalAdminDetails - - - 204 - - 0.3117ms
+2024-06-16 17:38:23.080 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/api/Hospitals/HospitalAdminDetails - -
+2024-06-16 17:38:23.080 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:38:23.081 +03:00  INF  Executing endpoint 'HealthCare.Controllers.HospitalsController.HospitalAdminDetails (HealthCare)'
+2024-06-16 17:38:23.081 +03:00  INF  Route matched with {action = "HospitalAdminDetails", controller = "Hospitals"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] HospitalAdminDetails() on controller HealthCare.Controllers.HospitalsController (HealthCare).
+2024-06-16 17:38:23.081 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-16 17:38:23.083 +03:00  INF  Executed DbCommand (1ms) [Parameters=[@__userId_0='?' (DbType = Int32), @__HospitalAdmin_1='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [u].[Id], [u].[Email], [u].[NationalId], [u].[PassWord], [u].[Role], [u].[UploadedFileId], [u].[UserName], [u].[VerificationCode]
+FROM [Users] AS [u]
+WHERE ([u].[Id] = @__userId_0) AND ([u].[Role] = @__HospitalAdmin_1)
+2024-06-16 17:38:23.084 +03:00  INF  Executed DbCommand (0ms) [Parameters=[@__ThisUser_UserName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [h].[Id], [h].[Email], [h].[NationalId], [h].[PassWord], [h].[UploadedFileId], [h].[UserName], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName], [a].[Id], [a].[HospitalAdminId], [a].[HospitalId], [h0].[Id], [h0].[Address], [h0].[Description], [h0].[Name], [h0].[UploadedFileId], [u0].[Id], [u0].[ContentType], [u0].[FileName], [u0].[FilePath], [u0].[StoredFileName]
+FROM [HospitalAdmins] AS [h]
+INNER JOIN [UploadedFiles] AS [u] ON [h].[UploadedFileId] = [u].[Id]
+LEFT JOIN [AdminOfHospitals] AS [a] ON [h].[Id] = [a].[HospitalAdminId]
+LEFT JOIN [Hospitals] AS [h0] ON [a].[HospitalId] = [h0].[Id]
+LEFT JOIN [UploadedFiles] AS [u0] ON [h0].[UploadedFileId] = [u0].[Id]
+WHERE [h].[UserName] = @__ThisUser_UserName_0
+2024-06-16 17:38:23.084 +03:00  INF  Executing OkObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[HealthCare.Core.DTOS.HospitalModule.ResponseDto.EditHospitalAdminResponse, HealthCare.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2024-06-16 17:38:23.084 +03:00  INF  Executed action HealthCare.Controllers.HospitalsController.HospitalAdminDetails (HealthCare) in 3.0296ms
+2024-06-16 17:38:23.084 +03:00  INF  Executed endpoint 'HealthCare.Controllers.HospitalsController.HospitalAdminDetails (HealthCare)'
+2024-06-16 17:38:23.084 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/api/Hospitals/HospitalAdminDetails - - - 200 - application/json;+charset=utf-8 4.5596ms
+2024-06-16 17:38:23.876 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/api/Hospitals/HospitalDetails?hospitalId=28 - -
+2024-06-16 17:38:23.876 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:38:23.876 +03:00  INF  Executing endpoint 'HealthCare.Controllers.HospitalsController.HospitalDetails (HealthCare)'
+2024-06-16 17:38:23.879 +03:00  INF  Route matched with {action = "HospitalDetails", controller = "Hospitals"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] HospitalDetails(Int32) on controller HealthCare.Controllers.HospitalsController (HealthCare).
+2024-06-16 17:38:23.880 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-16 17:38:23.899 +03:00  INF  Executed DbCommand (10ms) [Parameters=[@__hospitalId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [h].[Id], [h].[Address], [h].[Description], [h].[Name], [h].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName], [h0].[Id], [h0].[GovernorateId], [h0].[HospitalId], [g].[Id], [g].[Name]
+FROM [Hospitals] AS [h]
+INNER JOIN [UploadedFiles] AS [u] ON [h].[UploadedFileId] = [u].[Id]
+LEFT JOIN [HospitalGovernorates] AS [h0] ON [h].[Id] = [h0].[HospitalId]
+LEFT JOIN [Governorates] AS [g] ON [h0].[GovernorateId] = [g].[Id]
+WHERE [h].[Id] = @__hospitalId_0
+2024-06-16 17:38:23.910 +03:00  INF  Executed DbCommand (2ms) [Parameters=[@__hospital_HospitalGovernorate_Governorate_Name_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [g].[Id]
+FROM [Governorates] AS [g]
+WHERE [g].[Name] = @__hospital_HospitalGovernorate_Governorate_Name_0
+2024-06-16 17:38:23.911 +03:00  INF  Executing OkObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[HealthCare.Core.DTOS.HospitalModule.ResponseDto.HospitalDto, HealthCare.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2024-06-16 17:38:23.913 +03:00  INF  Executed action HealthCare.Controllers.HospitalsController.HospitalDetails (HealthCare) in 33.9346ms
+2024-06-16 17:38:23.913 +03:00  INF  Executed endpoint 'HealthCare.Controllers.HospitalsController.HospitalDetails (HealthCare)'
+2024-06-16 17:38:23.913 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/api/Hospitals/HospitalDetails?hospitalId=28 - - - 200 - application/json;+charset=utf-8 36.9796ms
+2024-06-16 17:38:31.147 +03:00  INF  Request starting HTTP/1.1 OPTIONS http://localhost:7101/api/Hospitals/ListOfSpecificHospitalAdmins?HospitalId=28 - -
+2024-06-16 17:38:31.147 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:38:31.147 +03:00  INF  Request finished HTTP/1.1 OPTIONS http://localhost:7101/api/Hospitals/ListOfSpecificHospitalAdmins?HospitalId=28 - - - 204 - - 0.2590ms
+2024-06-16 17:38:31.156 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/api/Hospitals/ListOfSpecificHospitalAdmins?HospitalId=28 application/json -
+2024-06-16 17:38:31.156 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:38:31.156 +03:00  INF  Executing endpoint 'HealthCare.Controllers.HospitalsController.ListOfSpecificHospitalAdmins (HealthCare)'
+2024-06-16 17:38:31.159 +03:00  INF  Route matched with {action = "ListOfSpecificHospitalAdmins", controller = "Hospitals"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ListOfSpecificHospitalAdmins(Int32) on controller HealthCare.Controllers.HospitalsController (HealthCare).
+2024-06-16 17:38:31.160 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-16 17:38:31.166 +03:00  INF  Executed DbCommand (1ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [h].[Id], [h].[Address], [h].[Description], [h].[Name], [h].[UploadedFileId]
+FROM [Hospitals] AS [h]
+WHERE [h].[Id] = @__p_0
+2024-06-16 17:38:31.168 +03:00  INF  Executed DbCommand (1ms) [Parameters=[@__userId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [u].[Id], [u].[Email], [u].[NationalId], [u].[PassWord], [u].[Role], [u].[UploadedFileId], [u].[UserName], [u].[VerificationCode]
+FROM [Users] AS [u]
+WHERE [u].[Id] = @__userId_0
+2024-06-16 17:38:31.173 +03:00  INF  Executed DbCommand (1ms) [Parameters=[@__ThisUser_UserName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [h].[Id], [h].[Email], [h].[NationalId], [h].[PassWord], [h].[UploadedFileId], [h].[UserName], [a].[Id], [a].[HospitalAdminId], [a].[HospitalId]
+FROM [HospitalAdmins] AS [h]
+LEFT JOIN [AdminOfHospitals] AS [a] ON [h].[Id] = [a].[HospitalAdminId]
+WHERE [h].[UserName] = @__ThisUser_UserName_0
+2024-06-16 17:38:31.180 +03:00  INF  Executed DbCommand (1ms) [Parameters=[@__HospitalId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a].[HospitalAdminId]
+FROM [AdminOfHospitals] AS [a]
+WHERE [a].[HospitalId] = @__HospitalId_0
+2024-06-16 17:38:31.185 +03:00  INF  Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [h].[Id], [h].[Email], [h].[NationalId], [h].[PassWord], [h].[UploadedFileId], [h].[UserName], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName]
+FROM [HospitalAdmins] AS [h]
+INNER JOIN [UploadedFiles] AS [u] ON [h].[UploadedFileId] = [u].[Id]
+WHERE [h].[Id] IN (47, 51)
+2024-06-16 17:38:31.187 +03:00  INF  Executing OkObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[System.Collections.Generic.List`1[[HealthCare.Core.DTOS.HospitalModule.ResponseDto.ListOfHospitalAdminDto, HealthCare.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2024-06-16 17:38:31.189 +03:00  INF  Executed action HealthCare.Controllers.HospitalsController.ListOfSpecificHospitalAdmins (HealthCare) in 29.4508ms
+2024-06-16 17:38:31.189 +03:00  INF  Executed endpoint 'HealthCare.Controllers.HospitalsController.ListOfSpecificHospitalAdmins (HealthCare)'
+2024-06-16 17:38:31.189 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/api/Hospitals/ListOfSpecificHospitalAdmins?HospitalId=28 application/json - - 200 - application/json;+charset=utf-8 33.3377ms
+2024-06-16 17:38:35.399 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/api/Clinics/ListOfClinicsInHospital?hospitalId=28 - -
+2024-06-16 17:38:35.399 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:38:35.399 +03:00  INF  Executing endpoint 'HealthCare.Controllers.ClinicsController.ListOfClinicsInHospital (HealthCare)'
+2024-06-16 17:38:35.401 +03:00  INF  Route matched with {action = "ListOfClinicsInHospital", controller = "Clinics"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ListOfClinicsInHospital(Int32) on controller HealthCare.Controllers.ClinicsController (HealthCare).
+2024-06-16 17:38:35.401 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-16 17:38:35.403 +03:00  INF  Executed DbCommand (0ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [h].[Id], [h].[Address], [h].[Description], [h].[Name], [h].[UploadedFileId]
+FROM [Hospitals] AS [h]
+WHERE [h].[Id] = @__p_0
+2024-06-16 17:38:35.421 +03:00  INF  Executed DbCommand (12ms) [Parameters=[@__hospitalId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[Id], [c].[HospitalId], [c].[SpecializationId], [s].[Id], [s].[Name], [s].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName]
+FROM [ClinicLabs] AS [c]
+INNER JOIN [Specializations] AS [s] ON [c].[SpecializationId] = [s].[Id]
+INNER JOIN [UploadedFiles] AS [u] ON [s].[UploadedFileId] = [u].[Id]
+WHERE [c].[HospitalId] = @__hospitalId_0
+2024-06-16 17:38:35.423 +03:00  INF  Executing OkObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[System.Collections.Generic.List`1[[HealthCare.Core.DTOS.ClinicModule.ResponseDto.AddClinicResponseDto, HealthCare.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2024-06-16 17:38:35.423 +03:00  INF  Executed action HealthCare.Controllers.ClinicsController.ListOfClinicsInHospital (HealthCare) in 22.2008ms
+2024-06-16 17:38:35.423 +03:00  INF  Executed endpoint 'HealthCare.Controllers.ClinicsController.ListOfClinicsInHospital (HealthCare)'
+2024-06-16 17:38:35.423 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/api/Clinics/ListOfClinicsInHospital?hospitalId=28 - - - 200 - application/json;+charset=utf-8 24.2720ms
+2024-06-16 17:38:39.972 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/api/Appointments/ListOfAppointmentOfClinic?clinicId=15 - -
+2024-06-16 17:38:39.972 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:38:39.972 +03:00  INF  Executing endpoint 'HealthCare.Controllers.AppointmentsController.ListOfAppointmentOfClinic (HealthCare)'
+2024-06-16 17:38:39.975 +03:00  INF  Route matched with {action = "ListOfAppointmentOfClinic", controller = "Appointments"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ListOfAppointmentOfClinic(Int32) on controller HealthCare.Controllers.AppointmentsController (HealthCare).
+2024-06-16 17:38:39.975 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-16 17:38:40.009 +03:00  INF  Executed DbCommand (10ms) [Parameters=[@__clinicId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [t].[Id], [t].[HospitalId], [t].[SpecializationId], [c0].[Id], [c0].[ClinicLabId], [c0].[DoctorId], [c0].[Price]
+FROM (
+    SELECT TOP(2) [c].[Id], [c].[HospitalId], [c].[SpecializationId]
+    FROM [ClinicLabs] AS [c]
+    WHERE [c].[Id] = @__clinicId_0
+) AS [t]
+LEFT JOIN [ClinicAppointments] AS [c0] ON [t].[Id] = [c0].[ClinicLabId]
+ORDER BY [t].[Id]
+2024-06-16 17:38:40.028 +03:00  INF  Executed DbCommand (3ms) [Parameters=[@__clinicId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[Id], [c].[ClinicLabId], [c].[DoctorId], [c].[Price], [d].[Id], [c0].[Id], [c0].[ClinicAppointmentId], [c0].[DayId], [c0].[FromTime], [c0].[ToTime], [d].[Description], [d].[Email], [d].[FullName], [d].[NationalId], [d].[PassWord], [d].[Rate], [d].[UploadedFileId], [d].[UserName]
+FROM [ClinicAppointments] AS [c]
+INNER JOIN [Doctors] AS [d] ON [c].[DoctorId] = [d].[Id]
+LEFT JOIN [ClinicAppointmentDates] AS [c0] ON [c].[Id] = [c0].[ClinicAppointmentId]
+WHERE [c].[ClinicLabId] = @__clinicId_0
+ORDER BY [c].[Id], [d].[Id]
+2024-06-16 17:38:40.045 +03:00  INF  Executed DbCommand (2ms) [Parameters=[@__a_Id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[Id], [c].[ClinicAppointmentId], [c].[DayId], [c].[FromTime], [c].[ToTime], [d].[Id], [d].[DayName]
+FROM [ClinicAppointmentDates] AS [c]
+INNER JOIN [Days] AS [d] ON [c].[DayId] = [d].[Id]
+WHERE [c].[ClinicAppointmentId] = @__a_Id_0
+2024-06-16 17:38:40.059 +03:00  INF  Executed DbCommand (2ms) [Parameters=[@__a_Id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [c].[Id], [c].[ClinicLabId], [c].[DoctorId], [c].[Price], [d].[Id], [d].[Description], [d].[Email], [d].[FullName], [d].[NationalId], [d].[PassWord], [d].[Rate], [d].[UploadedFileId], [d].[UserName]
+FROM [ClinicAppointments] AS [c]
+INNER JOIN [Doctors] AS [d] ON [c].[DoctorId] = [d].[Id]
+WHERE [c].[Id] = @__a_Id_0
+2024-06-16 17:38:40.063 +03:00  INF  Executed DbCommand (2ms) [Parameters=[@__doctor_Doctor_UserName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [u].[Id], [u].[Email], [u].[NationalId], [u].[PassWord], [u].[Role], [u].[UploadedFileId], [u].[UserName], [u].[VerificationCode], [u0].[Id], [u0].[ContentType], [u0].[FileName], [u0].[FilePath], [u0].[StoredFileName]
+FROM [Users] AS [u]
+INNER JOIN [UploadedFiles] AS [u0] ON [u].[UploadedFileId] = [u0].[Id]
+WHERE [u].[UserName] = @__doctor_Doctor_UserName_0
+2024-06-16 17:38:40.064 +03:00  INF  Executing OkObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[System.Collections.Generic.List`1[[HealthCare.Core.DTOS.AppointmentModule.ResponseDto.ListAppointmentDto, HealthCare.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2024-06-16 17:38:40.067 +03:00  INF  Executed action HealthCare.Controllers.AppointmentsController.ListOfAppointmentOfClinic (HealthCare) in 91.6899ms
+2024-06-16 17:38:40.067 +03:00  INF  Executed endpoint 'HealthCare.Controllers.AppointmentsController.ListOfAppointmentOfClinic (HealthCare)'
+2024-06-16 17:38:40.067 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/api/Appointments/ListOfAppointmentOfClinic?clinicId=15 - - - 200 - application/json;+charset=utf-8 94.9512ms
+2024-06-16 17:38:53.820 +03:00  INF  Request starting HTTP/1.1 OPTIONS http://localhost:7101/api/Doctors/ListOfDoctorsinHospital?hospitalId=28 - -
+2024-06-16 17:38:53.820 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:38:53.820 +03:00  INF  Request finished HTTP/1.1 OPTIONS http://localhost:7101/api/Doctors/ListOfDoctorsinHospital?hospitalId=28 - - - 204 - - 0.2373ms
+2024-06-16 17:38:53.821 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/api/Doctors/ListOfSpecialization - -
+2024-06-16 17:38:53.821 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/api/Doctors/ListOfDoctorsinHospital?hospitalId=28 - -
+2024-06-16 17:38:53.821 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:38:53.822 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:38:53.822 +03:00  INF  Executing endpoint 'HealthCare.Controllers.DoctorsController.ListOfSpecialization (HealthCare)'
+2024-06-16 17:38:53.822 +03:00  INF  Route matched with {action = "ListOfSpecialization", controller = "Doctors"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ListOfSpecialization() on controller HealthCare.Controllers.DoctorsController (HealthCare).
+2024-06-16 17:38:53.823 +03:00  INF  Executing endpoint 'HealthCare.Controllers.DoctorsController.ListOfDoctorsinHospital (HealthCare)'
+2024-06-16 17:38:53.823 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-16 17:38:53.826 +03:00  INF  Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id], [s].[Name], [s].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName]
+FROM [Specializations] AS [s]
+INNER JOIN [UploadedFiles] AS [u] ON [s].[UploadedFileId] = [u].[Id]
+2024-06-16 17:38:53.827 +03:00  INF  Executing OkObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[System.Collections.Generic.List`1[[HealthCare.Core.DTOS.DoctorModule.ResponseDtos.SpecializationDto, HealthCare.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2024-06-16 17:38:53.827 +03:00  INF  Executed action HealthCare.Controllers.DoctorsController.ListOfSpecialization (HealthCare) in 5.0757ms
+2024-06-16 17:38:53.827 +03:00  INF  Executed endpoint 'HealthCare.Controllers.DoctorsController.ListOfSpecialization (HealthCare)'
+2024-06-16 17:38:53.827 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/api/Doctors/ListOfSpecialization - - - 200 - application/json;+charset=utf-8 5.8957ms
+2024-06-16 17:38:53.828 +03:00  INF  Route matched with {action = "ListOfDoctorsinHospital", controller = "Doctors"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ListOfDoctorsinHospital(Int32) on controller HealthCare.Controllers.DoctorsController (HealthCare).
+2024-06-16 17:38:53.829 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-16 17:38:53.833 +03:00  INF  Executed DbCommand (0ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [h].[Id], [h].[Address], [h].[Description], [h].[Name], [h].[UploadedFileId]
+FROM [Hospitals] AS [h]
+WHERE [h].[Id] = @__p_0
+2024-06-16 17:38:53.833 +03:00  INF  Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [u].[Id], [u].[Email], [u].[NationalId], [u].[PassWord], [u].[Role], [u].[UploadedFileId], [u].[UserName], [u].[VerificationCode]
+FROM [Users] AS [u]
+WHERE [u].[Id] = @__userId_0
+2024-06-16 17:38:53.834 +03:00  INF  Executed DbCommand (0ms) [Parameters=[@__ThisUser_UserName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [h].[Id], [h].[Email], [h].[NationalId], [h].[PassWord], [h].[UploadedFileId], [h].[UserName], [a].[Id], [a].[HospitalAdminId], [a].[HospitalId]
+FROM [HospitalAdmins] AS [h]
+LEFT JOIN [AdminOfHospitals] AS [a] ON [h].[Id] = [a].[HospitalAdminId]
+WHERE [h].[UserName] = @__ThisUser_UserName_0
+2024-06-16 17:38:53.836 +03:00  INF  Executed DbCommand (1ms) [Parameters=[@__hospitalId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [h].[DoctorId]
+FROM [HospitalDoctors] AS [h]
+WHERE [h].[HospitalId] = @__hospitalId_0
+2024-06-16 17:38:53.845 +03:00  WRN  Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2024-06-16 17:38:53.853 +03:00  INF  Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [d].[Id], [d].[Description], [d].[Email], [d].[FullName], [d].[NationalId], [d].[PassWord], [d].[Rate], [d].[UploadedFileId], [d].[UserName], [u].[Id], [d0].[Id], [d0].[DoctorId], [d0].[SpecializationId], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName], [h].[Id], [h].[DoctorId], [h].[HospitalId]
+FROM [Doctors] AS [d]
+INNER JOIN [UploadedFiles] AS [u] ON [d].[UploadedFileId] = [u].[Id]
+LEFT JOIN [DoctorSpecializations] AS [d0] ON [d].[Id] = [d0].[DoctorId]
+LEFT JOIN [HospitalDoctors] AS [h] ON [d].[Id] = [h].[DoctorId]
+WHERE [d].[Id] IN (48, 49, 51)
+ORDER BY [d].[Id], [u].[Id], [d0].[Id]
+2024-06-16 17:38:53.857 +03:00  INF  Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id], [s].[Name], [s].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName]
+FROM [Specializations] AS [s]
+INNER JOIN [UploadedFiles] AS [u] ON [s].[UploadedFileId] = [u].[Id]
+WHERE [s].[Id] = 51
+2024-06-16 17:38:53.858 +03:00  INF  Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [h].[Id], [h].[Address], [h].[Description], [h].[Name], [h].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName], [h0].[Id], [h0].[GovernorateId], [h0].[HospitalId], [g].[Id], [g].[Name]
+FROM [Hospitals] AS [h]
+INNER JOIN [UploadedFiles] AS [u] ON [h].[UploadedFileId] = [u].[Id]
+LEFT JOIN [HospitalGovernorates] AS [h0] ON [h].[Id] = [h0].[HospitalId]
+LEFT JOIN [Governorates] AS [g] ON [h0].[GovernorateId] = [g].[Id]
+WHERE [h].[Id] IN (12, 28)
+2024-06-16 17:38:53.860 +03:00  INF  Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id], [s].[Name], [s].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName]
+FROM [Specializations] AS [s]
+INNER JOIN [UploadedFiles] AS [u] ON [s].[UploadedFileId] = [u].[Id]
+WHERE [s].[Id] = 45
+2024-06-16 17:38:53.863 +03:00  INF  Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [h].[Id], [h].[Address], [h].[Description], [h].[Name], [h].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName], [h0].[Id], [h0].[GovernorateId], [h0].[HospitalId], [g].[Id], [g].[Name]
+FROM [Hospitals] AS [h]
+INNER JOIN [UploadedFiles] AS [u] ON [h].[UploadedFileId] = [u].[Id]
+LEFT JOIN [HospitalGovernorates] AS [h0] ON [h].[Id] = [h0].[HospitalId]
+LEFT JOIN [Governorates] AS [g] ON [h0].[GovernorateId] = [g].[Id]
+WHERE [h].[Id] IN (12, 28, 29)
+2024-06-16 17:38:53.865 +03:00  INF  Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id], [s].[Name], [s].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName]
+FROM [Specializations] AS [s]
+INNER JOIN [UploadedFiles] AS [u] ON [s].[UploadedFileId] = [u].[Id]
+WHERE [s].[Id] = 71
+2024-06-16 17:38:53.867 +03:00  INF  Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [h].[Id], [h].[Address], [h].[Description], [h].[Name], [h].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName], [h0].[Id], [h0].[GovernorateId], [h0].[HospitalId], [g].[Id], [g].[Name]
+FROM [Hospitals] AS [h]
+INNER JOIN [UploadedFiles] AS [u] ON [h].[UploadedFileId] = [u].[Id]
+LEFT JOIN [HospitalGovernorates] AS [h0] ON [h].[Id] = [h0].[HospitalId]
+LEFT JOIN [Governorates] AS [g] ON [h0].[GovernorateId] = [g].[Id]
+WHERE [h].[Id] IN (12, 28, 30)
+2024-06-16 17:38:53.868 +03:00  INF  Executing OkObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[System.Collections.Generic.List`1[[HealthCare.Core.DTOS.DoctorModule.ResponseDtos.DoctorDto, HealthCare.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2024-06-16 17:38:53.868 +03:00  INF  Executed action HealthCare.Controllers.DoctorsController.ListOfDoctorsinHospital (HealthCare) in 39.5019ms
+2024-06-16 17:38:53.868 +03:00  INF  Executed endpoint 'HealthCare.Controllers.DoctorsController.ListOfDoctorsinHospital (HealthCare)'
+2024-06-16 17:38:53.868 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/api/Doctors/ListOfDoctorsinHospital?hospitalId=28 - - - 200 - application/json;+charset=utf-8 46.4625ms
+2024-06-16 17:39:02.612 +03:00  INF  Request starting HTTP/1.1 OPTIONS http://localhost:7101/api/Appointments/ListOfReservationsOfDoctor?doctorId=48&hospitalId=28 - -
+2024-06-16 17:39:02.621 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:39:02.621 +03:00  INF  Request finished HTTP/1.1 OPTIONS http://localhost:7101/api/Appointments/ListOfReservationsOfDoctor?doctorId=48&hospitalId=28 - - - 204 - - 9.1077ms
+2024-06-16 17:39:02.622 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/api/Appointments/ListOfReservationsOfDoctor?doctorId=48&hospitalId=28 - -
+2024-06-16 17:39:02.623 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:39:02.623 +03:00  INF  Executing endpoint 'HealthCare.Controllers.AppointmentsController.ListOfReservationsOfDoctor (HealthCare)'
+2024-06-16 17:39:02.624 +03:00  INF  Route matched with {action = "ListOfReservationsOfDoctor", controller = "Appointments"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ListOfReservationsOfDoctor(Int32, Int32) on controller HealthCare.Controllers.AppointmentsController (HealthCare).
+2024-06-16 17:39:02.625 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-16 17:39:02.630 +03:00  INF  Executed DbCommand (1ms) [Parameters=[@__8__locals1_doctorId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [d].[Id], [d].[Description], [d].[Email], [d].[FullName], [d].[NationalId], [d].[PassWord], [d].[Rate], [d].[UploadedFileId], [d].[UserName]
+FROM [Doctors] AS [d]
+WHERE [d].[Id] = @__8__locals1_doctorId_0
+2024-06-16 17:39:02.633 +03:00  INF  Executed DbCommand (1ms) [Parameters=[@__8__locals1_hospitalId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [h].[Id], [h].[Address], [h].[Description], [h].[Name], [h].[UploadedFileId]
+FROM [Hospitals] AS [h]
+WHERE [h].[Id] = @__8__locals1_hospitalId_0
+2024-06-16 17:39:02.645 +03:00  INF  Executed DbCommand (2ms) [Parameters=[@__8__locals1_hospitalId_0='?' (DbType = Int32), @__doctor_Id_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [HospitalDoctors] AS [h]
+        WHERE ([h].[HospitalId] = @__8__locals1_hospitalId_0) AND ([h].[DoctorId] = @__doctor_Id_1)) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2024-06-16 17:39:02.664 +03:00  INF  Executed DbCommand (12ms) [Parameters=[@__doctor_Id_0='?' (DbType = Int32), @__8__locals1_hospitalId_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a].[Id], [a].[Date], [a].[DoctorId], [a].[FromTime], [a].[HospitalId], [a].[PatientId], [a].[RoomAppointmentDateId], [a].[RoomId], [a].[RoomReservationId], [a].[ToTime], [a].[Type], [a].[price], [p].[Id], [p].[Email], [p].[FullName], [p].[IsEmailConfirmed], [p].[MedicalHistoryId], [p].[NationalId], [p].[PassWord], [p].[PhoneNumber], [p].[UploadedFileId], [p].[UserName], [p].[VerificationCode]
+FROM [AllReservations] AS [a]
+INNER JOIN [Patients] AS [p] ON [a].[PatientId] = [p].[Id]
+WHERE ([a].[DoctorId] = @__doctor_Id_0) AND ([a].[HospitalId] = @__8__locals1_hospitalId_1)
+2024-06-16 17:39:02.709 +03:00  INF  Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[Id], [c].[ClinicAppointmentDateId], [c].[ClinicAppointmentId], [c].[Date], [c].[PatientId]
+FROM [ClinicReservations] AS [c]
+WHERE [c].[Id] = 1076
+2024-06-16 17:39:02.723 +03:00  INF  Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [l].[Id], [l].[Date], [l].[LabAppointmentDateId], [l].[LabAppointmentId], [l].[PatientId]
+FROM [LabReservations] AS [l]
+WHERE 0 = 1
+2024-06-16 17:39:02.726 +03:00  INF  Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [x].[Id], [x].[Date], [x].[PatientId], [x].[XrayAppointmentDateId], [x].[XrayAppointmentId]
+FROM [XrayReservations] AS [x]
+WHERE 0 = 1
+2024-06-16 17:39:02.748 +03:00  INF  Executed DbCommand (2ms) [Parameters=[@p0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [AllReservations]
+WHERE [Id] = @p0;
+SELECT @@ROWCOUNT;
+2024-06-16 17:39:02.753 +03:00  INF  Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [ClinicReservations]
+WHERE [Id] = @p0;
+SELECT @@ROWCOUNT;
+2024-06-16 17:39:02.758 +03:00  INF  Executing OkObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[System.Collections.Generic.List`1[[HealthCare.Core.DTOS.AppointmentModule.ResponseDto.ReservationResponseDto, HealthCare.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2024-06-16 17:39:02.759 +03:00  INF  Executed action HealthCare.Controllers.AppointmentsController.ListOfReservationsOfDoctor (HealthCare) in 134.6021ms
+2024-06-16 17:39:02.759 +03:00  INF  Executed endpoint 'HealthCare.Controllers.AppointmentsController.ListOfReservationsOfDoctor (HealthCare)'
+2024-06-16 17:39:02.759 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/api/Appointments/ListOfReservationsOfDoctor?doctorId=48&hospitalId=28 - - - 200 - application/json;+charset=utf-8 136.6555ms
+2024-06-16 17:39:05.191 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/api/Clinics/ListOfClinicsInHospital?hospitalId=28 - -
+2024-06-16 17:39:05.191 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:39:05.191 +03:00  INF  Executing endpoint 'HealthCare.Controllers.ClinicsController.ListOfClinicsInHospital (HealthCare)'
+2024-06-16 17:39:05.191 +03:00  INF  Route matched with {action = "ListOfClinicsInHospital", controller = "Clinics"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ListOfClinicsInHospital(Int32) on controller HealthCare.Controllers.ClinicsController (HealthCare).
+2024-06-16 17:39:05.192 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-16 17:39:05.193 +03:00  INF  Executed DbCommand (0ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [h].[Id], [h].[Address], [h].[Description], [h].[Name], [h].[UploadedFileId]
+FROM [Hospitals] AS [h]
+WHERE [h].[Id] = @__p_0
+2024-06-16 17:39:05.194 +03:00  INF  Executed DbCommand (0ms) [Parameters=[@__hospitalId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[Id], [c].[HospitalId], [c].[SpecializationId], [s].[Id], [s].[Name], [s].[UploadedFileId], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName]
+FROM [ClinicLabs] AS [c]
+INNER JOIN [Specializations] AS [s] ON [c].[SpecializationId] = [s].[Id]
+INNER JOIN [UploadedFiles] AS [u] ON [s].[UploadedFileId] = [u].[Id]
+WHERE [c].[HospitalId] = @__hospitalId_0
+2024-06-16 17:39:05.194 +03:00  INF  Executing OkObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[System.Collections.Generic.List`1[[HealthCare.Core.DTOS.ClinicModule.ResponseDto.AddClinicResponseDto, HealthCare.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2024-06-16 17:39:05.194 +03:00  INF  Executed action HealthCare.Controllers.ClinicsController.ListOfClinicsInHospital (HealthCare) in 2.5585ms
+2024-06-16 17:39:05.194 +03:00  INF  Executed endpoint 'HealthCare.Controllers.ClinicsController.ListOfClinicsInHospital (HealthCare)'
+2024-06-16 17:39:05.194 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/api/Clinics/ListOfClinicsInHospital?hospitalId=28 - - - 200 - application/json;+charset=utf-8 2.9984ms
+2024-06-16 17:39:07.384 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/api/Clinics/ListOfLabsInHospital?hospitalId=28 - -
+2024-06-16 17:39:07.385 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:39:07.385 +03:00  INF  Executing endpoint 'HealthCare.Controllers.ClinicsController.ListOfLabsInHospital (HealthCare)'
+2024-06-16 17:39:07.388 +03:00  INF  Route matched with {action = "ListOfLabsInHospital", controller = "Clinics"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ListOfLabsInHospital(Int32) on controller HealthCare.Controllers.ClinicsController (HealthCare).
+2024-06-16 17:39:07.388 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-16 17:39:07.392 +03:00  INF  Executed DbCommand (0ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [h].[Id], [h].[Address], [h].[Description], [h].[Name], [h].[UploadedFileId]
+FROM [Hospitals] AS [h]
+WHERE [h].[Id] = @__p_0
+2024-06-16 17:39:07.407 +03:00  INF  Executed DbCommand (9ms) [Parameters=[@__hospitalId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [l].[Id], [l].[HospitalId], [l].[Name]
+FROM [Labs] AS [l]
+WHERE [l].[HospitalId] = @__hospitalId_0
+2024-06-16 17:39:07.424 +03:00  INF  Executed DbCommand (3ms) [Parameters=[@__a_Id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [l].[Id], [l].[Description], [l].[Name], [l].[UploadedFileId]
+FROM [SpecializationsOfLabs] AS [s]
+INNER JOIN [LabSpecializations] AS [l] ON [s].[LabSpecializationId] = [l].[Id]
+WHERE [s].[LabId] = @__a_Id_0
+2024-06-16 17:39:07.428 +03:00  INF  Executed DbCommand (0ms) [Parameters=[@__a_Id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [l].[Id], [l].[Description], [l].[Name], [l].[UploadedFileId]
+FROM [SpecializationsOfLabs] AS [s]
+INNER JOIN [LabSpecializations] AS [l] ON [s].[LabSpecializationId] = [l].[Id]
+WHERE [s].[LabId] = @__a_Id_0
+2024-06-16 17:39:07.429 +03:00  INF  Executing OkObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[System.Collections.Generic.List`1[[HealthCare.Core.DTOS.ClinicModule.ResponseDto.AddLabResponseDto, HealthCare.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2024-06-16 17:39:07.430 +03:00  INF  Executed action HealthCare.Controllers.ClinicsController.ListOfLabsInHospital (HealthCare) in 42.5582ms
+2024-06-16 17:39:07.430 +03:00  INF  Executed endpoint 'HealthCare.Controllers.ClinicsController.ListOfLabsInHospital (HealthCare)'
+2024-06-16 17:39:07.430 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/api/Clinics/ListOfLabsInHospital?hospitalId=28 - - - 200 - application/json;+charset=utf-8 45.8867ms
+2024-06-16 17:39:08.125 +03:00  INF  Request starting HTTP/1.1 OPTIONS http://localhost:7101/api/Bands/GetHospitalPrivateBands?hospitalId=28 - -
+2024-06-16 17:39:08.125 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:39:08.125 +03:00  INF  Request finished HTTP/1.1 OPTIONS http://localhost:7101/api/Bands/GetHospitalPrivateBands?hospitalId=28 - - - 204 - - 0.2767ms
+2024-06-16 17:39:08.126 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/api/Bands/GetHospitalPrivateBands?hospitalId=28 - -
+2024-06-16 17:39:08.129 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:39:08.129 +03:00  INF  Executing endpoint 'HealthCare.Controllers.BandsController.GetHospitalPrivateBands (HealthCare)'
+2024-06-16 17:39:08.131 +03:00  INF  Route matched with {action = "GetHospitalPrivateBands", controller = "Bands"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetHospitalPrivateBands(Int32) on controller HealthCare.Controllers.BandsController (HealthCare).
+2024-06-16 17:39:08.131 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-16 17:39:08.136 +03:00  INF  Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [u].[Id], [u].[Email], [u].[NationalId], [u].[PassWord], [u].[Role], [u].[UploadedFileId], [u].[UserName], [u].[VerificationCode]
+FROM [Users] AS [u]
+WHERE [u].[Id] = @__userId_0
+2024-06-16 17:39:08.138 +03:00  INF  Executed DbCommand (0ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [h].[Id], [h].[Address], [h].[Description], [h].[Name], [h].[UploadedFileId]
+FROM [Hospitals] AS [h]
+WHERE [h].[Id] = @__p_0
+2024-06-16 17:39:08.142 +03:00  INF  Executed DbCommand (1ms) [Parameters=[@__8__locals2_user_UserName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [h].[Id], [h].[Email], [h].[NationalId], [h].[PassWord], [h].[UploadedFileId], [h].[UserName]
+FROM [HospitalAdmins] AS [h]
+WHERE [h].[UserName] = @__8__locals2_user_UserName_0
+2024-06-16 17:39:08.154 +03:00  INF  Executed DbCommand (10ms) [Parameters=[@__hospitalAdmin_Id_0='?' (DbType = Int32), @__8__locals1_hospitalId_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [a].[Id], [a].[HospitalAdminId], [a].[HospitalId]
+FROM [AdminOfHospitals] AS [a]
+WHERE ([a].[HospitalAdminId] = @__hospitalAdmin_Id_0) AND ([a].[HospitalId] = @__8__locals1_hospitalId_1)
+2024-06-16 17:39:08.166 +03:00  INF  Executed DbCommand (3ms) [Parameters=[@__8__locals1_hospitalId_0='?' (DbType = Int32), @__Private_1='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT [b].[Id], [b].[CurrentStateId], [b].[Flag], [b].[HospitalId], [b].[IsActive], [b].[PatientId], [b].[RoomNum], [b].[Type], [b].[UniqueId], [p].[Id], [p].[Email], [p].[FullName], [p].[IsEmailConfirmed], [p].[MedicalHistoryId], [p].[NationalId], [p].[PassWord], [p].[PhoneNumber], [p].[UploadedFileId], [p].[UserName], [p].[VerificationCode], [u].[Id], [u].[ContentType], [u].[FileName], [u].[FilePath], [u].[StoredFileName]
+FROM [Bands] AS [b]
+LEFT JOIN [Patients] AS [p] ON [b].[PatientId] = [p].[Id]
+LEFT JOIN [UploadedFiles] AS [u] ON [p].[UploadedFileId] = [u].[Id]
+WHERE ([b].[HospitalId] = @__8__locals1_hospitalId_0) AND ([b].[Type] = @__Private_1)
+2024-06-16 17:39:08.182 +03:00  INF  Executing OkObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[System.Collections.Generic.List`1[[HealthCare.Core.DTOS.BandModule.ResponseDtos.BandResponseDto, HealthCare.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2024-06-16 17:39:08.184 +03:00  INF  Executed action HealthCare.Controllers.BandsController.GetHospitalPrivateBands (HealthCare) in 53.2402ms
+2024-06-16 17:39:08.184 +03:00  INF  Executed endpoint 'HealthCare.Controllers.BandsController.GetHospitalPrivateBands (HealthCare)'
+2024-06-16 17:39:08.184 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/api/Bands/GetHospitalPrivateBands?hospitalId=28 - - - 200 - application/json;+charset=utf-8 58.4267ms
+2024-06-16 17:39:13.676 +03:00  INF  Request starting HTTP/1.1 OPTIONS http://localhost:7101/api/Bands/ChangeFlag?uniqueId=679263000 - -
+2024-06-16 17:39:13.676 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:39:13.676 +03:00  INF  Request finished HTTP/1.1 OPTIONS http://localhost:7101/api/Bands/ChangeFlag?uniqueId=679263000 - - - 204 - - 0.2684ms
+2024-06-16 17:39:13.677 +03:00  INF  Request starting HTTP/1.1 PUT http://localhost:7101/api/Bands/ChangeFlag?uniqueId=679263000 - 0
+2024-06-16 17:39:13.677 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:39:13.677 +03:00  INF  Executing endpoint 'HealthCare.Controllers.BandsController.ChangeFlag (HealthCare)'
+2024-06-16 17:39:13.680 +03:00  INF  Route matched with {action = "ChangeFlag", controller = "Bands"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ChangeFlag(System.String) on controller HealthCare.Controllers.BandsController (HealthCare).
+2024-06-16 17:39:13.680 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-16 17:39:13.689 +03:00  INF  Executed DbCommand (1ms) [Parameters=[@__uniqueId_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [b].[Id], [b].[CurrentStateId], [b].[Flag], [b].[HospitalId], [b].[IsActive], [b].[PatientId], [b].[RoomNum], [b].[Type], [b].[UniqueId]
+FROM [Bands] AS [b]
+WHERE [b].[UniqueId] = @__uniqueId_0
+2024-06-16 17:39:13.709 +03:00  INF  Executed DbCommand (10ms) [Parameters=[@p8='?' (DbType = Int32), @p0='?' (DbType = Int32), @p1='?' (DbType = Boolean), @p2='?' (DbType = Int32), @p3='?' (DbType = Boolean), @p4='?' (DbType = Int32), @p5='?' (DbType = Int32), @p6='?' (Size = 4000), @p7='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+UPDATE [Bands] SET [CurrentStateId] = @p0, [Flag] = @p1, [HospitalId] = @p2, [IsActive] = @p3, [PatientId] = @p4, [RoomNum] = @p5, [Type] = @p6, [UniqueId] = @p7
+WHERE [Id] = @p8;
+SELECT @@ROWCOUNT;
+2024-06-16 17:39:13.710 +03:00  INF  Executing OkObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2024-06-16 17:39:13.710 +03:00  INF  Executed action HealthCare.Controllers.BandsController.ChangeFlag (HealthCare) in 30.7522ms
+2024-06-16 17:39:13.710 +03:00  INF  Executed endpoint 'HealthCare.Controllers.BandsController.ChangeFlag (HealthCare)'
+2024-06-16 17:39:13.711 +03:00  INF  Request finished HTTP/1.1 PUT http://localhost:7101/api/Bands/ChangeFlag?uniqueId=679263000 - 0 - 200 - application/json;+charset=utf-8 33.6279ms
+2024-06-16 17:39:13.712 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/api/Bands/GetBandCurrentState?uniqueId=679263000 - -
+2024-06-16 17:39:13.712 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:39:13.712 +03:00  INF  Executing endpoint 'HealthCare.Controllers.BandsController.GetBandCurrentState (HealthCare)'
+2024-06-16 17:39:13.714 +03:00  INF  Route matched with {action = "GetBandCurrentState", controller = "Bands"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetBandCurrentState(System.String) on controller HealthCare.Controllers.BandsController (HealthCare).
+2024-06-16 17:39:13.715 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-16 17:39:13.718 +03:00  INF  Executed DbCommand (0ms) [Parameters=[@__uniqueId_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [b].[Id], [b].[CurrentStateId], [b].[Flag], [b].[HospitalId], [b].[IsActive], [b].[PatientId], [b].[RoomNum], [b].[Type], [b].[UniqueId]
+FROM [Bands] AS [b]
+WHERE [b].[UniqueId] = @__uniqueId_0
+2024-06-16 17:39:13.723 +03:00  INF  Executed DbCommand (1ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [c].[Id], [c].[BloodPressure], [c].[BloodSugar], [c].[HeartRate], [c].[Oxygen], [c].[Temperature]
+FROM [CurrentStates] AS [c]
+WHERE [c].[Id] = @__p_0
+2024-06-16 17:39:13.730 +03:00  INF  Executing OkObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[HealthCare.Core.DTOS.BandModule.ResponseDtos.CurrentStateDto, HealthCare.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2024-06-16 17:39:13.732 +03:00  INF  Executed action HealthCare.Controllers.BandsController.GetBandCurrentState (HealthCare) in 17.6215ms
+2024-06-16 17:39:13.732 +03:00  INF  Executed endpoint 'HealthCare.Controllers.BandsController.GetBandCurrentState (HealthCare)'
+2024-06-16 17:39:13.732 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/api/Bands/GetBandCurrentState?uniqueId=679263000 - - - 200 - application/json;+charset=utf-8 19.5084ms
+2024-06-16 17:39:31.140 +03:00  INF  Request starting HTTP/1.1 OPTIONS http://localhost:7101/api/Bands/ChangeFlag?uniqueId=679263000 - -
+2024-06-16 17:39:31.140 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:39:31.140 +03:00  INF  Request finished HTTP/1.1 OPTIONS http://localhost:7101/api/Bands/ChangeFlag?uniqueId=679263000 - - - 204 - - 0.2150ms
+2024-06-16 17:39:31.141 +03:00  INF  Request starting HTTP/1.1 PUT http://localhost:7101/api/Bands/ChangeFlag?uniqueId=679263000 - 0
+2024-06-16 17:39:31.141 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:39:31.141 +03:00  INF  Executing endpoint 'HealthCare.Controllers.BandsController.ChangeFlag (HealthCare)'
+2024-06-16 17:39:31.141 +03:00  INF  Route matched with {action = "ChangeFlag", controller = "Bands"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ChangeFlag(System.String) on controller HealthCare.Controllers.BandsController (HealthCare).
+2024-06-16 17:39:31.142 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-16 17:39:31.143 +03:00  INF  Executed DbCommand (0ms) [Parameters=[@__uniqueId_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [b].[Id], [b].[CurrentStateId], [b].[Flag], [b].[HospitalId], [b].[IsActive], [b].[PatientId], [b].[RoomNum], [b].[Type], [b].[UniqueId]
+FROM [Bands] AS [b]
+WHERE [b].[UniqueId] = @__uniqueId_0
+2024-06-16 17:39:31.144 +03:00  INF  Executed DbCommand (0ms) [Parameters=[@p8='?' (DbType = Int32), @p0='?' (DbType = Int32), @p1='?' (DbType = Boolean), @p2='?' (DbType = Int32), @p3='?' (DbType = Boolean), @p4='?' (DbType = Int32), @p5='?' (DbType = Int32), @p6='?' (Size = 4000), @p7='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+UPDATE [Bands] SET [CurrentStateId] = @p0, [Flag] = @p1, [HospitalId] = @p2, [IsActive] = @p3, [PatientId] = @p4, [RoomNum] = @p5, [Type] = @p6, [UniqueId] = @p7
+WHERE [Id] = @p8;
+SELECT @@ROWCOUNT;
+2024-06-16 17:39:31.153 +03:00  INF  Executing OkObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2024-06-16 17:39:31.153 +03:00  INF  Executed action HealthCare.Controllers.BandsController.ChangeFlag (HealthCare) in 11.9904ms
+2024-06-16 17:39:31.153 +03:00  INF  Executed endpoint 'HealthCare.Controllers.BandsController.ChangeFlag (HealthCare)'
+2024-06-16 17:39:31.153 +03:00  INF  Request finished HTTP/1.1 PUT http://localhost:7101/api/Bands/ChangeFlag?uniqueId=679263000 - 0 - 200 - application/json;+charset=utf-8 12.3625ms
+2024-06-16 17:39:31.156 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/api/Bands/GetBandCurrentState?uniqueId=679263000 - -
+2024-06-16 17:39:31.156 +03:00  INF  CORS policy execution successful.
+2024-06-16 17:39:31.156 +03:00  INF  Executing endpoint 'HealthCare.Controllers.BandsController.GetBandCurrentState (HealthCare)'
+2024-06-16 17:39:31.156 +03:00  INF  Route matched with {action = "GetBandCurrentState", controller = "Bands"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetBandCurrentState(System.String) on controller HealthCare.Controllers.BandsController (HealthCare).
+2024-06-16 17:39:31.156 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-16 17:39:31.157 +03:00  INF  Executed DbCommand (0ms) [Parameters=[@__uniqueId_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [b].[Id], [b].[CurrentStateId], [b].[Flag], [b].[HospitalId], [b].[IsActive], [b].[PatientId], [b].[RoomNum], [b].[Type], [b].[UniqueId]
+FROM [Bands] AS [b]
+WHERE [b].[UniqueId] = @__uniqueId_0
+2024-06-16 17:39:31.158 +03:00  INF  Executed DbCommand (0ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [c].[Id], [c].[BloodPressure], [c].[BloodSugar], [c].[HeartRate], [c].[Oxygen], [c].[Temperature]
+FROM [CurrentStates] AS [c]
+WHERE [c].[Id] = @__p_0
+2024-06-16 17:39:31.158 +03:00  INF  Executing OkObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[HealthCare.Core.DTOS.BandModule.ResponseDtos.CurrentStateDto, HealthCare.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2024-06-16 17:39:31.159 +03:00  INF  Executed action HealthCare.Controllers.BandsController.GetBandCurrentState (HealthCare) in 2.6258ms
+2024-06-16 17:39:31.159 +03:00  INF  Executed endpoint 'HealthCare.Controllers.BandsController.GetBandCurrentState (HealthCare)'
+2024-06-16 17:39:31.159 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/api/Bands/GetBandCurrentState?uniqueId=679263000 - - - 200 - application/json;+charset=utf-8 2.9911ms

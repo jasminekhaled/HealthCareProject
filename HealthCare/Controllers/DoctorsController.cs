@@ -42,7 +42,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-      //  [Authorize]
+
         [HttpGet("ListOfSpecialization")]
         public async Task<IActionResult> ListOfSpecialization()
         {
@@ -121,7 +121,7 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-        [Authorize]
+       /* [Authorize]
         [HttpGet("GetDoctorByName")]
         public async Task<IActionResult> GetDoctorByName(string FullName)
         {
@@ -129,7 +129,7 @@ namespace HealthCare.Controllers
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
-        }
+        }*/
 
         [Authorize(Roles = "HospitalAdmin, SuperAdmin")]
         [HttpGet("ListOfDoctorsinHospital")]
