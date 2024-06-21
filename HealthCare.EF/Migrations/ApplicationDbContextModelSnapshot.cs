@@ -614,20 +614,20 @@ namespace HealthCare.EF.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int?>("BloodPressure")
-                        .HasColumnType("int");
+                    b.Property<string>("BloodPressure")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("BloodSugar")
-                        .HasColumnType("int");
+                    b.Property<string>("BloodSugar")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("HeartRate")
-                        .HasColumnType("int");
+                    b.Property<string>("HeartRate")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Oxygen")
-                        .HasColumnType("int");
+                    b.Property<string>("Oxygen")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Temperature")
-                        .HasColumnType("int");
+                    b.Property<string>("Temperature")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

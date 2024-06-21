@@ -1,0 +1,63 @@
+2024-06-19 10:15:37.187 +03:00  INF  User profile is available. Using 'C:\Users\com\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-06-19 10:15:37.335 +03:00  INF  Now listening on: http://localhost:7101
+2024-06-19 10:15:37.335 +03:00  INF  Now listening on: http://localhost:5146
+2024-06-19 10:15:37.338 +03:00  INF  Application started. Press Ctrl+C to shut down.
+2024-06-19 10:15:37.338 +03:00  INF  Hosting environment: Development
+2024-06-19 10:15:37.338 +03:00  INF  Content root path: G:\WEB DEVELOPMENT\HealthCareProject\HealthCareAPIs\HealthCare\
+2024-06-19 10:15:37.733 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/swagger/index.html - -
+2024-06-19 10:15:37.958 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/swagger/index.html - - - 200 - text/html;charset=utf-8 228.0760ms
+2024-06-19 10:15:37.963 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/_vs/browserLink - -
+2024-06-19 10:15:37.965 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/_framework/aspnetcore-browser-refresh.js - -
+2024-06-19 10:15:37.967 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/_framework/aspnetcore-browser-refresh.js - - - 200 12352 application/javascript;+charset=utf-8 1.7249ms
+2024-06-19 10:15:37.996 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 33.3911ms
+2024-06-19 10:15:38.235 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/swagger/v1/swagger.json - -
+2024-06-19 10:15:38.359 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 124.3629ms
+2024-06-19 10:20:18.186 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/api/Bands/BandAlarm?uniqueId=737368000&bandAlarm=true - -
+2024-06-19 10:20:19.267 +03:00  INF  Executing endpoint 'HealthCare.Controllers.BandsController.BandAlarm (HealthCare)'
+2024-06-19 10:20:19.292 +03:00  INF  Route matched with {action = "BandAlarm", controller = "Bands"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] BandAlarm(System.String, Boolean) on controller HealthCare.Controllers.BandsController (HealthCare).
+2024-06-19 10:20:20.372 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-19 10:20:23.017 +03:00  INF  Executed DbCommand (46ms) [Parameters=[@__uniqueId_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [b].[Id], [b].[CurrentStateId], [b].[Flag], [b].[HospitalId], [b].[IsActive], [b].[PatientId], [b].[RoomNum], [b].[Type], [b].[UniqueId], [p].[Id], [p].[Email], [p].[FullName], [p].[IsEmailConfirmed], [p].[MedicalHistoryId], [p].[NationalId], [p].[PassWord], [p].[PhoneNumber], [p].[UploadedFileId], [p].[UserName], [p].[VerificationCode]
+FROM [Bands] AS [b]
+LEFT JOIN [Patients] AS [p] ON [b].[PatientId] = [p].[Id]
+WHERE [b].[UniqueId] = @__uniqueId_0
+2024-06-19 10:20:23.039 +03:00  INF  Executing BadRequestObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2024-06-19 10:20:23.046 +03:00  INF  Executed action HealthCare.Controllers.BandsController.BandAlarm (HealthCare) in 3749.8796ms
+2024-06-19 10:20:23.047 +03:00  INF  Executed endpoint 'HealthCare.Controllers.BandsController.BandAlarm (HealthCare)'
+2024-06-19 10:20:23.049 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/api/Bands/BandAlarm?uniqueId=737368000&bandAlarm=true - - - 400 - application/json;+charset=utf-8 4863.2774ms
+2024-06-19 10:53:08.260 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/api/Bands/FlagStatus?uniqueId=737368000 - -
+2024-06-19 10:53:08.271 +03:00  INF  Executing endpoint 'HealthCare.Controllers.BandsController.FlagStatus (HealthCare)'
+2024-06-19 10:53:08.275 +03:00  INF  Route matched with {action = "FlagStatus", controller = "Bands"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] FlagStatus(System.String) on controller HealthCare.Controllers.BandsController (HealthCare).
+2024-06-19 10:53:08.308 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-19 10:53:09.213 +03:00  INF  Executed DbCommand (6ms) [Parameters=[@__uniqueId_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [b].[Id], [b].[CurrentStateId], [b].[Flag], [b].[HospitalId], [b].[IsActive], [b].[PatientId], [b].[RoomNum], [b].[Type], [b].[UniqueId]
+FROM [Bands] AS [b]
+WHERE [b].[UniqueId] = @__uniqueId_0
+2024-06-19 10:53:09.214 +03:00  INF  Executing BadRequestObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2024-06-19 10:53:09.214 +03:00  INF  Executed action HealthCare.Controllers.BandsController.FlagStatus (HealthCare) in 939.2104ms
+2024-06-19 10:53:09.214 +03:00  INF  Executed endpoint 'HealthCare.Controllers.BandsController.FlagStatus (HealthCare)'
+2024-06-19 10:53:09.214 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/api/Bands/FlagStatus?uniqueId=737368000 - - - 400 - application/json;+charset=utf-8 954.4251ms
+2024-06-19 10:55:15.392 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/api/Bands/FlagStatus?uniqueId=737368000 - -
+2024-06-19 10:55:15.394 +03:00  INF  Executing endpoint 'HealthCare.Controllers.BandsController.FlagStatus (HealthCare)'
+2024-06-19 10:55:15.394 +03:00  INF  Route matched with {action = "FlagStatus", controller = "Bands"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] FlagStatus(System.String) on controller HealthCare.Controllers.BandsController (HealthCare).
+2024-06-19 10:55:15.404 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-19 10:55:15.409 +03:00  INF  Executed DbCommand (2ms) [Parameters=[@__uniqueId_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [b].[Id], [b].[CurrentStateId], [b].[Flag], [b].[HospitalId], [b].[IsActive], [b].[PatientId], [b].[RoomNum], [b].[Type], [b].[UniqueId]
+FROM [Bands] AS [b]
+WHERE [b].[UniqueId] = @__uniqueId_0
+2024-06-19 10:55:15.409 +03:00  INF  Executing BadRequestObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2024-06-19 10:55:15.409 +03:00  INF  Executed action HealthCare.Controllers.BandsController.FlagStatus (HealthCare) in 14.8281ms
+2024-06-19 10:55:15.409 +03:00  INF  Executed endpoint 'HealthCare.Controllers.BandsController.FlagStatus (HealthCare)'
+2024-06-19 10:55:15.409 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/api/Bands/FlagStatus?uniqueId=737368000 - - - 400 - application/json;+charset=utf-8 17.2098ms
+2024-06-19 10:56:48.672 +03:00  INF  Request starting HTTP/1.1 GET http://localhost:7101/api/Bands/FlagStatus?uniqueId=296453001 - -
+2024-06-19 10:56:48.673 +03:00  INF  Executing endpoint 'HealthCare.Controllers.BandsController.FlagStatus (HealthCare)'
+2024-06-19 10:56:48.673 +03:00  INF  Route matched with {action = "FlagStatus", controller = "Bands"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] FlagStatus(System.String) on controller HealthCare.Controllers.BandsController (HealthCare).
+2024-06-19 10:56:48.673 +03:00  INF  Entity Framework Core 6.0.23 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2024-06-19 10:56:48.675 +03:00  INF  Executed DbCommand (1ms) [Parameters=[@__uniqueId_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [b].[Id], [b].[CurrentStateId], [b].[Flag], [b].[HospitalId], [b].[IsActive], [b].[PatientId], [b].[RoomNum], [b].[Type], [b].[UniqueId]
+FROM [Bands] AS [b]
+WHERE [b].[UniqueId] = @__uniqueId_0
+2024-06-19 10:56:48.725 +03:00  INF  Executing OkObjectResult, writing value of type 'HealthCare.Core.DTOS.GeneralResponse`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2024-06-19 10:56:48.725 +03:00  INF  Executed action HealthCare.Controllers.BandsController.FlagStatus (HealthCare) in 51.9723ms
+2024-06-19 10:56:48.725 +03:00  INF  Executed endpoint 'HealthCare.Controllers.BandsController.FlagStatus (HealthCare)'
+2024-06-19 10:56:48.725 +03:00  INF  Request finished HTTP/1.1 GET http://localhost:7101/api/Bands/FlagStatus?uniqueId=296453001 - - - 200 - application/json;+charset=utf-8 52.4084ms

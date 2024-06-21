@@ -8,10 +8,10 @@ namespace HealthCare.Core.DTOS.BandModule.RequestDtos
 {
     public class BandStateDto
     {
-        public int Oxygen { get; set; }
-        public int HeartRate { get; set; }
-        public int Temperature { get; set; }
-        public int BloodPressure { get; set; }
-        public int BloodSugar { get; set; }
+        public string Oxygen { get; set; }
+        public string HeartRate { get; set; }
+        public string Temperature { get; set; }
+        public string BloodPressure { get; set; }
+        public string BloodSugar { get; set; }
     }
 }

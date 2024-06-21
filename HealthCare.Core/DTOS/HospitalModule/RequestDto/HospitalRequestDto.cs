@@ -20,6 +20,6 @@ namespace HealthCare.Core.DTOS.HospitalModule.RequestDto
         [MaxLength(length: 500)]
         public string Description { get; set; }
         public int GovernorateId { get; set; }
-        public IFormFile Image { get; set; }
+        public IFormFile? Image { get; set; }
     }
 }

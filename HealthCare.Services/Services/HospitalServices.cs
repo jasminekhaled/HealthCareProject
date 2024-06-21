@@ -95,44 +95,69 @@ namespace HealthCare.Services.Services
                     };
                 }
 
-                var MaxAllowedPosterSize = _configuration.GetValue<long>("MaxAllowedPosterSize");
-                List<string> AllowedExtenstions = _configuration.GetSection("AllowedExtenstions").Get<List<string>>();
-
-                if (!AllowedExtenstions.Contains(Path.GetExtension(dto.Image.FileName).ToLower()))
-                {
-                    return new GeneralResponse<HospitalDto>
-                    {
-                        IsSuccess = false,
-                        Message = "Only .jpg and .png Images Are Allowed."
-                    };
-                }
-
-                if (dto.Image.Length > MaxAllowedPosterSize)
-                {
-                    return new GeneralResponse<HospitalDto>
-                    {
-                        IsSuccess = false,
-                        Message = "Max Allowed Size Is 1MB."
-                    };
-                }
-
-                var fakeFileName = Path.GetRandomFileName();
-                var uploadedFile = new UploadedFile()
-                {
-                    FileName = dto.Image.FileName,
-                    ContentType = dto.Image.ContentType,
-                    StoredFileName = fakeFileName
-                };
-                var directoryPath = Path.Combine(_webHostEnvironment.ContentRootPath, "Uploads", "HospitalImages");
-                var path = Path.Combine(directoryPath, fakeFileName);
-                using FileStream fileStream = new(path, FileMode.Create);
-                dto.Image.CopyTo(fileStream);
-                uploadedFile.FilePath = path;
-                await _unitOfWork.UploadedFileRepository.AddAsync(uploadedFile);
-                await _unitOfWork.CompleteAsync();
-
                 var hospital = _mapper.Map<Hospital>(dto);
-                hospital.UploadedFile = uploadedFile;
+                var data = _mapper.Map<HospitalDto>(hospital);
+                if (dto.Image != null)
+                {
+                    var MaxAllowedPosterSize = _configuration.GetValue<long>("MaxAllowedPosterSize");
+                    List<string> AllowedExtenstions = _configuration.GetSection("AllowedExtenstions").Get<List<string>>();
+
+                    if (!AllowedExtenstions.Contains(Path.GetExtension(dto.Image.FileName).ToLower()))
+                    {
+                        return new GeneralResponse<HospitalDto>
+                        {
+                            IsSuccess = false,
+                            Message = "Only .jpg and .png Images Are Allowed."
+                        };
+                    }
+
+                    if (dto.Image.Length > MaxAllowedPosterSize)
+                    {
+                        return new GeneralResponse<HospitalDto>
+                        {
+                            IsSuccess = false,
+                            Message = "Max Allowed Size Is 1MB."
+                        };
+                    }
+
+                    var fakeFileName = Path.GetRandomFileName();
+                    var uploadedFile = new UploadedFile()
+                    {
+                        FileName = dto.Image.FileName,
+                        ContentType = dto.Image.ContentType,
+                        StoredFileName = fakeFileName
+                    };
+                    var directoryPath = Path.Combine(_webHostEnvironment.ContentRootPath, "Uploads", "HospitalImages");
+                    var path = Path.Combine(directoryPath, fakeFileName);
+                    using FileStream fileStream = new(path, FileMode.Create);
+                    dto.Image.CopyTo(fileStream);
+                    uploadedFile.FilePath = path;
+                    await _unitOfWork.UploadedFileRepository.AddAsync(uploadedFile);
+                    await _unitOfWork.CompleteAsync();
+
+                    hospital.UploadedFile = uploadedFile;
+                    data.ImagePath = path;
+                }
+                else
+                {
+                    var DefaultFile = new UploadedFile()
+                    {
+                        FileName = "DefaultImage.png",
+                        StoredFileName = "DefaultImage",
+                        ContentType = "image/png",
+                        FilePath = "G:\\WEB DEVELOPMENT\\HealthCareProject\\HealthCareAPIs\\HealthCare\\Uploads\\DefaultImage"
+
+                    };
+                    await _unitOfWork.UploadedFileRepository.AddAsync(DefaultFile);
+                    hospital.UploadedFile = DefaultFile;
+                    await _unitOfWork.CompleteAsync();
+
+                    data.ImagePath = DefaultFile.FilePath;
+                }
+                
+
+                
+                
                 await _unitOfWork.HospitalRepository.AddAsync(hospital);
                 await _unitOfWork.CompleteAsync();
 
@@ -144,8 +169,6 @@ namespace HealthCare.Services.Services
                 await _unitOfWork.HospitalGovernorateRepository.AddAsync(govern);
                 await _unitOfWork.CompleteAsync();
 
-                var data = _mapper.Map<HospitalDto>(hospital);
-                data.ImagePath = path;
                 data.Governorate = governorate.Name;
 
                 return new GeneralResponse<HospitalDto>
@@ -225,8 +248,6 @@ namespace HealthCare.Services.Services
                 };
             }
         }
-
-        
 
         public async Task<GeneralResponse<List<ListOfHospitalDto>>> GetHospitalByName(string Name)
         {
