@@ -12,7 +12,7 @@ namespace HealthCare.Controllers
     {
         private readonly IAuthServices _authServices;
 
-        public AuthController(IAuthServices authServices)
+        public AuthController(IAuthServices authServices) 
         {
             _authServices = authServices;
         }
