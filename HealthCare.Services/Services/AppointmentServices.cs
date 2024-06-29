@@ -1211,7 +1211,31 @@ namespace HealthCare.Services.Services
                     .GetSpecificItems(w => w.ClinicAppointmentId == clinicAppointmentId, a => a.Id);
 
                 var all = await _unitOfWork.AllReservationsRepository
-                    .Where(w => clinicDates.Contains(w.RoomAppointmentDateId) && w.Type == AllReservations.Clinic);
+                     .WhereIncludeAsync(w => clinicDates.Contains(w.RoomAppointmentDateId) &&
+                     w.Type == AllReservations.Clinic, i => i.Patient);
+
+                foreach (var reservation in all)
+                {
+                    var email = reservation.Patient.Email;
+                    var hospital = await _unitOfWork.HospitalRepository.GetByIdAsync(reservation.HospitalId);
+                    var doctorData = await _unitOfWork.DoctorRepository.GetByIdAsync(reservation.DoctorId);
+                    string patientData =
+                        "<p style=\"font-size: 14px;\">Hi ' " + reservation.Patient.FullName + "',</p><br>" +
+                        "<p style=\"font-size: 14px;\">I hope this message finds you well. </p><br>" +
+                         "<p style=\"font-size: 14px;\">We regret to inform you that due to unforeseen circumstances, we have had to cancel your reservation in the "
+                         + hospital.Name + " with Dr: " + doctorData.FullName + " on " + reservation.Date + " . We understand that this may be inconvenient for you, and we sincerely apologize for any inconvenience caused.</p><br>" +
+                         "<p style=\"font-size: 14px;\">Thank you for your understanding and patience.</p><br>" +
+                         "<p style=\"font-size: 14px;\">Best regards</p><br>";
+
+                    if (!await MailServices.SendEmailAsync(email, "Canceled Reservation", patientData))
+                    {
+                        return new GeneralResponse<string>()
+                        {
+                            IsSuccess = false,
+                            Message = "Sending the Mail is Failed"
+                        };
+                    }
+                }
 
                 _unitOfWork.AllReservationsRepository.RemoveRange(all);
                 _unitOfWork.ClinicReservationRepository.RemoveRange(clinicAppointment.ClinicReservations);
@@ -1271,7 +1295,31 @@ namespace HealthCare.Services.Services
                     .GetSpecificItems(w => w.LabAppointmentId == labAppointmentId, a => a.Id);
 
                 var all = await _unitOfWork.AllReservationsRepository
-                    .Where(w => labDates.Contains(w.RoomAppointmentDateId) && w.Type == AllReservations.Lab);
+                    .WhereIncludeAsync(w => labDates.Contains(w.RoomAppointmentDateId) &&
+                    w.Type == AllReservations.Lab, i=>i.Patient);
+
+                foreach (var reservation in all)
+                {
+                    var email = reservation.Patient.Email;
+                    var hospital = await _unitOfWork.HospitalRepository.GetByIdAsync(reservation.HospitalId);
+                    var doctorData = await _unitOfWork.DoctorRepository.GetByIdAsync(reservation.DoctorId);
+                    string patientData =
+                        "<p style=\"font-size: 14px;\">Hi ' " + reservation.Patient.FullName + "',</p><br>" +
+                        "<p style=\"font-size: 14px;\">I hope this message finds you well. </p><br>" +
+                         "<p style=\"font-size: 14px;\">We regret to inform you that due to unforeseen circumstances, we have had to cancel your reservation in the "
+                         + hospital.Name + " with Dr: " + doctorData.FullName + " on " + reservation.Date + " . We understand that this may be inconvenient for you, and we sincerely apologize for any inconvenience caused.</p><br>" +
+                         "<p style=\"font-size: 14px;\">Thank you for your understanding and patience.</p><br>" +
+                         "<p style=\"font-size: 14px;\">Best regards</p><br>";
+
+                    if (!await MailServices.SendEmailAsync(email, "Canceled Reservation", patientData))
+                    {
+                        return new GeneralResponse<string>()
+                        {
+                            IsSuccess = false,
+                            Message = "Sending the Mail is Failed"
+                        };
+                    }
+                }
 
                 _unitOfWork.AllReservationsRepository.RemoveRange(all);
                 _unitOfWork.LabReservationRepository.RemoveRange(labAppointment.LabReservations);
@@ -1330,7 +1378,31 @@ namespace HealthCare.Services.Services
                     .GetSpecificItems(w => w.XrayAppointmentId == xrayAppointmentId, a => a.Id);
 
                 var all = await _unitOfWork.AllReservationsRepository
-                    .Where(w => xrayDates.Contains(w.RoomAppointmentDateId) && w.Type == AllReservations.Xray);
+                    .WhereIncludeAsync(w => xrayDates.Contains(w.RoomAppointmentDateId) &&
+                    w.Type == AllReservations.Xray, i=>i.Patient);
+
+                foreach (var reservation in all)
+                {
+                    var email = reservation.Patient.Email;
+                    var hospital = await _unitOfWork.HospitalRepository.GetByIdAsync(reservation.HospitalId);
+                    var doctorData = await _unitOfWork.DoctorRepository.GetByIdAsync(reservation.DoctorId);
+                    string patientData =
+                        "<p style=\"font-size: 14px;\">Hi ' " + reservation.Patient.FullName + "',</p><br>" +
+                        "<p style=\"font-size: 14px;\">I hope this message finds you well. </p><br>" +
+                         "<p style=\"font-size: 14px;\">We regret to inform you that due to unforeseen circumstances, we have had to cancel your reservation in the "
+                         + hospital.Name + " with Dr: " + doctorData.FullName + " on " + reservation.Date + " . We understand that this may be inconvenient for you, and we sincerely apologize for any inconvenience caused.</p><br>" +
+                         "<p style=\"font-size: 14px;\">Thank you for your understanding and patience.</p><br>" +
+                         "<p style=\"font-size: 14px;\">Best regards</p><br>";
+
+                    if (!await MailServices.SendEmailAsync(email, "Canceled Reservation", patientData))
+                    {
+                        return new GeneralResponse<string>()
+                        {
+                            IsSuccess = false,
+                            Message = "Sending the Mail is Failed"
+                        };
+                    }
+                }
 
                 _unitOfWork.AllReservationsRepository.RemoveRange(all);
                 _unitOfWork.XrayReservationRepository.RemoveRange(xrayAppointment.XrayReservations);
@@ -1388,7 +1460,30 @@ namespace HealthCare.Services.Services
                     };
                 }
                 var all = await _unitOfWork.AllReservationsRepository
-                    .Where(w => w.RoomAppointmentDateId==clinicAppointmentDateId && w.Type == AllReservations.Clinic);
+                    .WhereIncludeAsync(w => w.RoomAppointmentDateId==clinicAppointmentDateId &&
+                    w.Type == AllReservations.Clinic, i => i.Patient);
+                foreach(var reservation in all)
+                {
+                    var email = reservation.Patient.Email;
+                    var hospital = await _unitOfWork.HospitalRepository.GetByIdAsync(reservation.HospitalId);
+                    var doctorData = await _unitOfWork.DoctorRepository.GetByIdAsync(reservation.DoctorId);
+                    string patientData =
+                        "<p style=\"font-size: 14px;\">Hi ' " + reservation.Patient.FullName + "',</p><br>" +
+                        "<p style=\"font-size: 14px;\">I hope this message finds you well. </p><br>" +
+                         "<p style=\"font-size: 14px;\">We regret to inform you that due to unforeseen circumstances, we have had to cancel your reservation in the "
+                         + hospital.Name + " with Dr: " + doctorData.FullName + " on " + reservation.Date + " . We understand that this may be inconvenient for you, and we sincerely apologize for any inconvenience caused.</p><br>" +
+                         "<p style=\"font-size: 14px;\">Thank you for your understanding and patience.</p><br>" +
+                         "<p style=\"font-size: 14px;\">Best regards</p><br>";
+
+                    if (!await MailServices.SendEmailAsync(email, "Canceled Reservation", patientData))
+                    {
+                        return new GeneralResponse<string>()
+                        {
+                            IsSuccess = false,
+                            Message = "Sending the Mail is Failed"
+                        };
+                    }
+                }
 
                 _unitOfWork.AllReservationsRepository.RemoveRange(all);
                 _unitOfWork.ClinicReservationRepository.RemoveRange(clinicAppointmentDate.ClinicReservations);
@@ -1446,7 +1541,31 @@ namespace HealthCare.Services.Services
                     };
                 }
                 var all = await _unitOfWork.AllReservationsRepository
-                    .Where(w => w.RoomAppointmentDateId == labAppointmentDateId && w.Type == AllReservations.Lab);
+                    .WhereIncludeAsync(w => w.RoomAppointmentDateId == labAppointmentDateId &&
+                    w.Type == AllReservations.Lab, i=>i.Patient);
+
+                foreach (var reservation in all)
+                {
+                    var email = reservation.Patient.Email;
+                    var hospital = await _unitOfWork.HospitalRepository.GetByIdAsync(reservation.HospitalId);
+                    var doctorData = await _unitOfWork.DoctorRepository.GetByIdAsync(reservation.DoctorId);
+                    string patientData =
+                        "<p style=\"font-size: 14px;\">Hi ' " + reservation.Patient.FullName + "',</p><br>" +
+                        "<p style=\"font-size: 14px;\">I hope this message finds you well. </p><br>" +
+                         "<p style=\"font-size: 14px;\">We regret to inform you that due to unforeseen circumstances, we have had to cancel your reservation in the "
+                         + hospital.Name + " with Dr: " + doctorData.FullName + " on " + reservation.Date + " . We understand that this may be inconvenient for you, and we sincerely apologize for any inconvenience caused.</p><br>" +
+                         "<p style=\"font-size: 14px;\">Thank you for your understanding and patience.</p><br>" +
+                         "<p style=\"font-size: 14px;\">Best regards</p><br>";
+
+                    if (!await MailServices.SendEmailAsync(email, "Canceled Reservation", patientData))
+                    {
+                        return new GeneralResponse<string>()
+                        {
+                            IsSuccess = false,
+                            Message = "Sending the Mail is Failed"
+                        };
+                    }
+                }
 
                 _unitOfWork.AllReservationsRepository.RemoveRange(all);
                 _unitOfWork.LabReservationRepository.RemoveRange(labAppointmentDate.LabReservations);
@@ -1504,7 +1623,31 @@ namespace HealthCare.Services.Services
                     };
                 }
                 var all = await _unitOfWork.AllReservationsRepository
-                    .Where(w => w.RoomAppointmentDateId == xrayAppointmentDateId && w.Type == AllReservations.Xray);
+                    .WhereIncludeAsync(w => w.RoomAppointmentDateId == xrayAppointmentDateId &&
+                    w.Type == AllReservations.Xray, i=>i.Patient);
+
+                foreach (var reservation in all)
+                {
+                    var email = reservation.Patient.Email;
+                    var hospital = await _unitOfWork.HospitalRepository.GetByIdAsync(reservation.HospitalId);
+                    var doctorData = await _unitOfWork.DoctorRepository.GetByIdAsync(reservation.DoctorId);
+                    string patientData =
+                        "<p style=\"font-size: 14px;\">Hi ' " + reservation.Patient.FullName + "',</p><br>" +
+                        "<p style=\"font-size: 14px;\">I hope this message finds you well. </p><br>" +
+                         "<p style=\"font-size: 14px;\">We regret to inform you that due to unforeseen circumstances, we have had to cancel your reservation in the "
+                         + hospital.Name + " with Dr: " + doctorData.FullName + " on " + reservation.Date + " . We understand that this may be inconvenient for you, and we sincerely apologize for any inconvenience caused.</p><br>" +
+                         "<p style=\"font-size: 14px;\">Thank you for your understanding and patience.</p><br>" +
+                         "<p style=\"font-size: 14px;\">Best regards</p><br>";
+
+                    if (!await MailServices.SendEmailAsync(email, "Canceled Reservation", patientData))
+                    {
+                        return new GeneralResponse<string>()
+                        {
+                            IsSuccess = false,
+                            Message = "Sending the Mail is Failed"
+                        };
+                    }
+                }
 
                 _unitOfWork.AllReservationsRepository.RemoveRange(all);
                 _unitOfWork.XrayReservationRepository.RemoveRange(xrayAppointmentDate.XrayReservations);

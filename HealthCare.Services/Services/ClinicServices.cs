@@ -352,10 +352,15 @@ namespace HealthCare.Services.Services
                 }
                 var clinicAppointments = await _unitOfWork.ClinicAppointmentRepository.Where(
                     w => w.ClinicLabId == clinicId);
-                var allReservations = await _unitOfWork.AllReservationsRepository.Where(
-                    w => w.Type == AllReservations.Clinic && w.RoomId == clinicId);
-                _unitOfWork.AllReservationsRepository.RemoveRange(allReservations);
-                _unitOfWork.ClinicAppointmentRepository.RemoveRange(clinicAppointments);
+                if(clinicAppointments.Count()!=0)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "This clinic contains appointments that needs to be deleted first. "
+                    };
+                }
+                
                 _unitOfWork.ClinicLabRepository.Remove(clinic);
                 await _unitOfWork.CompleteAsync();
                 return new GeneralResponse<string>
@@ -409,10 +414,14 @@ namespace HealthCare.Services.Services
 
                 var xrayAppointments = await _unitOfWork.XrayAppointmentRepository.Where(
                     w => w.XrayId == xrayLabId);
-                var allReservations = await _unitOfWork.AllReservationsRepository.Where(
-                    w => w.Type == AllReservations.Xray && w.RoomId == xrayLabId);
-                _unitOfWork.AllReservationsRepository.RemoveRange(allReservations);
-                _unitOfWork.XrayAppointmentRepository.RemoveRange(xrayAppointments);
+                if (xrayAppointments.Count() != 0)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "This xray contains appointments that needs to be deleted first. "
+                    };
+                }
                 _unitOfWork.XrayRepository.Remove(xray);
                 await _unitOfWork.CompleteAsync();
 
@@ -720,10 +729,16 @@ namespace HealthCare.Services.Services
 
                 var labAppointments = await _unitOfWork.LabAppointmentRepository.Where(
                     w => w.LabId == labId);
-                var allReservations = await _unitOfWork.AllReservationsRepository.Where(
-                    w => w.Type == AllReservations.Lab && w.RoomId == labId);
-                _unitOfWork.AllReservationsRepository.RemoveRange(allReservations);
-                _unitOfWork.LabAppointmentRepository.RemoveRange(labAppointments);
+
+                if (labAppointments.Count() != 0)
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "This lab contains appointments that needs to be deleted first. "
+                    };
+                }
+
                 _unitOfWork.LabRepository.Remove(lab);
                 await _unitOfWork.CompleteAsync();
 

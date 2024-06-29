@@ -986,10 +986,10 @@ namespace HealthCare.Services.Services
                     s => s.UserName == ThisUser.UserName, i => i.AdminOfHospital);
 
 
-                
+
                 var hospitalDoctor = await _unitOfWork.HospitalDoctorRepository.SingleOrDefaultAsync(
                     s => s.DoctorId == doctorId && s.HospitalId == hospitalAdmin.AdminOfHospital.HospitalId);
-                if(hospitalDoctor == null)
+                if (hospitalDoctor == null)
                 {
                     return new GeneralResponse<string>
                     {
@@ -997,32 +997,70 @@ namespace HealthCare.Services.Services
                         Message = "The doctor isnot working in this hospital."
                     };
                 }
-                var clinics = await _unitOfWork.ClinicLabRepository.GetSpecificItems(
-                    w => w.HospitalId == hospitalAdmin.AdminOfHospital.HospitalId,
-                    a => a.ClinicAppointments.Where(w=>w.DoctorId == doctorId));
 
-                var clinicAppointments = clinics.SelectMany(appointments => appointments).ToList();
+                if (await _unitOfWork.AllReservationsRepository.AnyAsync(
+                    a => a.DoctorId == doctorId && a.HospitalId == hospitalAdmin.AdminOfHospital.HospitalId))
+                {
+                    return new GeneralResponse<string>
+                    {
+                        IsSuccess = false,
+                        Message = "This doctor has appointments and reservations in this hospital, please make sure to delete them first."
+                    };
+                }
 
-                var xrays = await _unitOfWork.XrayRepository.GetSpecificItems(
-                    w => w.HospitalId == hospitalAdmin.AdminOfHospital.HospitalId,
-                    a => a.XrayAppointments.Where(w => w.DoctorId == doctorId));
+                if (await _unitOfWork.ClinicAppointmentRepository.AnyAsync(a => a.DoctorId == doctorId))
+                {
+                    var id = await _unitOfWork.ClinicAppointmentRepository.GetSpecificItems(w => w.DoctorId == doctorId, s => s.ClinicLabId);
+                    var clinicApp = await _unitOfWork.ClinicLabRepository.Where
+                        (a => id.Contains(a.Id) && a.HospitalId == hospitalAdmin.AdminOfHospital.HospitalId);
+                    if (clinicApp.Count()!=0 )
+                    {
+                        return new GeneralResponse<string>
+                        {
+                            IsSuccess = false,
+                            Message = "This doctor has appointments in this hospital, please make sure to delete them first."
+                        };
+                    }
+                    
+                }
 
-                var xrayAppointments = xrays.SelectMany(appointments => appointments).ToList();
+                if (await _unitOfWork.LabAppointmentRepository.AnyAsync(a => a.DoctorId == doctorId))
+                {
+                    var id = await _unitOfWork.LabAppointmentRepository.GetSpecificItems(w => w.DoctorId == doctorId, s => s.LabId);
+                    var labApp = await _unitOfWork.LabRepository.Where
+                        (a => id.Contains(a.Id) && a.HospitalId == hospitalAdmin.AdminOfHospital.HospitalId);
+                    if (labApp.Count() != 0)
+                    {
+                        return new GeneralResponse<string>
+                        {
+                            IsSuccess = false,
+                            Message = "This doctor has appointments in this hospital, please make sure to delete them first."
+                        };
+                    }
 
-                var labs = await _unitOfWork.LabRepository.GetSpecificItems(
-                    w => w.HospitalId == hospitalAdmin.AdminOfHospital.HospitalId,
-                    a => a.LabAppointments.Where(w => w.DoctorId == doctorId));
+                }
 
-                var labAppointments = labs.SelectMany(appointments => appointments).ToList();
+                if (await _unitOfWork.XrayAppointmentRepository.AnyAsync(a => a.DoctorId == doctorId))
+                {
+                    var id = await _unitOfWork.XrayAppointmentRepository.GetSpecificItems(w => w.DoctorId == doctorId, s => s.XrayId);
+                    var xrayApp = await _unitOfWork.XrayRepository.Where
+                        (a => id.Contains(a.Id) && a.HospitalId == hospitalAdmin.AdminOfHospital.HospitalId);
+                    if (xrayApp.Count() != 0)
+                    {
+                        return new GeneralResponse<string>
+                        {
+                            IsSuccess = false,
+                            Message = "This doctor has appointments in this hospital, please make sure to delete them first."
+                        };
+                    }
+
+                }
 
 
-                _unitOfWork.ClinicAppointmentRepository.RemoveRange(clinicAppointments);
-                _unitOfWork.LabAppointmentRepository.RemoveRange(labAppointments);
-                _unitOfWork.XrayAppointmentRepository.RemoveRange(xrayAppointments);
                 _unitOfWork.HospitalDoctorRepository.Remove(hospitalDoctor);
                 await _unitOfWork.CompleteAsync();
 
-                var CheckHospitalDoctor = await _unitOfWork.HospitalDoctorRepository.SingleOrDefaultAsync(
+                var CheckHospitalDoctor = await _unitOfWork.HospitalDoctorRepository.Where(
                     s => s.DoctorId == doctorId);
                 if (CheckHospitalDoctor == null)
                 {
