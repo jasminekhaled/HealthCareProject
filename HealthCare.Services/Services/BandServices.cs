@@ -899,8 +899,8 @@ namespace HealthCare.Services.Services
                 band.RoomNum = dto.RoomNum ?? null;
                 _unitOfWork.BandRepository.Update(band);
                 await _unitOfWork.CompleteAsync();
-                var user = await _unitOfWork.CivilRegestrationRepository.SingleOrDefaultAsync(s => s.NationalId == dto.PatientNationalId);
-                var data = user.Name;
+                //var user = await _unitOfWork.CivilRegestrationRepository.SingleOrDefaultAsync(s => s.NationalId == dto.PatientNationalId);
+                var data = patient.UserName;
                 return new GeneralResponse<string>
                 {
                     IsSuccess = true,

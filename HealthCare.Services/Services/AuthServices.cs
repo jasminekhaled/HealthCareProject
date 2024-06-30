@@ -26,6 +26,8 @@ using HealthCare.Core.Models.DoctorModule;
 using Microsoft.AspNetCore.Hosting;
 using System.Numerics;
 using Microsoft.AspNetCore.Http;
+using HealthCare.Core.Models.AppointmentModule;
+using HealthCare.Core.Models.HospitalModule;
 
 namespace HealthCare.Services.Services
 {
@@ -169,9 +171,14 @@ namespace HealthCare.Services.Services
                 patient.UploadedFile = uploadedFile;
 
                 var verificationCode = MailServices.RandomString(6);
-                if (!await MailServices.SendEmailAsync(dto.Email, "Verification Code", verificationCode))
+                string verificationCodeMsg =
+                   "<p style=\"font-size: 14px;\">Hi  " + dto.Email + ",</p><br>" +
+                   "<p style=\"font-size: 14px;\">This is your verification code: "+ verificationCode + "</p><br>" +
+                  "<p style=\"font-size: 14px;\">If you did not request this code, you can safely ignore this email. Someone else may have entered your email address by mistake.</p><br>" +
+                  "<p style=\"font-size: 14px;\">Thank you</p><br>";
+                if (!await MailServices.SendEmailAsync(dto.Email, "Verification Code", verificationCodeMsg))
                 {
-                    return new GeneralResponse<SignUpResponse>()
+                    return new GeneralResponse<SignUpResponse>() 
                     {
                         IsSuccess = false,
                         Message = "Sending the Verification Code is Failed"

@@ -1232,7 +1232,7 @@ namespace HealthCare.Services.Services
                         return new GeneralResponse<string>()
                         {
                             IsSuccess = false,
-                            Message = "Sending the Mail is Failed"
+                            Message = "Sending the Mail is Failed" 
                         };
                     }
                 }

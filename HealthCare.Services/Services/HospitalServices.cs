@@ -27,6 +27,8 @@ using HealthCare.Core.DTOS.DoctorModule.ResponseDtos;
 using Microsoft.AspNetCore.Http;
 using HealthCare.Core.DTOS.BandModule.ResponseDtos;
 using HealthCare.Core.Models.AppointmentModule;
+using HealthCare.Core.DTOS.ClinicModule.ResponseDto;
+using HealthCare.Core.Models.ClinicModule;
 
 namespace HealthCare.Services.Services
 {
@@ -219,7 +221,9 @@ namespace HealthCare.Services.Services
                     s => s.Id);
                 var xrayReservations = await _unitOfWork.AllReservationsRepository.Where(
                     s => s.Type == AllReservations.Xray && xrayIds.Contains(s.RoomId));
-
+                var hospitalAdmins = await _unitOfWork.HospitalAdminRepository.Where(w => w.AdminOfHospital.HospitalId == hospitalId);
+                var AdminsUserNames = hospitalAdmins.Select(s => s.UserName).ToList();
+                var users = await _unitOfWork.UserRepository.WhereIncludeAsync(w => AdminsUserNames.Contains(w.UserName));
 
                 var upload = await _unitOfWork.UploadedFileRepository.GetByIdAsync(hospital.UploadedFileId);
                 File.Delete(upload.FilePath);
@@ -229,6 +233,9 @@ namespace HealthCare.Services.Services
                 _unitOfWork.AllReservationsRepository.RemoveRange(clinicReservations);
                 _unitOfWork.AllReservationsRepository.RemoveRange(labReservations);
                 _unitOfWork.AllReservationsRepository.RemoveRange(xrayReservations);
+                _unitOfWork.HospitalAdminRepository.RemoveRange(hospitalAdmins);
+                _unitOfWork.UserRepository.RemoveRange(users);
+
                 await _unitOfWork.CompleteAsync();
                 
 
@@ -283,6 +290,177 @@ namespace HealthCare.Services.Services
             }
         }
 
+        public async Task<GeneralResponse<List<ListOfSpecificClinics>>> GetHospitalClinicByName(string Name, int specId)
+        {
+            try
+            {
+                var hospitals = await _unitOfWork.HospitalRepository.GetAllIncludedAsync(i => i.UploadedFile, i => i.HospitalGovernorate.Governorate);
+                var hospitalIds = hospitals.Where(a => a.Name == Name).Select(s => s.Id).ToList();
+                if (hospitalIds.Count == 0)
+                {
+                    return new GeneralResponse<List<ListOfSpecificClinics>>
+                    {
+                        IsSuccess = false,
+                        Message = "No hospital Found with this Name."
+                    };
+                }
+                var spec = await _unitOfWork.SpecializationRepository.SingleOrDefaultAsync(s => s.Id == specId);
+                if(spec == null)
+                {
+                    return new GeneralResponse<List<ListOfSpecificClinics>>
+                    {
+                        IsSuccess = false,
+                        Message = "No Specialization Found with this Id."
+                    };
+                }
+                var clinics = await _unitOfWork.ClinicLabRepository
+                    .WhereIncludeAsync(w => hospitalIds.Contains(w.HospitalId) && w.SpecializationId == specId,
+                    a => a.Hospital, a => a.Hospital.HospitalGovernorate.Governorate,
+                    a => a.Hospital.UploadedFile);
+
+                if(clinics.Count()==0)
+                {
+                    return new GeneralResponse<List<ListOfSpecificClinics>>
+                    {
+                        IsSuccess = false,
+                        Message = "No clinic with your choosen specialization found in this hospital."
+                    };
+                }
+                var data = _mapper.Map<List<ListOfSpecificClinics>>(clinics);
+
+                return new GeneralResponse<List<ListOfSpecificClinics>>
+                {
+                    IsSuccess = true,
+                    Message = "Hospitals with inserted name listed successfully.",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<List<ListOfSpecificClinics>>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+
+
+        public async Task<GeneralResponse<List<ListOfSpecificClinics>>> GetHospitalXrayByName(string Name, int specId)
+        {
+            try
+            {
+                var hospitals = await _unitOfWork.HospitalRepository.GetAllIncludedAsync(i => i.UploadedFile, i => i.HospitalGovernorate.Governorate);
+                var hospitalIds = hospitals.Where(a => a.Name == Name).Select(s => s.Id).ToList();
+                if (hospitalIds.Count == 0)
+                {
+                    return new GeneralResponse<List<ListOfSpecificClinics>>
+                    {
+                        IsSuccess = false,
+                        Message = "No hospital Found with this Name."
+                    };
+                }
+                var spec = await _unitOfWork.XraySpecializationRepository.SingleOrDefaultAsync(s => s.Id == specId);
+                if (spec == null)
+                {
+                    return new GeneralResponse<List<ListOfSpecificClinics>>
+                    {
+                        IsSuccess = false,
+                        Message = "No Specialization Found with this Id."
+                    };
+                }
+                var clinics = await _unitOfWork.XrayRepository
+                    .WhereIncludeAsync(w => hospitalIds.Contains(w.HospitalId) && w.XraySpecializationId == specId,
+                    a => a.Hospital, a => a.Hospital.HospitalGovernorate.Governorate,
+                    a => a.Hospital.UploadedFile);
+
+                if (clinics.Count() == 0)
+                {
+                    return new GeneralResponse<List<ListOfSpecificClinics>>
+                    {
+                        IsSuccess = false,
+                        Message = "No Radiology with your choosen specialization found in this hospital."
+                    };
+                }
+                var data = _mapper.Map<List<ListOfSpecificClinics>>(clinics);
+
+                return new GeneralResponse<List<ListOfSpecificClinics>>
+                {
+                    IsSuccess = true,
+                    Message = "Hospitals with inserted name listed successfully.",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<List<ListOfSpecificClinics>>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
+
+        public async Task<GeneralResponse<List<ListOfSpecificLabs>>> GetHospitalLabByName(string Name, int specId)
+        {
+            try
+            {
+                var hospitals = await _unitOfWork.HospitalRepository.GetAllIncludedAsync(i => i.UploadedFile, i => i.HospitalGovernorate.Governorate);
+                var hospitalIds = hospitals.Where(a => a.Name == Name).Select(s => s.Id).ToList();
+                if (hospitalIds.Count == 0)
+                {
+                    return new GeneralResponse<List<ListOfSpecificLabs>>
+                    {
+                        IsSuccess = false,
+                        Message = "No hospital Found with this Name."
+                    };
+                }
+                var spec = await _unitOfWork.LabSpecializationRepository.SingleOrDefaultAsync(s => s.Id == specId);
+                if (spec == null)
+                {
+                    return new GeneralResponse<List<ListOfSpecificLabs>>
+                    {
+                        IsSuccess = false,
+                        Message = "No Specialization Found with this Id."
+                    };
+                }
+                var labIds = await _unitOfWork.SpecializationsOfLabRepository.GetSpecificItems(
+                    s => s.LabSpecializationId == specId, a => a.LabId);
+                var clinics = await _unitOfWork.LabRepository
+                    .WhereIncludeAsync(w => hospitalIds.Contains(w.HospitalId) && labIds.Contains(w.Id),
+                    a => a.Hospital, a => a.Hospital.HospitalGovernorate.Governorate,
+                    a => a.Hospital.UploadedFile);
+
+                if (clinics.Count() == 0)
+                {
+                    return new GeneralResponse<List<ListOfSpecificLabs>>
+                    {
+                        IsSuccess = false,
+                        Message = "No Labs with your choosen specialization found in this hospital."
+                    };
+                }
+                var data = _mapper.Map<List<ListOfSpecificLabs>>(clinics);
+
+                return new GeneralResponse<List<ListOfSpecificLabs>>
+                {
+                    IsSuccess = true,
+                    Message = "Hospitals with inserted name listed successfully.",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<List<ListOfSpecificLabs>>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong",
+                    Error = ex
+                };
+            }
+        }
 
         public async Task<GeneralResponse<List<ListOfHospitalDto>>> GetHospitalByGovernorate(int governoratetId)
         {

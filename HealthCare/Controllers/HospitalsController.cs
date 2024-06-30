@@ -48,7 +48,6 @@ namespace HealthCare.Controllers
             return BadRequest(result);
         }
 
-       /* [Authorize]
         [HttpGet("GetHospitalByName")]
         public async Task<IActionResult> GetHospitalByName(string Name)
         {
@@ -56,7 +55,7 @@ namespace HealthCare.Controllers
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
-        }*/
+        }
 
 
         [HttpGet("GetHospitalByGovernorate")]
@@ -172,6 +171,33 @@ namespace HealthCare.Controllers
         public async Task<IActionResult> DeleteGovernorate(int governorateId)
         {
             var result = await _hospitalServices.DeleteGovernorate(governorateId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpGet("GetHospitalClinicByName")]
+        public async Task<IActionResult> GetHospitalClinicByName(string Name, int specId)
+        {
+            var result = await _hospitalServices.GetHospitalClinicByName(Name, specId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpGet("GetHospitalXrayByName")]
+        public async Task<IActionResult> GetHospitalXrayByName(string Name, int specId)
+        {
+            var result = await _hospitalServices.GetHospitalXrayByName(Name, specId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpGet("GetHospitalLabByName")]
+        public async Task<IActionResult> GetHospitalLabByName(string Name, int specId)
+        {
+            var result = await _hospitalServices.GetHospitalLabByName(Name, specId);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);

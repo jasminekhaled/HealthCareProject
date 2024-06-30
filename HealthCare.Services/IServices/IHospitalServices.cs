@@ -10,6 +10,7 @@ using HealthCare.Core.DTOS.HospitalModule.RequestDto;
 using HealthCare.Core.Models.HospitalModule;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using HealthCare.Core.DTOS.ClinicModule.ResponseDto;
 
 namespace HealthCare.Services.IServices
 {
@@ -30,5 +31,8 @@ namespace HealthCare.Services.IServices
         Task<GeneralResponse<List<GovernorateDto>>> ListOfGovernorates();
         Task<GeneralResponse<string>> AddGovernorate(string name);
         Task<GeneralResponse<string>> DeleteGovernorate(int governorateId);
+        Task<GeneralResponse<List<ListOfSpecificClinics>>> GetHospitalClinicByName(string Name, int specId);
+        Task<GeneralResponse<List<ListOfSpecificLabs>>> GetHospitalLabByName(string Name, int specId);
+        Task<GeneralResponse<List<ListOfSpecificClinics>>> GetHospitalXrayByName(string Name, int specId);
     }
 }
